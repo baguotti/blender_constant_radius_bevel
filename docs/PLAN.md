@@ -8,7 +8,7 @@ Build a reusable Geometry Nodes group, "CR Bevel", that bevels selected mesh edg
 
 - **Target:** Blender 5.2 LTS minimum, because the Mesh Bevel node first shipped there. Build in 5.2 so the file also opens in 5.3.
 - **Deliverable:** a .blend asset library with the group flagged as a modifier. A thin extension (add-on) is optional.
-- **Status:** Phase 0 done, verdict go. See [PHASE0_FINDINGS.md](PHASE0_FINDINGS.md).
+- **Status:** Phase 1 done: edge strips are exact. See [PHASE0_FINDINGS.md](PHASE0_FINDINGS.md) and [PHASE1_FINDINGS.md](PHASE1_FINDINGS.md).
 
 ## Background: why the 2019 attempt failed
 
@@ -29,7 +29,7 @@ The [Bevel V2 design](https://archive.blender.org/developer/maniphest/0098/00986
 | Node | Use |
 | --- | --- |
 | Mesh Bevel | Topology. Start/End × Left/Right perpendicular offsets as edge fields. Outputs Vertex Face, Edge Face, Outer Edge, Mid Edge. No width type, clamp, loop slide or hardening |
-| Edge Angle | Signed Angle: concave positive, convex negative |
+| Edge Angle | Signed Angle: convex positive, concave negative (measured in 5.2.4; the manual says the opposite) |
 | Geometry Proximity | Closest point on the skeleton axes, with a Group ID |
 | Sample Index | Direct lookup of corner centres by original vertex ID |
 | Set Mesh Normal | Exact custom normals |
@@ -89,7 +89,7 @@ Notation: n1, n2 = the edge's face normals; φ = angle between them = |Signed An
 | Phase | Work | Done when |
 | --- | --- | --- |
 | 0. Verify | Node behaviour, profile error, attributes, speed | **Done:** see the findings |
-| 1. Edges | Offsets, skeleton, exact strip snap | Extruded polygon matches Fillet Curve + extrude to float precision |
+| 1. Edges | Offsets, skeleton, exact strip snap | **Done:** matches Fillet Curve to 1e-6 r |
 | 2. Corners | Spheres, chain joints, end caps, fallback | Cube, skewed box, tapered prism and L-shape pass |
 | 3. Production | Clamp, normals, material, UVs, warnings | Clean shading on a real asset |
 | 4. Packaging | Asset library, optional extension | Installs on 5.2 LTS |

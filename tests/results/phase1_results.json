@@ -1,0 +1,255 @@
+{
+  "blender": "5.2.4 LTS",
+  "radius": 0.2,
+  "segments": 8,
+  "tolerance": 1e-05,
+  "checks": [
+    {
+      "name": "fillet_reference_radius",
+      "value": 8.548330945878924e-07,
+      "limit": 1e-05,
+      "ok": true
+    },
+    {
+      "name": "prism_vs_fillet_curve_radial",
+      "value": 9.58448956589475e-07,
+      "limit": 1e-05,
+      "ok": true,
+      "vertices": 126
+    },
+    {
+      "name": "prism_vs_fillet_curve_outside_arc_span_rad",
+      "value": 5.78250247684764e-07,
+      "limit": 1e-05,
+      "ok": true
+    },
+    {
+      "name": "prism_tangent_points_match_fillet",
+      "value": 8.511885567496302e-07,
+      "limit": 1e-05,
+      "ok": true
+    },
+    {
+      "name": "original_faces_stay_planar",
+      "value": 5.960464477539062e-07,
+      "limit": 1e-05,
+      "ok": true
+    },
+    {
+      "name": "segments_1_2_3_16_vs_fillet_curve",
+      "value": 1.0463421319661936e-06,
+      "limit": 1e-05,
+      "ok": true
+    },
+    {
+      "name": "angle_sweep_max_strip_error",
+      "value": 4.405863975737168e-06,
+      "limit": 1e-05,
+      "ok": true,
+      "cases": 20
+    },
+    {
+      "name": "unselected_vertices_unchanged",
+      "value": 0.0,
+      "limit": 1e-07,
+      "ok": true
+    },
+    {
+      "name": "no_internal_attributes_left",
+      "value": 0.0,
+      "limit": 0,
+      "ok": true,
+      "names": []
+    },
+    {
+      "name": "output_has_cr_bevel_face",
+      "value": 0.0,
+      "limit": 0,
+      "ok": true
+    },
+    {
+      "name": "exact_profile_off_matches_native_12pct",
+      "value": 2.017452597745384e-05,
+      "limit": 0.002,
+      "ok": true
+    },
+    {
+      "name": "robustness_cases_unchanged_topology",
+      "value": 0.0,
+      "limit": 0,
+      "ok": true
+    }
+  ],
+  "prism_concave_corners": 1,
+  "angle_sweep": {
+    "convex_20": {
+      "max": 4.405863975737168e-06,
+      "mean": 3.2357039527536943e-06,
+      "n": 18,
+      "phi_deg": 159.99999534548672
+    },
+    "concave_20": {
+      "max": 4.313095111757592e-06,
+      "mean": 3.541138113171015e-06,
+      "n": 18,
+      "phi_deg": 159.99999534548672
+    },
+    "convex_30": {
+      "max": 1.227017416838283e-07,
+      "mean": 5.8704041519838967e-08,
+      "n": 18,
+      "phi_deg": 149.99999734394112
+    },
+    "concave_30": {
+      "max": 1.401640375986446e-07,
+      "mean": 5.7944919287172205e-08,
+      "n": 18,
+      "phi_deg": 149.99999734394112
+    },
+    "convex_45": {
+      "max": 1.9837168865888266e-07,
+      "mean": 8.708633632898483e-08,
+      "n": 18,
+      "phi_deg": 135.00000034162267
+    },
+    "concave_45": {
+      "max": 1.5180556811600354e-07,
+      "mean": 6.149053130874746e-08,
+      "n": 18,
+      "phi_deg": 135.00000034162267
+    },
+    "convex_60": {
+      "max": 1.7415733660763877e-07,
+      "mean": 1.061877560342027e-07,
+      "n": 18,
+      "phi_deg": 120.00000333930423
+    },
+    "concave_60": {
+      "max": 3.720634378368004e-07,
+      "mean": 2.1868216621793538e-07,
+      "n": 18,
+      "phi_deg": 120.00000333930423
+    },
+    "convex_90": {
+      "max": 2.905726854962598e-07,
+      "mean": 2.5079743801787517e-07,
+      "n": 18,
+      "phi_deg": 90.00000250447816
+    },
+    "concave_90": {
+      "max": 2.905726854962598e-07,
+      "mean": 2.5079743801787517e-07,
+      "n": 18,
+      "phi_deg": 90.00000250447816
+    },
+    "convex_120": {
+      "max": 2.4400654441425473e-07,
+      "mean": 1.7981641570802904e-07,
+      "n": 18,
+      "phi_deg": 60.000001669652114
+    },
+    "concave_120": {
+      "max": 2.4400654441425473e-07,
+      "mean": 1.7981641570802904e-07,
+      "n": 18,
+      "phi_deg": 60.000001669652114
+    },
+    "convex_135": {
+      "max": 1.387088462145858e-07,
+      "mean": 7.301827334129898e-08,
+      "n": 18,
+      "phi_deg": 45.00000125223908
+    },
+    "concave_135": {
+      "max": 1.387088462145858e-07,
+      "mean": 9.133428285284455e-08,
+      "n": 18,
+      "phi_deg": 45.00000125223908
+    },
+    "convex_150": {
+      "max": 6.667687332817529e-08,
+      "mean": 2.6389089586360054e-08,
+      "n": 18,
+      "phi_deg": 30.000000834826057
+    },
+    "concave_150": {
+      "max": 6.667687332817529e-08,
+      "mean": 2.6409300602862434e-08,
+      "n": 18,
+      "phi_deg": 30.000000834826057
+    },
+    "convex_165": {
+      "max": 3.773311690880021e-08,
+      "mean": 1.8595326582561256e-08,
+      "n": 18,
+      "phi_deg": 15.000003832507613
+    },
+    "concave_165": {
+      "max": 3.773311690880021e-08,
+      "mean": 1.8595326582561256e-08,
+      "n": 18,
+      "phi_deg": 15.000003832507613
+    },
+    "convex_175": {
+      "max": 8.941423906838608e-08,
+      "mean": 4.2627686858760015e-08,
+      "n": 18,
+      "phi_deg": 4.999985340394474
+    },
+    "concave_175": {
+      "max": 8.941423906838608e-08,
+      "mean": 4.2627686858760015e-08,
+      "n": 18,
+      "phi_deg": 4.999985340394474
+    }
+  },
+  "native_profile_60deg_error": 0.12132017452597746,
+  "robustness": {
+    "radius_zero": {
+      "ok": true,
+      "verts_in": 6,
+      "verts_out": 6
+    },
+    "no_selection": {
+      "ok": true,
+      "verts_in": 6,
+      "verts_out": 6
+    },
+    "loose_edges_only": {
+      "ok": true,
+      "verts_in": 3,
+      "verts_out": 3
+    },
+    "single_plane": {
+      "ok": true,
+      "verts_in": 4,
+      "verts_out": 4
+    },
+    "flat_grid_angle_limit": {
+      "ok": true,
+      "verts_in": 6,
+      "verts_out": 6
+    }
+  },
+  "performance": [
+    {
+      "segments": 1,
+      "in_faces": 81000,
+      "out_faces": 351000,
+      "seconds": 0.9845152320001489
+    },
+    {
+      "segments": 4,
+      "in_faces": 81000,
+      "out_faces": 2025000,
+      "seconds": 4.186926229999926
+    },
+    {
+      "segments": 8,
+      "in_faces": 81000,
+      "out_faces": 6561000,
+      "seconds": 12.077536806000126
+    }
+  ],
+  "failures": []
+}
