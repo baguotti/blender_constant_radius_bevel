@@ -2,11 +2,11 @@
 
 A Geometry Nodes modifier for Blender 5.2+ that bevels edges with a true constant-radius (rolling-ball) fillet. It is built on the native Mesh Bevel node plus an exact cleanup step that snaps the new vertices onto the true cylinders and spheres.
 
-**Status:** version 1.0.0, an installable extension. Exact bevel geometry and shading, an overlap clamp, and the input's own shading kept on original faces.
+**Status:** version 1.0.1, an installable extension (after a deep bug pass; see `docs/REVIEW_FINDINGS.md`). Exact bevel geometry and shading, an overlap clamp, and the input's own shading kept on original faces.
 
 ## Install (Blender 5.2 or later)
 
-1. Get `cr_bevel-1.0.0.zip`: build it with `blender -b --factory-startup --python src/make_extension.py`, which writes it to `dist/`.
+1. Get `cr_bevel-1.0.1.zip`: build it with `blender -b --factory-startup --python src/make_extension.py`, which writes it to `dist/`.
 2. In Blender: Edit > Preferences > Get Extensions > the drop-down at the top right > Install from Disk, then pick the zip.
 3. Select a mesh, then Add Modifier > Generate > CR Bevel.
 
@@ -37,4 +37,5 @@ blender -b --factory-startup --python tests/test_phase1.py
 blender -b --factory-startup --python tests/test_phase2.py
 blender -b --factory-startup --python tests/test_phase3.py
 blender -b --factory-startup --python tests/test_phase4.py   # after src/make_extension.py
+blender -b --factory-startup --python tests/test_robustness.py
 ```

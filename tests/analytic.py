@@ -335,3 +335,23 @@ def normal_errors(me, bm, frames, modes, r):
                 exact = (w - frames[e]["u"] * w.dot(frames[e]["u"])).normalized() * s
             worst_b, nb = max(worst_b, n.angle(exact)), nb + 1
     return worst_b, worst_f, nb, nf
+
+
+def count_flips(me_a, me_b):
+    """Faces whose orientation differs between two results of the same bevel.
+
+    Faces are matched by their vertex index sets: the Mesh Bevel node keeps the
+    vertex order between runs but not always the face order. Returns
+    (flipped, unmatched); unmatched > 0 means the two results don't line up.
+    """
+    if len(me_a.vertices) != len(me_b.vertices):
+        return -1, len(me_a.polygons)
+    normals_b = {frozenset(p.vertices): p.normal.copy() for p in me_b.polygons}
+    flipped = unmatched = 0
+    for p in me_a.polygons:
+        n = normals_b.get(frozenset(p.vertices))
+        if n is None:
+            unmatched += 1
+        elif p.normal.dot(n) < 0:
+            flipped += 1
+    return flipped, unmatched

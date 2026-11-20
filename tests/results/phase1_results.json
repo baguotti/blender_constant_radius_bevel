@@ -236,19 +236,19 @@
       "segments": 1,
       "in_faces": 81000,
       "out_faces": 351000,
-      "seconds": 1.8221877109999696
+      "seconds": 2.1405534060000946
     },
     {
       "segments": 4,
       "in_faces": 81000,
       "out_faces": 2025000,
-      "seconds": 6.984532118999596
+      "seconds": 7.511214224000014
     },
     {
       "segments": 8,
       "in_faces": 81000,
       "out_faces": 6561000,
-      "seconds": 20.84006097800011
+      "seconds": 20.276794895999956
     }
   ],
   "failures": []

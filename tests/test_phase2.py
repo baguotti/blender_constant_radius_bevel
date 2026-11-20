@@ -162,7 +162,8 @@ for name, make, sel_fn, must in CASES:
     same_topology = len(on) == len(off) and len(me_on.polygons) == len(me_off.polygons)
     moved = np.linalg.norm(on - off, axis=1) if same_topology else np.array([np.inf])
     fallback_moved = float(moved[fallback_out].max()) if fallback_out and same_topology else 0.0
-    flips = sum(1 for a, b in zip(me_on.polygons, me_off.polygons) if a.normal.dot(b.normal) < 0) if same_topology else -1
+    flips, unmatched = A.count_flips(me_on, me_off)
+    flips = flips + unmatched if same_topology else -1
     finite = bool(np.isfinite(on).all())
     present = {A.MODE_NAMES[i["mode"]] for i in modes.values()}
     mode_counts = {m: sum(1 for i in modes.values() if A.MODE_NAMES[i["mode"]] == m) for m in A.MODE_NAMES}
@@ -218,7 +219,8 @@ for name, make, radius in (("boolean_block", boolean_block, 0.05), ("suzanne", m
     me_on, me_off = A.evaluate(ob_on), A.evaluate(ob_off)
     on = np.array([v.co[:] for v in me_on.vertices])
     same = len(me_on.vertices) == len(me_off.vertices) and len(me_on.polygons) == len(me_off.polygons)
-    flips = sum(1 for a, b in zip(me_on.polygons, me_off.polygons) if a.normal.dot(b.normal) < 0) if same else -1
+    flips, unmatched = A.count_flips(me_on, me_off)
+    flips = flips + unmatched if same else -1
     smoke[name] = dict(verts=len(on), finite=bool(np.isfinite(on).all()), same_topology=same, flipped_faces=flips)
     print("SMOKE", name, smoke[name])
     check(f"smoke {name}: finite, same topology, no flips",

@@ -27,7 +27,8 @@ import math
 import bpy
 
 GROUP_NAME = "CR Bevel"
-MAX_EDGE_ANGLE = math.radians(179.0)  # tan(phi/2) explodes beyond this
+MAX_EDGE_ANGLE = math.radians(176.0)  # sharper edges (< 4 deg between faces) are skipped: the exact arc
+                                      # becomes a sliver below float precision (breaks at 178 deg)
 FALLBACK, TERMINAL, PIPE, JOINT, CORNER = range(5)
 GAP_TOL = 1e-3          # axes "meet" if closer than GAP_TOL * r
 PARALLEL_TOL = 1e-8     # 1 - (u0.u1)^2 below this means parallel axes
@@ -263,12 +264,12 @@ def build(name=GROUP_NAME, debug_output=None):
     gi = B.node("NodeGroupInput")
     gi.location = (-400, 0)
 
-    prepared, warning = _edge_data(B, gi)
+    prepared, warnings = _edge_data(B, gi)
     prepared = _vertex_modes(B, prepared)
     skeleton = _skeleton(B, gi, prepared)
     beveled = _bevel(B, gi, prepared)
     snapped = _snap(B, gi, beveled, skeleton)
-    finished = _finish(B, gi, snapped, warning)
+    finished = _finish(B, gi, snapped, warnings)
 
     B.stage("11. Remove internal attributes")
     rm = B.node("GeometryNodeRemoveAttribute")
@@ -289,7 +290,7 @@ def build(name=GROUP_NAME, debug_output=None):
 def _edge_data(B, gi):
     """Stages 1-3: clamp, per-edge offset, axis offset, direction and convexity.
 
-    Returns the prepared geometry and (show, message) for the clamp warning.
+    Returns the prepared geometry and a list of (show, message) warnings.
     """
     B.stage("1. Clamp: largest radius each edge can take without overlapping")
     radius_in = gi.outputs["Radius"]
@@ -299,8 +300,18 @@ def _edge_data(B, gi):
     phi = ang.outputs["Unsigned Angle"]
     half = B.math("MULTIPLY", phi, 0.5)
     tan_half = B.math("TANGENT", half)
+    # Faces with inconsistent winding (one flipped) make the edge angle meaningless:
+    # both faces then run along the edge in the same direction. Skip such edges.
+    corner_vertex = []
+    for k in (0, 1):
+        coe = B.node("GeometryNodeCornersOfEdge")
+        coe.inputs["Sort Index"].default_value = k
+        corner_vertex.append(_vertex_of(B, coe.outputs["Corner Index"]))
+    manifold = B.compare("EQUAL", coe.outputs["Total"], 2, data_type="INT")
+    flipped = B.bool_and(manifold, B.compare("EQUAL", corner_vertex[0], corner_vertex[1], data_type="INT"))
     valid = B.bool_and(
         gi.outputs["Selection"],
+        B.bool_not(flipped),
         B.compare("GREATER_THAN", phi, gi.outputs["Angle Limit"]),
         B.compare("GREATER_THAN", phi, 1e-4),
         B.compare("LESS_THAN", phi, MAX_EDGE_ANGLE),
@@ -326,7 +337,7 @@ def _edge_data(B, gi):
                          _vertex_of(B, _offset_corner(B, corner, -1)))
         a = B.vmath("NORMALIZE", B.sub(prv, here))
         b = B.vmath("NORMALIZE", B.sub(nxt, here))
-        face_normal = B.at_index("FACE", "FLOAT_VECTOR", B.node("GeometryNodeInputNormal").outputs["Normal"],
+        face_normal = B.at_index("FACE", "FLOAT_VECTOR", B.node("GeometryNodeInputNormal").outputs["True Normal"],
                                  _face_of(B, corner))
         return B.dot(a, b), B.dot(B.vmath("CROSS_PRODUCT", b, a), face_normal)
 
@@ -435,7 +446,13 @@ def _edge_data(B, gi):
             sn.string = part
             part = sn.outputs["String"]
         B.link(part, join.inputs["Strings"])
-    warning = (B.compare("GREATER_THAN", n_clamped.outputs["Sum"], 0.5), join.outputs["String"])
+    warnings = [(B.compare("GREATER_THAN", n_clamped.outputs["Sum"], 0.5), join.outputs["String"])]
+    n_flipped = B.node("GeometryNodeAttributeStatistic", domain="EDGE", data_type="FLOAT")
+    B.link(gi.outputs["Geometry"], n_flipped.inputs["Geometry"])
+    B.link(flipped, n_flipped.inputs["Attribute"])
+    msg = B.node("FunctionNodeInputString")
+    msg.string = "Some faces point the wrong way: their edges are not beveled. Recalculate normals (Shift N)."
+    warnings.append((B.compare("GREATER_THAN", n_flipped.outputs["Sum"], 0.5), msg.outputs["String"]))
 
     B.stage("2. Per-edge offset d = r tan(phi/2) and cylinder axis")
     d = B.math("MULTIPLY", radius, tan_half)
@@ -443,16 +460,26 @@ def _edge_data(B, gi):
     # Axis = edge - s * r / cos(phi/2) * bisector of the outward normals.
     k = B.math("MULTIPLY", B.math("MULTIPLY", convex_sign, -1.0),
                B.math("DIVIDE", radius, B.math("COSINE", half)))
-    # Bisector of the two face normals. Normal read directly on an edge averages
-    # the vertex normals, which is wrong here, so evaluate it on faces first.
+    # Bisector of the two face normals. Always "True Normal": "Normal" returns the
+    # input's custom normals if it has any. Read on an edge it would also average
+    # vertex normals, so evaluate it on faces first.
     face_n = B.node("GeometryNodeFieldOnDomain", domain="FACE", data_type="FLOAT_VECTOR")
-    B.link(B.node("GeometryNodeInputNormal").outputs["Normal"], face_n.inputs["Value"])
+    B.link(B.node("GeometryNodeInputNormal").outputs["True Normal"], face_n.inputs["Value"])
     bis = B.vmath("NORMALIZE", face_n.outputs["Value"])
     axis_off = B.scale(bis, k)
     direction = B.vmath("NORMALIZE", B.sub(ev.outputs["Position 2"], ev.outputs["Position 1"]))
 
     B.stage("3. Store per-edge data (_cr_* attributes)")
-    g = geo
+    # Drop custom normals from the input: the native bevel orients its new faces
+    # by them (wrong winding when they don't match the geometry), and they can't
+    # carry over a bevel anyway. Exact normals are written at the end.
+    clear = B.node("GeometryNodeSetMeshNormal", mode="SHARPNESS")
+    B.link(geo, clear.inputs["Mesh"])
+    clear.inputs["Remove Custom"].default_value = True
+    # This mode also writes sharpness: pass the input's own flags through unchanged.
+    B.link(B.bool_not(B.node("GeometryNodeInputEdgeSmooth").outputs["Smooth"]), clear.inputs["Edge Sharpness"])
+    B.link(B.bool_not(B.node("GeometryNodeInputShadeSmooth").outputs["Smooth"]), clear.inputs["Face Sharpness"])
+    g = clear.outputs["Mesh"]
     g = B.store(g, "_cr_vid", B.node("GeometryNodeInputIndex").outputs["Index"], "INT", "POINT")
     g = B.store(g, "_cr_vpos", B.node("GeometryNodeInputPosition").outputs["Position"], "FLOAT_VECTOR", "POINT")
     g = B.store(g, "_cr_sel", valid, "BOOLEAN", "EDGE")
@@ -464,7 +491,7 @@ def _edge_data(B, gi):
     g = B.store(g, "_cr_u", direction, "FLOAT_VECTOR", "EDGE")
     g = B.store(g, "_cr_va", ev.outputs["Vertex Index 1"], "INT", "EDGE")
     g = B.store(g, "_cr_vb", ev.outputs["Vertex Index 2"], "INT", "EDGE")
-    return g, warning
+    return g, warnings
 
 
 def _vertex_modes(B, geo):
@@ -534,7 +561,7 @@ def _vertex_modes(B, geo):
         cov.inputs["Sort Index"].default_value = k
         foc = B.node("GeometryNodeFaceOfCorner")
         B.link(cov.outputs["Corner Index"], foc.inputs["Corner Index"])
-        n = B.at_index("FACE", "FLOAT_VECTOR", B.node("GeometryNodeInputNormal").outputs["Normal"],
+        n = B.at_index("FACE", "FLOAT_VECTOR", B.node("GeometryNodeInputNormal").outputs["True Normal"],
                        foc.outputs["Face Index"])
         a = B.math("ABSOLUTE", B.dot(n, u0))
         if best_n is None:
@@ -685,11 +712,11 @@ def _snap(B, gi, geo, skeleton):
     return sp.outputs["Geometry"]
 
 
-def _finish(B, gi, geo, warning):
-    """Stages 9-10: exact custom normals, bevel material, clamp warning."""
+def _finish(B, gi, geo, warnings):
+    """Stages 9-10: exact custom normals, bevel material, warnings."""
     B.stage("9. Custom normals: exact on the bevel, input shading on original faces")
     face_n = B.node("GeometryNodeFieldOnDomain", domain="FACE", data_type="FLOAT_VECTOR")
-    B.link(B.node("GeometryNodeInputNormal").outputs["Normal"], face_n.inputs["Value"])
+    B.link(B.node("GeometryNodeInputNormal").outputs["True Normal"], face_n.inputs["Value"])
     is_bevel = B.named("cr_bevel_face", "BOOLEAN")
     # Fallback: average of the adjacent bevel faces' normals only.
     masked = B.node("GeometryNodeFieldOnDomain", domain="FACE", data_type="FLOAT_VECTOR")
@@ -724,17 +751,19 @@ def _finish(B, gi, geo, warning):
     B.link(corner_n, smn.inputs["Custom Normal"])
     geo = B.switch("GEOMETRY", gi.outputs["Analytic Normals"], geo, smn.outputs["Mesh"])
 
-    B.stage("10. Bevel material and clamp warning")
+    B.stage("10. Bevel material and warnings")
     mat = B.node("GeometryNodeSetMaterial")
     B.link(geo, mat.inputs["Geometry"])
     B.link(B.bool_and(gi.outputs["Set Bevel Material"], B.named("cr_bevel_face", "BOOLEAN")), mat.inputs["Selection"])
     B.link(gi.outputs["Bevel Material"], mat.inputs["Material"])
     geo = mat.outputs["Geometry"]
-    warn = B.node("GeometryNodeWarning", warning_type="WARNING")
-    B.link(warning[0], warn.inputs["Show"])
-    B.link(warning[1], warn.inputs["Message"])
-    # The warning only shows if its output is used: route the geometry through it.
-    return B.switch("GEOMETRY", warn.outputs["Show"], geo, geo)
+    for show, message in warnings:
+        warn = B.node("GeometryNodeWarning", warning_type="WARNING")
+        B.link(show, warn.inputs["Show"])
+        B.link(message, warn.inputs["Message"])
+        # A warning only shows if its output is used: route the geometry through it.
+        geo = B.switch("GEOMETRY", warn.outputs["Show"], geo, geo)
+    return geo
 
 
 if __name__ == "__main__":

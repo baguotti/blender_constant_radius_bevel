@@ -8,7 +8,7 @@ Build a reusable Geometry Nodes group, "CR Bevel", that bevels selected mesh edg
 
 - **Target:** Blender 5.2 LTS minimum, because the Mesh Bevel node first shipped there. Build in 5.2 so the file also opens in 5.3.
 - **Deliverable:** a .blend asset library with the group flagged as a modifier. A thin extension (add-on) is optional.
-- **Status:** Phase 4 done: installable extension. Phase 3: production-ready. Exact geometry and normals, overlap clamp, input shading kept. See [PHASE0](PHASE0_FINDINGS.md), [PHASE1](PHASE1_FINDINGS.md), [PHASE2](PHASE2_FINDINGS.md) [PHASE3](PHASE3_FINDINGS.md) and [PHASE4](PHASE4_FINDINGS.md) findings.
+- **Status:** v1.0.1 after a deep bug pass ([REVIEW_FINDINGS.md](REVIEW_FINDINGS.md)). Phase 4 done: installable extension. Phase 3: production-ready. Exact geometry and normals, overlap clamp, input shading kept. See [PHASE0](PHASE0_FINDINGS.md), [PHASE1](PHASE1_FINDINGS.md), [PHASE2](PHASE2_FINDINGS.md) [PHASE3](PHASE3_FINDINGS.md) and [PHASE4](PHASE4_FINDINGS.md) findings.
 
 ## Background: why the 2019 attempt failed
 

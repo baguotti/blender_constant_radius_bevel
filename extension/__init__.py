@@ -34,12 +34,18 @@ class OBJECT_OT_cr_bevel_add(bpy.types.Operator):
         return any(ob.type == "MESH" for ob in context.selected_objects)
 
     def execute(self, context):
-        ng = ensure_group()
         meshes = [ob for ob in context.selected_objects if ob.type == "MESH"]
-        for ob in meshes:
+        editable = [ob for ob in meshes if ob.library is None]   # linked objects can't take modifiers
+        if not editable:
+            self.report({"WARNING"}, "Only linked objects selected: make them local first")
+            return {"CANCELLED"}
+        ng = ensure_group()
+        for ob in editable:
             mod = ob.modifiers.new(GROUP, "NODES")
             mod.node_group = ng
-        self.report({"INFO"}, f"CR Bevel added to {len(meshes)} object(s)")
+        skipped = len(meshes) - len(editable)
+        note = f" ({skipped} linked object(s) skipped)" if skipped else ""
+        self.report({"INFO"}, f"CR Bevel added to {len(editable)} object(s){note}")
         return {"FINISHED"}
 
 

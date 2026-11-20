@@ -88,7 +88,7 @@ for clamp in ("Uniform", "Per Edge", "None"):
     mod, me = run(exact_ob, 0.05, clamp=clamp)
     me_n = A.evaluate(native_ob)
     bad = A.inverted_faces(me_n, A.original_bmesh(native_ob))
-    flips = sum(1 for p, q in zip(me.polygons, me_n.polygons) if p.normal.dot(q.normal) < 0)
+    flips = sum(A.count_flips(me, me_n))
     msgs = [w.message for w in mod.node_warnings]
     report["cases"][f"suzanne_r0.05_{clamp}"] = dict(native_inverted=bad, exact_vs_native_flips=flips, warnings=msgs)
     print(f"SUZANNE {clamp}: native inverted={bad} exact-vs-native flips={flips} warnings={msgs}")
@@ -130,7 +130,7 @@ for clamp in ("Uniform", "Per Edge"):
         me_n = A.evaluate(native)
         P = np.array([v.co[:] for v in me.vertices])
         outside = float(np.maximum(P - hi, lo - P).max())
-        flips = sum(1 for p, q in zip(me.polygons, me_n.polygons) if p.normal.dot(q.normal) < 0)
+        flips = sum(A.count_flips(me, me_n))
         bad = A.inverted_faces(me_n, A.original_bmesh(native))
         report["cases"][f"boolean_block_r{radius}_{clamp}"] = dict(outside_bbox=outside, native_inverted=bad, flips=flips,
                                                                      warnings=[w.message for w in mod.node_warnings])

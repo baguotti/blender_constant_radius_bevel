@@ -5,6 +5,7 @@ Constant-radius bevel for Blender, built as a Geometry Nodes modifier on top of 
 ## Start here
 - `docs/PLAN.md`: approach, math, node group spec, roadmap. It is the source of truth.
 - `docs/PHASE0_FINDINGS.md`, `docs/PHASE1_FINDINGS.md`, ...: measured results of each phase.
+- `docs/REVIEW_FINDINGS.md`: deep bug pass (robustness).
 
 ## Environment
 - Blender 5.2.4 LTS is on PATH as `blender`; the cloud environment's setup script installs it. If it is missing, install it by hand:
@@ -20,6 +21,7 @@ Constant-radius bevel for Blender, built as a Geometry Nodes modifier on top of 
     - `blender -b --factory-startup --python tests/test_phase2.py`
     - `blender -b --factory-startup --python tests/test_phase3.py`
     - `blender -b --factory-startup --python tests/test_phase4.py` (needs the extension zip)
+    - `blender -b --factory-startup --python tests/test_robustness.py` (awkward inputs; see docs/REVIEW_FINDINGS.md)
 - Shading renders (look at them after visual changes): `blender -b --factory-startup --python tests/render_phase3.py`
 - Phase 0 record (frozen): `blender -b --factory-startup --python phase0/run_phase0.py`
 
@@ -32,7 +34,8 @@ Constant-radius bevel for Blender, built as a Geometry Nodes modifier on top of 
 ## Blender API notes (5.2)
 - Modifier inputs: `mod.properties.inputs.<Socket_N>.value`; for an attribute input, set `.type = "ATTRIBUTE"` and `.attribute_name`.
 - Edge Angle's Signed Angle is positive for convex edges (the manual says the opposite).
-- Normal read directly on an edge averages vertex normals; use Field on Domain (Face) for the two face normals.
+- Use the Normal node's "True Normal" output for geometry: "Normal" returns custom normals when the input has them. Read on an edge it averages vertex normals; use Field on Domain (Face) for the two face normals.
+- Compare two results face by face with `analytic.count_flips` (face order is not stable between runs).
 - A menu group input can feed only ONE Menu Switch node; derive other values from its output (see `_menu`).
 - Warning node only shows if its output is used: route geometry through a Switch on it.
 - A multi-input socket (String Join) stacks new links on top: link parts in reverse order.
