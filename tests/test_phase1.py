@@ -160,7 +160,8 @@ for alpha in (20, 30, 45, 60, 90, 120, 135, 150, 165, 175):
         pts = wedge(alpha)
         if concave:  # notch: a reflex corner at the origin, interior angle 360 - alpha
             a = math.radians(alpha)
-            pts = [(0.0, 0.0), (math.cos(a), math.sin(a)), (-3.0, 3.0), (-3.0, -3.0), (3.0, -3.0), (3.0, 0.0)]
+            # Arms of length 3: at 20 degrees the offset is 5.7 r = 1.13, which must fit.
+            pts = [(0.0, 0.0), (3 * math.cos(a), 3 * math.sin(a)), (-6.0, 6.0), (-6.0, -6.0), (6.0, -6.0), (6.0, 0.0)]
         ob = A.extrude_polygon(f"wedge_{alpha}_{'cc' if concave else 'cv'}", pts)
         A.set_edge_selection(ob, lambda e: vertical(e) and e.verts[0].co.xy.length < 1e-9)
         A.add_cr_bevel(ob, ng, R, SEG, selection_attr="sel")

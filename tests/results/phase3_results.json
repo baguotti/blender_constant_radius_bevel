@@ -1,0 +1,313 @@
+{
+  "blender": "5.2.4 LTS",
+  "checks": [
+    {
+      "name": "cube r=1.5 Uniform: exact at the clamped radius 0.95",
+      "value": 4.7551629067081534e-08,
+      "limit": 1e-05,
+      "ok": true
+    },
+    {
+      "name": "cube r=1.5 Uniform: warning reports 12 edges and 0.9500",
+      "value": 0.0,
+      "limit": 0,
+      "ok": true
+    },
+    {
+      "name": "cube r=1.5 Uniform: no inverted faces",
+      "value": 0.0,
+      "limit": 0,
+      "ok": true
+    },
+    {
+      "name": "cube r=1.5 Per Edge: exact at the clamped radius 0.95",
+      "value": 4.7551629067081534e-08,
+      "limit": 1e-05,
+      "ok": true
+    },
+    {
+      "name": "cube r=1.5 Per Edge: warning reports 12 edges and 0.9500",
+      "value": 0.0,
+      "limit": 0,
+      "ok": true
+    },
+    {
+      "name": "cube r=1.5 Per Edge: no inverted faces",
+      "value": 0.0,
+      "limit": 0,
+      "ok": true
+    },
+    {
+      "name": "suzanne r=0.05 Uniform: exact result flips no face against native",
+      "value": 0.0,
+      "limit": 0,
+      "ok": true
+    },
+    {
+      "name": "suzanne r=0.05 Uniform: no inverted faces after clamping",
+      "value": 0.0,
+      "limit": 0,
+      "ok": true
+    },
+    {
+      "name": "suzanne r=0.05 Uniform: warning shown",
+      "value": 0.0,
+      "limit": 0,
+      "ok": true
+    },
+    {
+      "name": "suzanne r=0.05 Per Edge: exact result flips no face against native",
+      "value": 0.0,
+      "limit": 0,
+      "ok": true
+    },
+    {
+      "name": "suzanne r=0.05 Per Edge: no inverted faces after clamping",
+      "value": 0.0,
+      "limit": 0,
+      "ok": true
+    },
+    {
+      "name": "suzanne r=0.05 Per Edge: warning shown",
+      "value": 0.0,
+      "limit": 0,
+      "ok": true
+    },
+    {
+      "name": "suzanne r=0.05 None: exact result flips no face against native",
+      "value": 0.0,
+      "limit": 0,
+      "ok": true
+    },
+    {
+      "name": "suzanne r=0.05 None: overlaps really happen without clamp (inverted faces > 0)",
+      "value": 0.0,
+      "limit": 0,
+      "ok": true
+    },
+    {
+      "name": "boolean block r=0.3 Uniform: stays inside the original bounding box",
+      "value": 0.0,
+      "limit": 1e-05,
+      "ok": true
+    },
+    {
+      "name": "boolean block r=0.3 Uniform: no inverted faces, no flips vs native",
+      "value": 0.0,
+      "limit": 0,
+      "ok": true
+    },
+    {
+      "name": "boolean block r=0.1 Uniform: stays inside the original bounding box",
+      "value": 0.0,
+      "limit": 1e-05,
+      "ok": true
+    },
+    {
+      "name": "boolean block r=0.1 Uniform: no inverted faces, no flips vs native",
+      "value": 0.0,
+      "limit": 0,
+      "ok": true
+    },
+    {
+      "name": "boolean block r=0.3 Per Edge: stays inside the original bounding box",
+      "value": 0.0,
+      "limit": 1e-05,
+      "ok": true
+    },
+    {
+      "name": "boolean block r=0.3 Per Edge: no inverted faces, no flips vs native",
+      "value": 0.0,
+      "limit": 0,
+      "ok": true
+    },
+    {
+      "name": "boolean block r=0.1 Per Edge: stays inside the original bounding box",
+      "value": 0.0,
+      "limit": 1e-05,
+      "ok": true
+    },
+    {
+      "name": "boolean block r=0.1 Per Edge: no inverted faces, no flips vs native",
+      "value": 0.0,
+      "limit": 0,
+      "ok": true
+    },
+    {
+      "name": "cylinder rim r=0.15: no clamp warning",
+      "value": 0.0,
+      "limit": 0,
+      "ok": true
+    },
+    {
+      "name": "normals cube: bevel corners match the exact normal (rad, n=1152)",
+      "value": 0.0,
+      "limit": 0.0001,
+      "ok": true
+    },
+    {
+      "name": "normals cube: original faces shade flat (rad, n=24)",
+      "value": 0.0,
+      "limit": 1e-05,
+      "ok": true
+    },
+    {
+      "name": "normals cube: has custom normals",
+      "value": 0.0,
+      "limit": 0,
+      "ok": true
+    },
+    {
+      "name": "normals skew_box: bevel corners match the exact normal (rad, n=1152)",
+      "value": 0.0,
+      "limit": 0.0001,
+      "ok": true
+    },
+    {
+      "name": "normals skew_box: original faces shade flat (rad, n=24)",
+      "value": 0.0,
+      "limit": 1e-05,
+      "ok": true
+    },
+    {
+      "name": "normals skew_box: has custom normals",
+      "value": 0.0,
+      "limit": 0,
+      "ok": true
+    },
+    {
+      "name": "normals concave_notch: bevel corners match the exact normal (rad, n=1440)",
+      "value": 0.0,
+      "limit": 0.0001,
+      "ok": true
+    },
+    {
+      "name": "normals concave_notch: original faces shade flat (rad, n=36)",
+      "value": 0.0,
+      "limit": 1e-05,
+      "ok": true
+    },
+    {
+      "name": "normals concave_notch: has custom normals",
+      "value": 0.0,
+      "limit": 0,
+      "ok": true
+    },
+    {
+      "name": "Analytic Normals off: no custom normals written",
+      "value": 0.0,
+      "limit": 0,
+      "ok": true
+    },
+    {
+      "name": "smooth input: cylinder side corners are smooth (differ from their flat face normal)",
+      "value": 0.0,
+      "limit": 0,
+      "ok": true
+    },
+    {
+      "name": "bevel material only on bevel faces",
+      "value": 0.0,
+      "limit": 0,
+      "ok": true
+    },
+    {
+      "name": "UV map kept and finite",
+      "value": 0.0,
+      "limit": 0,
+      "ok": true
+    },
+    {
+      "name": "deform modifier after CR Bevel evaluates (finite, custom normals kept)",
+      "value": 0.0,
+      "limit": 0,
+      "ok": true
+    }
+  ],
+  "cases": {
+    "cube_r1.5_Uniform": {
+      "warnings": [
+        "12 edge(s) clamped to avoid overlaps; smallest radius used: 0.9500"
+      ],
+      "exact_error_at_0_95": 4.7551629067081534e-08,
+      "inverted": 0
+    },
+    "cube_r1.5_Per Edge": {
+      "warnings": [
+        "12 edge(s) clamped to avoid overlaps; smallest radius used: 0.9500"
+      ],
+      "exact_error_at_0_95": 4.7551629067081534e-08,
+      "inverted": 0
+    },
+    "suzanne_r0.05_Uniform": {
+      "native_inverted": 0,
+      "exact_vs_native_flips": 0,
+      "warnings": [
+        "553 edge(s) clamped to avoid overlaps; smallest radius used: 0.0057"
+      ]
+    },
+    "suzanne_r0.05_Per Edge": {
+      "native_inverted": 0,
+      "exact_vs_native_flips": 0,
+      "warnings": [
+        "290 edge(s) clamped to avoid overlaps; smallest radius used: 0.0057"
+      ]
+    },
+    "suzanne_r0.05_None": {
+      "native_inverted": 2,
+      "exact_vs_native_flips": 0,
+      "warnings": []
+    },
+    "boolean_block_r0.3_Uniform": {
+      "outside_bbox": 0.0,
+      "native_inverted": 0,
+      "flips": 0,
+      "warnings": [
+        "112 edge(s) clamped to avoid overlaps; smallest radius used: 0.0155"
+      ]
+    },
+    "boolean_block_r0.1_Uniform": {
+      "outside_bbox": 0.0,
+      "native_inverted": 0,
+      "flips": 0,
+      "warnings": [
+        "112 edge(s) clamped to avoid overlaps; smallest radius used: 0.0155"
+      ]
+    },
+    "boolean_block_r0.3_Per Edge": {
+      "outside_bbox": 0.0,
+      "native_inverted": 0,
+      "flips": 0,
+      "warnings": [
+        "105 edge(s) clamped to avoid overlaps; smallest radius used: 0.0155"
+      ]
+    },
+    "boolean_block_r0.1_Per Edge": {
+      "outside_bbox": 0.0,
+      "native_inverted": 0,
+      "flips": 0,
+      "warnings": [
+        "101 edge(s) clamped to avoid overlaps; smallest radius used: 0.0155"
+      ]
+    },
+    "normals_cube": {
+      "bevel_max_rad": 0.0,
+      "flat_max_rad": 0.0,
+      "bevel_corners": 1152,
+      "flat_corners": 24
+    },
+    "normals_skew_box": {
+      "bevel_max_rad": 0.0,
+      "flat_max_rad": 0.0,
+      "bevel_corners": 1152,
+      "flat_corners": 24
+    },
+    "normals_concave_notch": {
+      "bevel_max_rad": 0.0,
+      "flat_max_rad": 0.0,
+      "bevel_corners": 1440,
+      "flat_corners": 36
+    }
+  },
+  "failures": []
+}

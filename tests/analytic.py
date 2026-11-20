@@ -267,3 +267,71 @@ def exact_error(me, bm, frames, modes, r):
             stp = stats["terminal_plane"]
             stp[0], stp[1] = max(stp[0], pe / r), stp[1] + 1
     return stats, fallback_out
+
+
+# ---------------------------------------------------------------- Phase 3: validity and shading
+
+
+def inverted_faces(me, bm):
+    """Count output faces whose orientation is wrong.
+
+    - Original-face remnants: must face the same way as the original face whose
+      plane they lie in.
+    - Bevel faces: geometric normal must agree with the mean of their corner
+      normals. Use it on a result without custom normals (e.g. the native
+      bevel), where corner normals are Blender's own smooth normals.
+    """
+    flags = np.zeros(len(me.polygons), bool)
+    me.attributes["cr_bevel_face"].data.foreach_get("value", flags)
+    planes = [(f.normal.copy(), f.verts[0].co.copy()) for f in bm.faces]
+    cn = me.corner_normals
+    bad = 0
+    for p in me.polygons:
+        if p.area < 1e-12:
+            continue
+        n = Vector(p.normal)
+        if flags[p.index]:
+            mean = sum((Vector(cn[li].vector) for li in p.loop_indices), Vector())
+            bad += mean.dot(n) <= 0
+        else:
+            c = Vector(p.center)
+            same = [pn.dot(n) for pn, p0 in planes if abs((c - p0).dot(pn)) < 1e-5 and abs(abs(pn.dot(n)) - 1) < 1e-3]
+            bad += bool(same) and max(same) < 0
+    return int(bad)
+
+
+def normal_errors(me, bm, frames, modes, r):
+    """Max angle (rad) between custom corner normals and the exact surface normal.
+
+    Returns (bevel corners at exact vertices, flat corners, n_bevel, n_flat).
+    JOINT seam vertices are skipped (the exact surface has a crease there).
+    """
+    flags = np.zeros(len(me.polygons), bool)
+    me.attributes["cr_bevel_face"].data.foreach_get("value", flags)
+    orig = np.array([v.co[:] for v in bm.verts])
+    touched = np.array(sorted(modes))
+    cn = me.corner_normals
+    worst_b = worst_f = 0.0
+    nb = nf = 0
+    for p in me.polygons:
+        for li in p.loop_indices:
+            n = Vector(cn[li].vector)
+            if not flags[p.index]:
+                worst_f, nf = max(worst_f, n.angle(p.normal)), nf + 1
+                continue
+            v = Vector(me.vertices[me.loops[li].vertex_index].co)
+            vi = int(touched[np.argmin(np.linalg.norm(orig[touched] - np.array(v[:]), axis=1))])
+            info = modes[vi]
+            m = info["mode"]
+            if m in (FALLBACK, JOINT):
+                continue
+            s = frames[info["edges"][0]]["s"]
+            if m == CORNER and abs((v - info["centre"]).length - r) < 1e-4 * r and \
+                    min(abs(_line_dist(v, frames[e]["a0"], frames[e]["u"]) - r) for e in info["edges"]) > 1e-4 * r:
+                exact = (v - info["centre"]).normalized() * s
+            else:
+                e = min(info["edges"], key=lambda e: abs(_line_dist(v, frames[e]["a0"], frames[e]["u"]) - r))
+                w = v - frames[e]["a0"]
+                exact = (w - frames[e]["u"] * w.dot(frames[e]["u"])).normalized() * s
+            worst_b, nb = max(worst_b, n.angle(exact)), nb + 1
+    return worst_b, worst_f, nb, nf
