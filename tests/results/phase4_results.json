@@ -1,0 +1,64 @@
+{
+  "blender": "5.2.4 LTS",
+  "checks": [
+    {
+      "name": "extension zip exists (run src/make_extension.py first)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "installs with `extension install-file`",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "add-on is enabled after install",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "menu entry in Add Modifier > Generate",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "operator finishes",
+      "ok": true,
+      "detail": "['FINISHED']"
+    },
+    {
+      "name": "cube gets a working CR Bevel",
+      "ok": true,
+      "detail": "{'modifier': 'CR Bevel', 'bevel_faces': 144, 'verts': 152}"
+    },
+    {
+      "name": "cylinder gets a working CR Bevel",
+      "ok": true,
+      "detail": "{'modifier': 'CR Bevel', 'bevel_faces': 256, 'verts': 320}"
+    },
+    {
+      "name": "second use reuses the node group (no duplicates)",
+      "ok": true,
+      "detail": "1"
+    }
+  ],
+  "result": {
+    "enabled": true,
+    "menu_entry": true,
+    "operator": [
+      "FINISHED"
+    ],
+    "groups_named_cr_bevel": 1,
+    "cube": {
+      "modifier": "CR Bevel",
+      "bevel_faces": 144,
+      "verts": 152
+    },
+    "cylinder": {
+      "modifier": "CR Bevel",
+      "bevel_faces": 256,
+      "verts": 320
+    }
+  },
+  "failures": []
+}

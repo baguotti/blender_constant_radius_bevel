@@ -2,14 +2,21 @@
 
 A Geometry Nodes modifier for Blender 5.2+ that bevels edges with a true constant-radius (rolling-ball) fillet. It is built on the native Mesh Bevel node plus an exact cleanup step that snaps the new vertices onto the true cylinders and spheres.
 
-**Status:** Phase 3 done: production-ready. Exact bevel geometry and shading, an overlap clamp, and the input's own shading kept on original faces.
+**Status:** version 1.0.0, an installable extension. Exact bevel geometry and shading, an overlap clamp, and the input's own shading kept on original faces.
 
-## Try it
+## Install (Blender 5.2 or later)
 
-1. Add this repo's `library/` folder under Preferences > File Paths > Asset Libraries.
-2. Select a mesh, then Add Modifier > CR Bevel.
-3. Set Radius and Segments. Edges sharper than Angle Limit are beveled; to bevel only certain edges, use an attribute for Selection.
-4. Clamp: Uniform (default) keeps one radius everywhere and lowers it if something would overlap; Per Edge lowers it only where needed (best for boolean results). A warning on the modifier tells you when it clamps.
+1. Get `cr_bevel-1.0.0.zip`: build it with `blender -b --factory-startup --python src/make_extension.py`, which writes it to `dist/`.
+2. In Blender: Edit > Preferences > Get Extensions > the drop-down at the top right > Install from Disk, then pick the zip.
+3. Select a mesh, then Add Modifier > Generate > CR Bevel.
+
+**Settings:**
+- **Radius** and **Segments.**
+- **Angle Limit:** edges sharper than this are beveled. To bevel only certain edges, use an attribute for Selection.
+- **Clamp:** Uniform (default) keeps one radius everywhere and lowers it if something would overlap. Per Edge lowers it only where needed, which is best for boolean results. A warning on the modifier tells you when it clamps.
+- **Analytic Normals:** exact shading on the bevel. Turn it off for about 30% more speed while modelling heavy scenes.
+
+**Without installing:** add this repo's `library/` folder under Preferences > File Paths > Asset Libraries; CR Bevel then appears under Add Modifier.
 
 ## Layout
 
@@ -17,7 +24,8 @@ A Geometry Nodes modifier for Blender 5.2+ that bevels edges with a true constan
 | --- | --- |
 | `docs/PLAN.md` | Plan: approach, math, node group spec, roadmap |
 | `docs/PHASE0_FINDINGS.md` | What the native Mesh Bevel node actually does, with measurements |
-| `src/` | Node group builder and asset-library script |
+| `src/` | Node group builder, asset-library and extension build scripts |
+| `extension/` | Extension source (manifest and add-on) |
 | `library/` | Built asset library (`cr_bevel_library.blend`) |
 | `tests/` | Analytic reference and per-phase tests with results |
 | `phase0/` | Phase 0 harness and results (frozen record) |
@@ -28,4 +36,5 @@ A Geometry Nodes modifier for Blender 5.2+ that bevels edges with a true constan
 blender -b --factory-startup --python tests/test_phase1.py
 blender -b --factory-startup --python tests/test_phase2.py
 blender -b --factory-startup --python tests/test_phase3.py
+blender -b --factory-startup --python tests/test_phase4.py   # after src/make_extension.py
 ```

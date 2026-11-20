@@ -14,15 +14,18 @@ Constant-radius bevel for Blender, built as a Geometry Nodes modifier on top of 
 
 ## Commands
 - Build the asset library: `blender -b --factory-startup --python src/make_library.py`
+- Build the extension zip (dist/, not committed): `blender -b --factory-startup --python src/make_extension.py`
 - Tests (exit code 1 on failure); run all of them after any change to the builder:
     - `blender -b --factory-startup --python tests/test_phase1.py`
     - `blender -b --factory-startup --python tests/test_phase2.py`
     - `blender -b --factory-startup --python tests/test_phase3.py`
+    - `blender -b --factory-startup --python tests/test_phase4.py` (needs the extension zip)
 - Shading renders (look at them after visual changes): `blender -b --factory-startup --python tests/render_phase3.py`
 - Phase 0 record (frozen): `blender -b --factory-startup --python phase0/run_phase0.py`
 
 ## Code layout
 - `src/build_cr_bevel.py`: the only place the node group is defined
+- `extension/`: add-on source; bump `version` in `blender_manifest.toml` for each release
 - `tests/analytic.py`: shared reference geometry and measurements
 - `tests/test_phaseN.py`: one test script per phase
 

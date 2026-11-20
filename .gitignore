@@ -1,3 +1,6 @@
 __pycache__/
 *.blend1
 *.pyc
+# build outputs (regenerate with src/make_extension.py)
+dist/
+extension/cr_bevel_library.blend

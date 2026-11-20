@@ -1,0 +1,15 @@
+schema_version = "1.0.0"
+
+id = "cr_bevel"
+version = "1.0.0"
+name = "CR Bevel"
+tagline = "Constant-radius bevel with exact rolling-ball corners"
+maintainer = "baguotti"
+type = "add-on"
+website = "https://github.com/baguotti/blender_constant_radius_bevel"
+tags = ["Geometry Nodes", "Modeling"]
+blender_version_min = "5.2.0"
+license = ["SPDX:GPL-3.0-or-later"]
+
+[build]
+paths_exclude_pattern = ["__pycache__/", "*.blend1"]

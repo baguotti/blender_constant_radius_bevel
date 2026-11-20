@@ -11,18 +11,25 @@ import sys
 import bpy
 
 HERE = os.path.dirname(os.path.abspath(__file__))
+LIBRARY = os.path.abspath(os.path.join(HERE, "..", "library", "cr_bevel_library.blend"))
 sys.path.insert(0, HERE)
 import build_cr_bevel  # noqa: E402
 
-for ob in list(bpy.data.objects):
-    bpy.data.objects.remove(ob)
-ng = build_cr_bevel.build()
-ng.use_fake_user = True
-ng.asset_mark()
-ng.asset_data.description = ng.description
-ng.asset_data.author = "blender_constant_radius_bevel"
-out_dir = os.path.join(HERE, "..", "library")
-os.makedirs(out_dir, exist_ok=True)
-path = os.path.abspath(os.path.join(out_dir, "cr_bevel_library.blend"))
-bpy.ops.wm.save_as_mainfile(filepath=path, compress=True)
-print("WROTE", path)
+
+def build_library(path=LIBRARY):
+    for ob in list(bpy.data.objects):
+        bpy.data.objects.remove(ob)
+    ng = build_cr_bevel.build()
+    ng.use_fake_user = True
+    ng.asset_mark()
+    ng.asset_data.description = ng.description
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    bpy.ops.wm.save_as_mainfile(filepath=path, compress=True)
+    backup = path + "1"
+    if os.path.exists(backup):
+        os.remove(backup)
+    return path
+
+
+if __name__ == "__main__":
+    print("WROTE", build_library())
