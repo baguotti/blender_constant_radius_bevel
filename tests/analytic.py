@@ -163,3 +163,107 @@ def untouched_error(me_out, bm_orig, touched_vids):
 
 def has_internal_attributes(me):
     return sorted(a.name for a in me.attributes if a.name.startswith("_cr_"))
+
+
+# ---------------------------------------------------------------- Phase 2: vertex classification
+
+FALLBACK, TERMINAL, PIPE, JOINT, CORNER = range(5)
+MODE_NAMES = ["fallback", "terminal", "pipe", "joint", "corner"]
+
+
+def _line_dist(p, a, u):
+    w = p - a
+    return (w - u * w.dot(u)).length
+
+
+def classify_vertices(bm, frames, r, gap_tol=1e-3):
+    """Independent re-implementation of the node group's vertex modes.
+
+    Returns {vertex index: dict(mode=..., centre=Vector or None, end_n=..., u=...)}
+    for every vertex touched by a selected edge.
+    """
+    out = {}
+    for v in bm.verts:
+        es = [e.index for e in v.link_edges if e.index in frames]
+        if not es:
+            continue
+        lines = []
+        for ei in es:
+            f = frames[ei]
+            off = f["a0"] - bm.edges[ei].verts[0].co      # same offset at both ends
+            lines.append((v.co + off, f["u"], f["s"]))
+        info = dict(mode=FALLBACK, centre=None, end_n=None, u=lines[0][1], edges=es)
+        nf = len(v.link_faces)
+        if len(es) == 1 and nf == 3:
+            u = lines[0][1]
+            info["end_n"] = max((f.normal for f in v.link_faces), key=lambda n: abs(n.dot(u))).copy()
+            info["mode"] = TERMINAL
+        elif len(es) in (2, 3):
+            (a0, u0, s0), (a1, u1, s1) = lines[:2]
+            b = u0.dot(u1)
+            den = 1 - b * b
+            if den < 1e-8:
+                if len(es) == 2 and _line_dist(a1, a0, u0) < gap_tol * r:
+                    info["mode"] = PIPE
+            else:
+                w = a0 - a1
+                t0 = (b * u1.dot(w) - u0.dot(w)) / den
+                t1 = (u1.dot(w) - b * u0.dot(w)) / den
+                p0, p1 = a0 + u0 * t0, a1 + u1 * t1
+                meet = (p0 + p1) / 2
+                ok = (p0 - p1).length < gap_tol * r and s0 == s1 and nf == 3
+                if len(es) == 2 and ok:
+                    info.update(mode=JOINT, centre=meet)
+                elif len(es) == 3 and ok and lines[2][2] == s0 and _line_dist(meet, lines[2][0], lines[2][1]) < gap_tol * r:
+                    info.update(mode=CORNER, centre=meet)
+        out[v.index] = info
+    return out
+
+
+def exact_error(me, bm, frames, modes, r):
+    """Per bevel vertex: distance to the exact surface of its original vertex.
+
+    Returns dict mode_name -> [max_err/r, n], plus 'terminal_plane' (end-cap
+    vertices' distance from the end face) and 'joint_seam_end' (seam vertices on
+    an original face; the one next to the unbeveled edge cannot be exact on the
+    native topology when the two edges have different angles), and
+    the output vertex indices owned by fallback vertices. JOINT seam vertices
+    must lie on BOTH cylinders.
+    """
+    on = face_flag_vertices(me, "cr_bevel_face")
+    flags = np.zeros(len(me.polygons), bool)
+    me.attributes["cr_bevel_face"].data.foreach_get("value", flags)
+    touches_original = np.zeros(len(me.vertices), bool)
+    for poly in me.polygons:
+        if not flags[poly.index]:
+            touches_original[list(poly.vertices)] = True
+    orig = np.array([v.co[:] for v in bm.verts])
+    touched = np.array(sorted(modes))
+    stats = {m: [0.0, 0] for m in MODE_NAMES}
+    stats["terminal_plane"] = [0.0, 0]
+    fallback_out = []
+    for i in np.nonzero(on)[0]:
+        p = Vector(me.vertices[i].co)
+        vi = int(touched[np.argmin(np.linalg.norm(orig[touched] - np.array(p[:]), axis=1))])
+        info = modes[vi]
+        m = info["mode"]
+        if m == FALLBACK:
+            fallback_out.append(int(i))
+            continue
+        if m == CORNER:
+            err = abs((p - info["centre"]).length - r)
+        elif m == JOINT:
+            err = max(abs(_line_dist(p, frames[ei]["a0"], frames[ei]["u"]) - r) for ei in info["edges"])
+            if touches_original[i]:
+                st = stats.setdefault("joint_seam_end", [0.0, 0])
+                st[0], st[1] = max(st[0], err / r), st[1] + 1
+                continue
+        else:
+            err = min(abs(_line_dist(p, frames[ei]["a0"], frames[ei]["u"]) - r) for ei in info["edges"])
+        st = stats[MODE_NAMES[m]]
+        st[0], st[1] = max(st[0], err / r), st[1] + 1
+        if m == TERMINAL:
+            pe = abs((p - bm.verts[vi].co).dot(info["end_n"]))
+            stp = stats["terminal_plane"]
+            stp[0], stp[1] = max(stp[0], pe / r), stp[1] + 1
+    return stats, fallback_out

@@ -14,7 +14,9 @@ Constant-radius bevel for Blender, built as a Geometry Nodes modifier on top of 
 
 ## Commands
 - Build the asset library: `blender -b --factory-startup --python src/make_library.py`
-- Phase 1 tests: `blender -b --factory-startup --python tests/test_phase1.py` (exit code 1 on failure)
+- Tests (exit code 1 on failure); run all of them after any change to the builder:
+    - `blender -b --factory-startup --python tests/test_phase1.py`
+    - `blender -b --factory-startup --python tests/test_phase2.py`
 - Phase 0 record (frozen): `blender -b --factory-startup --python phase0/run_phase0.py`
 
 ## Code layout
@@ -25,6 +27,8 @@ Constant-radius bevel for Blender, built as a Geometry Nodes modifier on top of 
 ## Blender API notes (5.2)
 - Modifier inputs: `mod.properties.inputs.<Socket_N>.value`; for an attribute input, set `.type = "ATTRIBUTE"` and `.attribute_name`.
 - Edge Angle's Signed Angle is positive for convex edges (the manual says the opposite).
+- Normal read directly on an edge averages vertex normals; use Field on Domain (Face) for the two face normals.
+- The vertex modes (FALLBACK/TERMINAL/PIPE/JOINT/CORNER) are described in the builder's docstring; `tests/analytic.py` re-implements them independently and the tests compare both.
 
 ## Workflow
 - Work one roadmap phase at a time. Each phase must pass the test that defines "done" in `docs/PLAN.md` before the next starts.

@@ -8,7 +8,7 @@ Build a reusable Geometry Nodes group, "CR Bevel", that bevels selected mesh edg
 
 - **Target:** Blender 5.2 LTS minimum, because the Mesh Bevel node first shipped there. Build in 5.2 so the file also opens in 5.3.
 - **Deliverable:** a .blend asset library with the group flagged as a modifier. A thin extension (add-on) is optional.
-- **Status:** Phase 1 done: edge strips are exact. See [PHASE0_FINDINGS.md](PHASE0_FINDINGS.md) and [PHASE1_FINDINGS.md](PHASE1_FINDINGS.md).
+- **Status:** Phase 2 done: corners, joints, straight continuations and end caps are exact. See [PHASE0_FINDINGS.md](PHASE0_FINDINGS.md), [PHASE1_FINDINGS.md](PHASE1_FINDINGS.md) and [PHASE2_FINDINGS.md](PHASE2_FINDINGS.md).
 
 ## Background: why the 2019 attempt failed
 
@@ -77,10 +77,10 @@ Notation: n1, n2 = the edge's face normals; φ = angle between them = |Signed An
 | --- | --- | --- |
 | Strip interior | Cylinder snap | Yes |
 | 3 edges, same sign, same r | Sphere | Yes |
-| Chain joint | Cylinder intersection | Yes |
+| Chain joint (3 faces) | Cylinder–cylinder intersection; the seam end next to an unbeveled edge stays native | Yes, except that one vertex when the angles differ |
 | Terminal end | Cylinder ∩ end face | Yes |
 | Concave edge | s = −1 | Yes |
-| 4+ edges, mixed convex/concave, mixed radii | Native patch, relaxed with border pinned; optional SDF target | No |
+| 4+ edges, mixed convex/concave, >3 faces at a corner/joint | Native geometry kept unchanged (FALLBACK) | No |
 | Knife edge (φ near 180°), overlap | Clamp, flag `cr_clamped` | Clamped |
 | Non-planar faces | Separate start/end offsets | Approx. |
 
@@ -90,8 +90,8 @@ Notation: n1, n2 = the edge's face normals; φ = angle between them = |Signed An
 | --- | --- | --- |
 | 0. Verify | Node behaviour, profile error, attributes, speed | **Done:** see the findings |
 | 1. Edges | Offsets, skeleton, exact strip snap | **Done:** matches Fillet Curve to 1e-6 r |
-| 2. Corners | Spheres, chain joints, end caps, fallback | Cube, skewed box, tapered prism and L-shape pass |
-| 3. Production | Clamp, normals, material, UVs, warnings | Clean shading on a real asset |
+| 2. Corners | Spheres, chain joints, end caps, fallback | **Done:** 11 cases exact to ~1e-6 r; fallback untouched |
+| 3. Production | Clamp, normals, material, UVs, warnings; corners/joints at vertices with >3 faces (count planes); joint seam end | Clean shading on a real asset |
 | 4. Packaging | Asset library, optional extension | Installs on 5.2 LTS |
 | 5. Optional | Volume Round All, hybrid corners | 4+-edge corners look right |
 

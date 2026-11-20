@@ -1,0 +1,802 @@
+{
+  "blender": "5.2.4 LTS",
+  "radius": 0.15,
+  "segments": 6,
+  "tolerance": 1e-05,
+  "cases": {
+    "cube_all_edges": {
+      "mode_counts": {
+        "fallback": 0,
+        "terminal": 0,
+        "pipe": 0,
+        "joint": 0,
+        "corner": 8
+      },
+      "errors": {
+        "corner": {
+          "max": 5.269214779316893e-07,
+          "n": 296
+        }
+      },
+      "fallback_vertices_out": 0,
+      "fallback_moved": 0.0,
+      "max_move_vs_native_over_r": 1.946679546660724e-06,
+      "flipped_faces": 0,
+      "verts": 296,
+      "faces": 294,
+      "finite": true
+    },
+    "skew_box_all_edges": {
+      "mode_counts": {
+        "fallback": 0,
+        "terminal": 0,
+        "pipe": 0,
+        "joint": 0,
+        "corner": 8
+      },
+      "errors": {
+        "corner": {
+          "max": 1.150753183298825e-06,
+          "n": 296
+        }
+      },
+      "fallback_vertices_out": 0,
+      "fallback_moved": 0.0,
+      "max_move_vs_native_over_r": 0.05300392518229929,
+      "flipped_faces": 0,
+      "verts": 296,
+      "faces": 294,
+      "finite": true
+    },
+    "tapered_prism_top_loop": {
+      "mode_counts": {
+        "fallback": 0,
+        "terminal": 0,
+        "pipe": 0,
+        "joint": 5,
+        "corner": 0
+      },
+      "errors": {
+        "joint": {
+          "max": 1.1684987076080826e-06,
+          "n": 25
+        },
+        "joint_seam_end": {
+          "max": 0.04299996523176974,
+          "n": 10
+        }
+      },
+      "fallback_vertices_out": 0,
+      "fallback_moved": 0.0,
+      "max_move_vs_native_over_r": 0.05599196533282034,
+      "flipped_faces": 0,
+      "verts": 40,
+      "faces": 37,
+      "finite": true
+    },
+    "tapered_prism_top_and_sides": {
+      "mode_counts": {
+        "fallback": 0,
+        "terminal": 5,
+        "pipe": 0,
+        "joint": 0,
+        "corner": 5
+      },
+      "errors": {
+        "terminal": {
+          "max": 2.0066876941597185e-06,
+          "n": 35
+        },
+        "corner": {
+          "max": 2.2291698379787546e-06,
+          "n": 185
+        },
+        "terminal_plane": {
+          "max": 3.880510727564494e-10,
+          "n": 35
+        }
+      },
+      "fallback_vertices_out": 0,
+      "fallback_moved": 0.0,
+      "max_move_vs_native_over_r": 0.027384976557782485,
+      "flipped_faces": 0,
+      "verts": 220,
+      "faces": 202,
+      "finite": true
+    },
+    "oblique_end_cap": {
+      "mode_counts": {
+        "fallback": 0,
+        "terminal": 2,
+        "pipe": 0,
+        "joint": 0,
+        "corner": 0
+      },
+      "errors": {
+        "terminal": {
+          "max": 7.160835535646726e-08,
+          "n": 14
+        },
+        "terminal_plane": {
+          "max": 3.119930624961853e-07,
+          "n": 14
+        }
+      },
+      "fallback_vertices_out": 0,
+      "fallback_moved": 0.0,
+      "max_move_vs_native_over_r": 0.047619273827737896,
+      "flipped_faces": 0,
+      "verts": 18,
+      "faces": 11,
+      "finite": true
+    },
+    "subdivided_cube_pipes": {
+      "mode_counts": {
+        "fallback": 0,
+        "terminal": 0,
+        "pipe": 24,
+        "joint": 0,
+        "corner": 8
+      },
+      "errors": {
+        "pipe": {
+          "max": 2.6987662253101047e-07,
+          "n": 168
+        },
+        "corner": {
+          "max": 3.923971679068809e-07,
+          "n": 296
+        }
+      },
+      "fallback_vertices_out": 0,
+      "fallback_moved": 0.0,
+      "max_move_vs_native_over_r": 6.882551541204759e-07,
+      "flipped_faces": 0,
+      "verts": 488,
+      "faces": 486,
+      "finite": true
+    },
+    "notch_cube_concave_corner": {
+      "mode_counts": {
+        "fallback": 3,
+        "terminal": 0,
+        "pipe": 9,
+        "joint": 0,
+        "corner": 10
+      },
+      "errors": {
+        "pipe": {
+          "max": 2.889169170572359e-07,
+          "n": 63
+        },
+        "corner": {
+          "max": 5.527918511827323e-07,
+          "n": 370
+        }
+      },
+      "fallback_vertices_out": 21,
+      "fallback_moved": 0.0,
+      "max_move_vs_native_over_r": 1.6383749745757026e-06,
+      "flipped_faces": 0,
+      "verts": 458,
+      "faces": 465,
+      "finite": true
+    },
+    "cylinder_rim_joints": {
+      "mode_counts": {
+        "fallback": 0,
+        "terminal": 0,
+        "pipe": 0,
+        "joint": 32,
+        "corner": 0
+      },
+      "errors": {
+        "joint": {
+          "max": 4.4931130112798223e-07,
+          "n": 160
+        },
+        "joint_seam_end": {
+          "max": 2.802246538517276e-07,
+          "n": 64
+        }
+      },
+      "fallback_vertices_out": 0,
+      "fallback_moved": 0.0,
+      "max_move_vs_native_over_r": 1.4464278795879123e-06,
+      "flipped_faces": 0,
+      "verts": 256,
+      "faces": 226,
+      "finite": true
+    },
+    "cylinder12_all_sharp_edges": {
+      "mode_counts": {
+        "fallback": 0,
+        "terminal": 0,
+        "pipe": 0,
+        "joint": 16,
+        "corner": 8
+      },
+      "errors": {
+        "joint": {
+          "max": 7.044940357007572e-07,
+          "n": 80
+        },
+        "corner": {
+          "max": 4.4498473165492197e-07,
+          "n": 296
+        },
+        "joint_seam_end": {
+          "max": 1.4570025334374276e-07,
+          "n": 32
+        }
+      },
+      "fallback_vertices_out": 0,
+      "fallback_moved": 0.0,
+      "max_move_vs_native_over_r": 0.02844566736742798,
+      "flipped_faces": 0,
+      "verts": 408,
+      "faces": 398,
+      "finite": true
+    },
+    "L_prism_mixed_corners": {
+      "mode_counts": {
+        "fallback": 2,
+        "terminal": 0,
+        "pipe": 0,
+        "joint": 0,
+        "corner": 10
+      },
+      "errors": {
+        "corner": {
+          "max": 5.527915403202854e-07,
+          "n": 370
+        }
+      },
+      "fallback_vertices_out": 74,
+      "fallback_moved": 0.0,
+      "max_move_vs_native_over_r": 1.6383749745757026e-06,
+      "flipped_faces": 0,
+      "verts": 444,
+      "faces": 440,
+      "finite": true
+    },
+    "pyramid5_apex": {
+      "mode_counts": {
+        "fallback": 1,
+        "terminal": 0,
+        "pipe": 0,
+        "joint": 0,
+        "corner": 5
+      },
+      "errors": {
+        "corner": {
+          "max": 7.743432804222887e-07,
+          "n": 185
+        }
+      },
+      "fallback_vertices_out": 61,
+      "fallback_moved": 0.0,
+      "max_move_vs_native_over_r": 0.18816657980753773,
+      "flipped_faces": 0,
+      "verts": 246,
+      "faces": 246,
+      "finite": true
+    }
+  },
+  "checks": [
+    {
+      "name": "cube_all_edges: exact error",
+      "value": 5.269214779316893e-07,
+      "limit": 1e-05,
+      "ok": true
+    },
+    {
+      "name": "cube_all_edges: expected modes present",
+      "value": 0.0,
+      "limit": 0,
+      "ok": true
+    },
+    {
+      "name": "cube_all_edges: fallback vertices untouched",
+      "value": 0.0,
+      "limit": 1e-07,
+      "ok": true
+    },
+    {
+      "name": "cube_all_edges: same topology as native",
+      "value": 0.0,
+      "limit": 0,
+      "ok": true
+    },
+    {
+      "name": "cube_all_edges: no flipped faces",
+      "value": 0.0,
+      "limit": 0,
+      "ok": true
+    },
+    {
+      "name": "cube_all_edges: no NaN/inf",
+      "value": 0.0,
+      "limit": 0,
+      "ok": true
+    },
+    {
+      "name": "cube_all_edges: move vs native below 0.4 r",
+      "value": 1.946679546660724e-06,
+      "limit": 0.4,
+      "ok": true
+    },
+    {
+      "name": "skew_box_all_edges: exact error",
+      "value": 1.150753183298825e-06,
+      "limit": 1e-05,
+      "ok": true
+    },
+    {
+      "name": "skew_box_all_edges: expected modes present",
+      "value": 0.0,
+      "limit": 0,
+      "ok": true
+    },
+    {
+      "name": "skew_box_all_edges: fallback vertices untouched",
+      "value": 0.0,
+      "limit": 1e-07,
+      "ok": true
+    },
+    {
+      "name": "skew_box_all_edges: same topology as native",
+      "value": 0.0,
+      "limit": 0,
+      "ok": true
+    },
+    {
+      "name": "skew_box_all_edges: no flipped faces",
+      "value": 0.0,
+      "limit": 0,
+      "ok": true
+    },
+    {
+      "name": "skew_box_all_edges: no NaN/inf",
+      "value": 0.0,
+      "limit": 0,
+      "ok": true
+    },
+    {
+      "name": "skew_box_all_edges: move vs native below 0.4 r",
+      "value": 0.05300392518229929,
+      "limit": 0.4,
+      "ok": true
+    },
+    {
+      "name": "tapered_prism_top_loop: exact error",
+      "value": 1.1684987076080826e-06,
+      "limit": 1e-05,
+      "ok": true
+    },
+    {
+      "name": "tapered_prism_top_loop: joint seam end (native, known limit) below 0.1 r",
+      "value": 0.04299996523176974,
+      "limit": 0.1,
+      "ok": true
+    },
+    {
+      "name": "tapered_prism_top_loop: expected modes present",
+      "value": 0.0,
+      "limit": 0,
+      "ok": true
+    },
+    {
+      "name": "tapered_prism_top_loop: fallback vertices untouched",
+      "value": 0.0,
+      "limit": 1e-07,
+      "ok": true
+    },
+    {
+      "name": "tapered_prism_top_loop: same topology as native",
+      "value": 0.0,
+      "limit": 0,
+      "ok": true
+    },
+    {
+      "name": "tapered_prism_top_loop: no flipped faces",
+      "value": 0.0,
+      "limit": 0,
+      "ok": true
+    },
+    {
+      "name": "tapered_prism_top_loop: no NaN/inf",
+      "value": 0.0,
+      "limit": 0,
+      "ok": true
+    },
+    {
+      "name": "tapered_prism_top_loop: move vs native below 0.4 r",
+      "value": 0.05599196533282034,
+      "limit": 0.4,
+      "ok": true
+    },
+    {
+      "name": "tapered_prism_top_and_sides: exact error",
+      "value": 2.2291698379787546e-06,
+      "limit": 1e-05,
+      "ok": true
+    },
+    {
+      "name": "tapered_prism_top_and_sides: expected modes present",
+      "value": 0.0,
+      "limit": 0,
+      "ok": true
+    },
+    {
+      "name": "tapered_prism_top_and_sides: fallback vertices untouched",
+      "value": 0.0,
+      "limit": 1e-07,
+      "ok": true
+    },
+    {
+      "name": "tapered_prism_top_and_sides: same topology as native",
+      "value": 0.0,
+      "limit": 0,
+      "ok": true
+    },
+    {
+      "name": "tapered_prism_top_and_sides: no flipped faces",
+      "value": 0.0,
+      "limit": 0,
+      "ok": true
+    },
+    {
+      "name": "tapered_prism_top_and_sides: no NaN/inf",
+      "value": 0.0,
+      "limit": 0,
+      "ok": true
+    },
+    {
+      "name": "tapered_prism_top_and_sides: move vs native below 0.4 r",
+      "value": 0.027384976557782485,
+      "limit": 0.4,
+      "ok": true
+    },
+    {
+      "name": "oblique_end_cap: exact error",
+      "value": 3.119930624961853e-07,
+      "limit": 1e-05,
+      "ok": true
+    },
+    {
+      "name": "oblique_end_cap: expected modes present",
+      "value": 0.0,
+      "limit": 0,
+      "ok": true
+    },
+    {
+      "name": "oblique_end_cap: fallback vertices untouched",
+      "value": 0.0,
+      "limit": 1e-07,
+      "ok": true
+    },
+    {
+      "name": "oblique_end_cap: same topology as native",
+      "value": 0.0,
+      "limit": 0,
+      "ok": true
+    },
+    {
+      "name": "oblique_end_cap: no flipped faces",
+      "value": 0.0,
+      "limit": 0,
+      "ok": true
+    },
+    {
+      "name": "oblique_end_cap: no NaN/inf",
+      "value": 0.0,
+      "limit": 0,
+      "ok": true
+    },
+    {
+      "name": "oblique_end_cap: move vs native below 0.4 r",
+      "value": 0.047619273827737896,
+      "limit": 0.4,
+      "ok": true
+    },
+    {
+      "name": "subdivided_cube_pipes: exact error",
+      "value": 3.923971679068809e-07,
+      "limit": 1e-05,
+      "ok": true
+    },
+    {
+      "name": "subdivided_cube_pipes: expected modes present",
+      "value": 0.0,
+      "limit": 0,
+      "ok": true
+    },
+    {
+      "name": "subdivided_cube_pipes: fallback vertices untouched",
+      "value": 0.0,
+      "limit": 1e-07,
+      "ok": true
+    },
+    {
+      "name": "subdivided_cube_pipes: same topology as native",
+      "value": 0.0,
+      "limit": 0,
+      "ok": true
+    },
+    {
+      "name": "subdivided_cube_pipes: no flipped faces",
+      "value": 0.0,
+      "limit": 0,
+      "ok": true
+    },
+    {
+      "name": "subdivided_cube_pipes: no NaN/inf",
+      "value": 0.0,
+      "limit": 0,
+      "ok": true
+    },
+    {
+      "name": "subdivided_cube_pipes: move vs native below 0.4 r",
+      "value": 6.882551541204759e-07,
+      "limit": 0.4,
+      "ok": true
+    },
+    {
+      "name": "notch_cube_concave_corner: exact error",
+      "value": 5.527918511827323e-07,
+      "limit": 1e-05,
+      "ok": true
+    },
+    {
+      "name": "notch_cube_concave_corner: expected modes present",
+      "value": 0.0,
+      "limit": 0,
+      "ok": true
+    },
+    {
+      "name": "notch_cube_concave_corner: fallback vertices untouched",
+      "value": 0.0,
+      "limit": 1e-07,
+      "ok": true
+    },
+    {
+      "name": "notch_cube_concave_corner: same topology as native",
+      "value": 0.0,
+      "limit": 0,
+      "ok": true
+    },
+    {
+      "name": "notch_cube_concave_corner: no flipped faces",
+      "value": 0.0,
+      "limit": 0,
+      "ok": true
+    },
+    {
+      "name": "notch_cube_concave_corner: no NaN/inf",
+      "value": 0.0,
+      "limit": 0,
+      "ok": true
+    },
+    {
+      "name": "notch_cube_concave_corner: move vs native below 0.4 r",
+      "value": 1.6383749745757026e-06,
+      "limit": 0.4,
+      "ok": true
+    },
+    {
+      "name": "cylinder_rim_joints: exact error",
+      "value": 4.4931130112798223e-07,
+      "limit": 1e-05,
+      "ok": true
+    },
+    {
+      "name": "cylinder_rim_joints: joint seam end (native, known limit) below 0.1 r",
+      "value": 2.802246538517276e-07,
+      "limit": 0.1,
+      "ok": true
+    },
+    {
+      "name": "cylinder_rim_joints: expected modes present",
+      "value": 0.0,
+      "limit": 0,
+      "ok": true
+    },
+    {
+      "name": "cylinder_rim_joints: fallback vertices untouched",
+      "value": 0.0,
+      "limit": 1e-07,
+      "ok": true
+    },
+    {
+      "name": "cylinder_rim_joints: same topology as native",
+      "value": 0.0,
+      "limit": 0,
+      "ok": true
+    },
+    {
+      "name": "cylinder_rim_joints: no flipped faces",
+      "value": 0.0,
+      "limit": 0,
+      "ok": true
+    },
+    {
+      "name": "cylinder_rim_joints: no NaN/inf",
+      "value": 0.0,
+      "limit": 0,
+      "ok": true
+    },
+    {
+      "name": "cylinder_rim_joints: move vs native below 0.4 r",
+      "value": 1.4464278795879123e-06,
+      "limit": 0.4,
+      "ok": true
+    },
+    {
+      "name": "cylinder12_all_sharp_edges: exact error",
+      "value": 7.044940357007572e-07,
+      "limit": 1e-05,
+      "ok": true
+    },
+    {
+      "name": "cylinder12_all_sharp_edges: joint seam end (native, known limit) below 0.1 r",
+      "value": 1.4570025334374276e-07,
+      "limit": 0.1,
+      "ok": true
+    },
+    {
+      "name": "cylinder12_all_sharp_edges: expected modes present",
+      "value": 0.0,
+      "limit": 0,
+      "ok": true
+    },
+    {
+      "name": "cylinder12_all_sharp_edges: fallback vertices untouched",
+      "value": 0.0,
+      "limit": 1e-07,
+      "ok": true
+    },
+    {
+      "name": "cylinder12_all_sharp_edges: same topology as native",
+      "value": 0.0,
+      "limit": 0,
+      "ok": true
+    },
+    {
+      "name": "cylinder12_all_sharp_edges: no flipped faces",
+      "value": 0.0,
+      "limit": 0,
+      "ok": true
+    },
+    {
+      "name": "cylinder12_all_sharp_edges: no NaN/inf",
+      "value": 0.0,
+      "limit": 0,
+      "ok": true
+    },
+    {
+      "name": "cylinder12_all_sharp_edges: move vs native below 0.4 r",
+      "value": 0.02844566736742798,
+      "limit": 0.4,
+      "ok": true
+    },
+    {
+      "name": "L_prism_mixed_corners: exact error",
+      "value": 5.527915403202854e-07,
+      "limit": 1e-05,
+      "ok": true
+    },
+    {
+      "name": "L_prism_mixed_corners: expected modes present",
+      "value": 0.0,
+      "limit": 0,
+      "ok": true
+    },
+    {
+      "name": "L_prism_mixed_corners: fallback vertices untouched",
+      "value": 0.0,
+      "limit": 1e-07,
+      "ok": true
+    },
+    {
+      "name": "L_prism_mixed_corners: same topology as native",
+      "value": 0.0,
+      "limit": 0,
+      "ok": true
+    },
+    {
+      "name": "L_prism_mixed_corners: no flipped faces",
+      "value": 0.0,
+      "limit": 0,
+      "ok": true
+    },
+    {
+      "name": "L_prism_mixed_corners: no NaN/inf",
+      "value": 0.0,
+      "limit": 0,
+      "ok": true
+    },
+    {
+      "name": "L_prism_mixed_corners: move vs native below 0.4 r",
+      "value": 1.6383749745757026e-06,
+      "limit": 0.4,
+      "ok": true
+    },
+    {
+      "name": "pyramid5_apex: exact error",
+      "value": 7.743432804222887e-07,
+      "limit": 1e-05,
+      "ok": true
+    },
+    {
+      "name": "pyramid5_apex: expected modes present",
+      "value": 0.0,
+      "limit": 0,
+      "ok": true
+    },
+    {
+      "name": "pyramid5_apex: fallback vertices untouched",
+      "value": 0.0,
+      "limit": 1e-07,
+      "ok": true
+    },
+    {
+      "name": "pyramid5_apex: same topology as native",
+      "value": 0.0,
+      "limit": 0,
+      "ok": true
+    },
+    {
+      "name": "pyramid5_apex: no flipped faces",
+      "value": 0.0,
+      "limit": 0,
+      "ok": true
+    },
+    {
+      "name": "pyramid5_apex: no NaN/inf",
+      "value": 0.0,
+      "limit": 0,
+      "ok": true
+    },
+    {
+      "name": "pyramid5_apex: move vs native below 0.4 r",
+      "value": 0.18816657980753773,
+      "limit": 0.4,
+      "ok": true
+    },
+    {
+      "name": "smoke boolean_block: finite, same topology, no flips",
+      "value": 0.0,
+      "limit": 0,
+      "ok": true
+    },
+    {
+      "name": "smoke suzanne: finite, same topology, no flips",
+      "value": 0.0,
+      "limit": 0,
+      "ok": true
+    },
+    {
+      "name": "GN vertex modes match the Python reference",
+      "value": 0.0,
+      "limit": 0,
+      "ok": true
+    }
+  ],
+  "smoke": {
+    "boolean_block": {
+      "verts": 392,
+      "finite": true,
+      "same_topology": true,
+      "flipped_faces": 0
+    },
+    "suzanne": {
+      "verts": 5922,
+      "finite": true,
+      "same_topology": true,
+      "flipped_faces": 0
+    }
+  },
+  "worst_exact_error": 2.2291698379787546e-06,
+  "failures": []
+}

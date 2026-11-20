@@ -2,7 +2,7 @@
 
 A Geometry Nodes modifier for Blender 5.2+ that bevels edges with a true constant-radius (rolling-ball) fillet. It is built on the native Mesh Bevel node plus an exact cleanup step that snaps the new vertices onto the true cylinders and spheres.
 
-**Status:** Phase 1 done: edge strips are exact. Phase 2 (corners) is next.
+**Status:** Phase 2 done: edge strips, box corners, chain joints and end caps are exact. Phase 3 (clamp, shading, production polish) is next.
 
 ## Try it
 
@@ -25,4 +25,5 @@ A Geometry Nodes modifier for Blender 5.2+ that bevels edges with a true constan
 
 ```bash
 blender -b --factory-startup --python tests/test_phase1.py
+blender -b --factory-startup --python tests/test_phase2.py
 ```
