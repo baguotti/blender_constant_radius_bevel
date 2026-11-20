@@ -22,6 +22,7 @@ Constant-radius bevel for Blender, built as a Geometry Nodes modifier on top of 
     - `blender -b --factory-startup --python tests/test_phase3.py`
     - `blender -b --factory-startup --python tests/test_phase4.py` (needs the extension zip)
     - `blender -b --factory-startup --python tests/test_robustness.py` (awkward inputs; see docs/REVIEW_FINDINGS.md)
+    - `blender -b --factory-startup --python tests/test_oracle.py` (independent check: convex solids vs the eroded-solid distance)
 - Shading renders (look at them after visual changes): `blender -b --factory-startup --python tests/render_phase3.py`
 - Phase 0 record (frozen): `blender -b --factory-startup --python phase0/run_phase0.py`
 
@@ -36,6 +37,8 @@ Constant-radius bevel for Blender, built as a Geometry Nodes modifier on top of 
 - Edge Angle's Signed Angle is positive for convex edges (the manual says the opposite).
 - Use the Normal node's "True Normal" output for geometry: "Normal" returns custom normals when the input has them. Read on an edge it averages vertex normals; use Field on Domain (Face) for the two face normals.
 - Compare two results face by face with `analytic.count_flips` (face order is not stable between runs).
+- Measure small angles with `analytic.angle_between` (atan2), never `acos`/`Vector.angle`: they round tiny angles to 0.
+- Tangent-space custom normals are stored quantized (~5e-5 rad): normal limits below 1e-4 can't pass.
 - A menu group input can feed only ONE Menu Switch node; derive other values from its output (see `_menu`).
 - Warning node only shows if its output is used: route geometry through a Switch on it.
 - A multi-input socket (String Join) stacks new links on top: link parts in reverse order.

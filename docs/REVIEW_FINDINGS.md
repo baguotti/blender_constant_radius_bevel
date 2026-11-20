@@ -1,4 +1,6 @@
-# Deep bug pass (after Phase 4) — version 1.0.1
+# Deep bug passes (after Phase 4)
+
+## Pass 1 — version 1.0.1
 
 New suite `tests/test_robustness.py` throws awkward inputs at the modifier. Every case must:
 - not crash, and produce no NaN or inf;
@@ -35,3 +37,39 @@ All phase suites, the robustness suite and the extension install test pass.
 - **Input custom normals are replaced.** With Analytic Normals off, the result shades from the input's smooth/flat flags and sharp edges. Custom normals can't carry over a bevel in any meaningful way.
 - **Native node quirk.** With Exact Profile off, the native Mesh Bevel node bends its profile according to the input's custom normals. This doesn't affect CR Bevel, because custom normals are now dropped first; it may be worth reporting upstream.
 - **Object scale.** Radius is in the object's local units, as with Blender's Bevel modifier. With non-uniform object scale, the fillet isn't circular in world space; apply the scale first.
+
+## Pass 2 — version 1.0.2
+
+### New angles tried
+
+Added to `tests/test_robustness.py`:
+- **Segment parity:** 2, 3 and 5 segments at corners, joints and terminals. Odd counts put an n-gon at the corner's centre.
+- **Clamp modes:** Uniform, Per Edge and None agree exactly when nothing needs clamping.
+- **Far from the origin with a small radius** (1000 units, r = 0.01).
+- **Thin plate** (0.08 thick, r = 0.2).
+- **A twisted (non-planar) face.**
+- **Stacking:** after Mirror, Array (merged) and Subdivision.
+- **Mixed input:** instances, a curve and a mesh together.
+- **Two materials on the input.**
+- **A float attribute used as Selection.**
+- **A cup cavity:** concave joints at non-90° angles.
+- **Extremes:** empty mesh, Angle Limit 180°, Clamp None with r far too large, 256 segments.
+- **Determinism:** two evaluations give identical positions.
+
+New independent oracle, `tests/test_oracle.py`. For a convex solid with every edge rounded, the exact result is the solid shrunk by r and grown back by r. So every output vertex must lie exactly r from the shrunk solid, and its normal must point straight away from it. The distance is computed with Dykstra's projection, which shares nothing with the node's code. Cube, skewed box, tapered prism, 12-sided cylinder and pentagonal prism, at 3 and 6 segments: distance exact to 1.6e-6 r.
+
+### Bugs found and fixed
+
+| # | Input | Symptom | Cause | Fix |
+| --- | --- | --- | --- | --- |
+| 1 | Object far from the origin with a small radius (1000 units, r = 0.01) | Every corner silently fell back to native | Axis positions carry float32 error proportional to the distance from the origin (about 1e-7 × \|position\|, from face normals); the "axes meet" tolerance was 1e-3 r only | Geometric tolerance is now max(1e-3·r, 1e-6·\|position\|). Radius comparisons stay relative to r. Same rule in the Python reference |
+| 2 | Flipped faces outside the Selection | Warning shown for edges the user never selected | Count ignored Selection | Counts only selected edges |
+| 3 | Tests | "0 rad" normal errors were rounding, not precision | `acos` rounds angles below about 1e-4 rad to 0 | `angle_between` uses atan2. True figure: about 5e-5 rad, the quantization of Blender's tangent-space normal storage (0.003°, invisible) |
+
+### Usability
+
+The modifier panel now shows Selection, Radius, Segments, Angle Limit and Clamp. Shading (Analytic Normals, bevel material) and Advanced (Exact Profile) are collapsed panels. Socket names are unchanged.
+
+### Checked and fine
+
+Everything listed above passes: no NaN, no flips, exact where expected. Instances pass through unbevelled; only the mesh part is beveled.

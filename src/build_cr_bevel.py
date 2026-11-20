@@ -30,7 +30,8 @@ GROUP_NAME = "CR Bevel"
 MAX_EDGE_ANGLE = math.radians(176.0)  # sharper edges (< 4 deg between faces) are skipped: the exact arc
                                       # becomes a sliver below float precision (breaks at 178 deg)
 FALLBACK, TERMINAL, PIPE, JOINT, CORNER = range(5)
-GAP_TOL = 1e-3          # axes "meet" if closer than GAP_TOL * r
+GAP_TOL = 1e-3          # axes "meet" if closer than GAP_TOL * r ...
+COORD_TOL = 1e-6        # ... or COORD_TOL * |position| (float32 error far from the origin)
 PARALLEL_TOL = 1e-8     # 1 - (u0.u1)^2 below this means parallel axes
 EXTEND = 10.0           # uncut axis ends are extended by EXTEND * (r + d)
 CLAMP_SHARE = 0.95      # stay this far below the exact overlap limit (avoids zero-length edges)
@@ -210,41 +211,40 @@ class Builder:
 
 
 def _interface(ng):
+    """Main inputs first; Shading and Advanced in collapsed panels."""
     it = ng.interface
-    it.new_socket("Geometry", in_out="INPUT", socket_type="NodeSocketGeometry")
-    s = it.new_socket("Selection", in_out="INPUT", socket_type="NodeSocketBool")
-    s.default_value = True
-    s.hide_value = False
-    s.description = "Edges to bevel (combined with Angle Limit)"
-    s = it.new_socket("Radius", in_out="INPUT", socket_type="NodeSocketFloat")
-    s.default_value, s.min_value, s.subtype = 0.05, 0.0, "DISTANCE"
-    s.force_non_field = True
-    s.description = "Fillet radius, the same on every edge"
-    s = it.new_socket("Segments", in_out="INPUT", socket_type="NodeSocketInt")
-    s.default_value, s.min_value, s.max_value = 4, 1, 256
-    s.force_non_field = True
-    s = it.new_socket("Angle Limit", in_out="INPUT", socket_type="NodeSocketFloat")
-    s.default_value, s.min_value, s.max_value, s.subtype = math.radians(30.0), 0.0, math.pi, "ANGLE"
-    s.force_non_field = True
-    s.description = "Only bevel edges whose face normals differ by more than this"
-    s = it.new_socket("Exact Profile", in_out="INPUT", socket_type="NodeSocketBool")
-    s.default_value = True
-    s.force_non_field = True
-    s.description = "Snap the bevel onto true circular arcs (off = native profile)"
-    s = it.new_socket("Clamp", in_out="INPUT", socket_type="NodeSocketMenu")
-    s.force_non_field = True
-    s.description = ("Avoid overlapping bevels. Uniform: lower the radius everywhere so it stays "
-                     "constant. Per Edge: lower it only on edges that need it. None: no limit")
-    s = it.new_socket("Analytic Normals", in_out="INPUT", socket_type="NodeSocketBool")
-    s.default_value = True
-    s.force_non_field = True
-    s.description = "Exact shading normals on the bevel; original faces keep their smooth/flat shading"
-    s = it.new_socket("Set Bevel Material", in_out="INPUT", socket_type="NodeSocketBool")
-    s.default_value = False
-    s.force_non_field = True
-    s = it.new_socket("Bevel Material", in_out="INPUT", socket_type="NodeSocketMaterial")
-    s.description = "Material for the new bevel faces (used when Set Bevel Material is on)"
     it.new_socket("Geometry", in_out="OUTPUT", socket_type="NodeSocketGeometry")
+    it.new_socket("Geometry", in_out="INPUT", socket_type="NodeSocketGeometry")
+
+    def add(name, socket_type, parent=None, default=None, description="", **limits):
+        s = it.new_socket(name, in_out="INPUT", socket_type=socket_type, parent=parent)
+        if default is not None:
+            s.default_value = default
+        for key, value in limits.items():
+            setattr(s, key, value)
+        if name != "Selection":
+            s.force_non_field = True
+        s.description = description
+        return s
+
+    add("Selection", "NodeSocketBool", default=True, description="Edges to bevel (combined with Angle Limit)")
+    add("Radius", "NodeSocketFloat", default=0.05, min_value=0.0, subtype="DISTANCE",
+        description="Fillet radius, the same on every edge")
+    add("Segments", "NodeSocketInt", default=4, min_value=1, max_value=256)
+    add("Angle Limit", "NodeSocketFloat", default=math.radians(30.0), min_value=0.0, max_value=math.pi,
+        subtype="ANGLE", description="Only bevel edges whose face normals differ by more than this")
+    add("Clamp", "NodeSocketMenu",
+        description="Avoid overlapping bevels. Uniform: lower the radius everywhere so it stays constant. "
+                    "Per Edge: lower it only on edges that need it. None: no limit")
+    shading = it.new_panel("Shading", default_closed=True)
+    add("Analytic Normals", "NodeSocketBool", shading, default=True,
+        description="Exact shading normals on the bevel; original faces keep their smooth/flat shading")
+    add("Set Bevel Material", "NodeSocketBool", shading, default=False)
+    add("Bevel Material", "NodeSocketMaterial", shading,
+        description="Material for the new bevel faces (used when Set Bevel Material is on)")
+    advanced = it.new_panel("Advanced", default_closed=True)
+    add("Exact Profile", "NodeSocketBool", advanced, default=True,
+        description="Snap the bevel onto true circular arcs (off = native profile)")
 
 
 def build(name=GROUP_NAME, debug_output=None):
@@ -449,6 +449,7 @@ def _edge_data(B, gi):
     warnings = [(B.compare("GREATER_THAN", n_clamped.outputs["Sum"], 0.5), join.outputs["String"])]
     n_flipped = B.node("GeometryNodeAttributeStatistic", domain="EDGE", data_type="FLOAT")
     B.link(gi.outputs["Geometry"], n_flipped.inputs["Geometry"])
+    B.link(gi.outputs["Selection"], n_flipped.inputs["Selection"])   # only edges the user asked for
     B.link(flipped, n_flipped.inputs["Attribute"])
     msg = B.node("FunctionNodeInputString")
     msg.string = "Some faces point the wrong way: their edges are not beveled. Recalculate normals (Shift N)."
@@ -520,7 +521,11 @@ def _vertex_modes(B, geo):
         away = B.vmath("NORMALIZE", B.sub(p12, B.scale(pos, 2.0)))
         lines.append((B.add(pos, off), u, s, away, rk))
     (a0, u0, s0, away0, r0), (a1, u1, s1, away1, r1), (a2, u2, s2, _, r2) = lines
-    tol = B.math("MULTIPLY", r0, GAP_TOL)   # relative to the radius actually used here
+    # Radii are exact numbers: compare them relative to r. Axis positions carry
+    # float32 error that grows with the distance from the origin (face normals),
+    # so the geometric tolerance also scales with |position|.
+    tol = B.math("MULTIPLY", r0, GAP_TOL)
+    tol_geo = B.math("MAXIMUM", tol, B.math("MULTIPLY", B.vmath("LENGTH", pos), COORD_TOL))
 
     # Closest points between axis lines 0 and 1.
     w = B.sub(a0, a1)
@@ -533,7 +538,7 @@ def _vertex_modes(B, geo):
     p0 = B.add(a0, B.scale(u0, t0))
     p1 = B.add(a1, B.scale(u1, t1))
     meet = B.scale(B.add(p0, p1), 0.5)
-    gap_ok = B.compare("LESS_THAN", B.vmath("DISTANCE", p0, p1), tol)
+    gap_ok = B.compare("LESS_THAN", B.vmath("DISTANCE", p0, p1), tol_geo)
     crossing = B.compare("GREATER_EQUAL", den, PARALLEL_TOL)
     # Same convexity AND same radius (Per Edge clamp can give edges different radii).
     same01 = B.bool_and(B.compare("EQUAL", s0, s1), B.compare("LESS_THAN", B.math("ABSOLUTE", B.math("SUBTRACT", r0, r1)), tol))
@@ -544,12 +549,12 @@ def _vertex_modes(B, geo):
     is3 = B.compare("EQUAL", count, 3.0)
     three_faces = B.compare("EQUAL", nb.outputs["Face Count"], 3, data_type="INT")
     terminal = B.bool_and(is1, three_faces)
-    pipe = B.bool_and(is2, B.bool_not(crossing), same01, B.compare("LESS_THAN", B.dist_to_line(a1, a0, u0), tol))
+    pipe = B.bool_and(is2, B.bool_not(crossing), same01, B.compare("LESS_THAN", B.dist_to_line(a1, a0, u0), tol_geo))
     # JOINT and CORNER need the standard layout: exactly 3 faces at the vertex
     # (otherwise e.g. folded faces or extra unbeveled edges break the formulas).
     joint = B.bool_and(is2, three_faces, crossing, gap_ok, same01)
     corner = B.bool_and(is3, three_faces, crossing, gap_ok, same01, same12,
-                        B.compare("LESS_THAN", B.dist_to_line(meet, a2, u2), tol))
+                        B.compare("LESS_THAN", B.dist_to_line(meet, a2, u2), tol_geo))
     mode = B.math("ADD",
                   B.math("ADD", B.math("MULTIPLY", terminal, TERMINAL), B.math("MULTIPLY", pipe, PIPE)),
                   B.math("ADD", B.math("MULTIPLY", joint, JOINT), B.math("MULTIPLY", corner, CORNER)))

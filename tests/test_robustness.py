@@ -270,6 +270,222 @@ orig = [p for p in me.polygons if not flags[p.index]]
 check("input smooth/flat face flags survive",
       all(p.use_smooth == (abs(p.normal.z) < 0.5) for p in orig), len(orig))
 
+# ---------------------------------------------------------------- pass 2: segment parity at corners
+
+
+def tapered():
+    base = [(0, 0), (3, 0), (3.5, 2), (1, 3), (-0.5, 1.5)]
+    top = [(1.4 + 0.6 * (x - 1.4), 1.3 + 0.6 * (y - 1.3)) for x, y in base]
+    v = [(x, y, 0) for x, y in base] + [(x, y, 1.2) for x, y in top]
+    f = [[4, 3, 2, 1, 0], [5, 6, 7, 8, 9]] + [[i, (i + 1) % 5, 5 + (i + 1) % 5, 5 + i] for i in range(5)]
+    return A.new_object("tapered", v, f)
+
+
+for seg in (2, 3, 5):
+    run_case(f"skew box corners, {seg} segments", lambda: skew_box(f"par{seg}"), 0.15, segments=seg, exact_r=0.15)
+    run_case(f"tapered prism joints+terminals, {seg} segments", tapered, 0.12, segments=seg, exact_r=0.12,
+             selection=lambda e: not all(v.co.z < 0.1 for v in e.verts))
+
+# ---------------------------------------------------------------- pass 2: clamp modes agree when nothing clamps
+
+positions = {}
+for clamp in ("Uniform", "Per Edge", "None"):
+    ob = skew_box(f"agree_{clamp}")
+    mod = A.add_cr_bevel(ob, ng, 0.1, 4)
+    A.set_input(mod, "Clamp", clamp)
+    positions[clamp] = np.array([v.co[:] for v in A.evaluate(ob).vertices])
+dev = max(float(np.abs(positions[c] - positions["None"]).max()) for c in ("Uniform", "Per Edge"))
+check("Uniform, Per Edge and None agree when nothing needs clamping", dev < 1e-6, f"{dev:.1e}")
+
+# ---------------------------------------------------------------- pass 2: precision far from origin
+
+
+_, near = run_case("skew box at origin, r=0.01", lambda: skew_box("p_near"), 0.01, exact_r=0.01)
+_, far = run_case("skew box 1000 units away, r=0.01", lambda: skew_box("p_far", offset=(1000, 1000, 1000)),
+                  0.01, exact_r=0.01)
+check("far from origin with a small radius: corners still exact (no silent fallback)",
+      far.get("mode_counts") == near.get("mode_counts"), (far.get("mode_counts"), near.get("mode_counts")))
+
+# ---------------------------------------------------------------- pass 2: thin wall and twisted faces
+
+
+def thin_plate():
+    bm = cube_bm()
+    bmesh.ops.scale(bm, vec=(1.0, 1.0, 0.04), verts=bm.verts[:])     # 2 x 2 x 0.08 plate
+    return from_bm("thin_plate", bm)
+
+
+me, st = run_case("thin plate (0.08 thick), r=0.2, Uniform", thin_plate, 0.2)
+if me is not None:
+    z = np.array([v.co.z for v in me.vertices])
+    check("thin plate: stays within its thickness", z.min() >= -0.04 - 1e-6 and z.max() <= 0.04 + 1e-6,
+          f"{z.min():.4f}..{z.max():.4f}")
+run_case("thin plate, r=0.2, Per Edge", thin_plate, 0.2, clamp="Per Edge")
+
+
+def twisted_box():
+    bm = cube_bm()
+    for v in bm.verts:
+        if v.co.z > 0 and v.co.x > 0 and v.co.y > 0:
+            v.co.z += 0.3                       # top face no longer planar
+    return from_bm("twisted", bm)
+
+
+run_case("box with a non-planar (twisted) face", twisted_box, 0.15)
+
+# ---------------------------------------------------------------- pass 2: modifier stacking
+
+
+def stacked(kind):
+    def make():
+        ob = from_bm(f"stack_{kind}", cube_bm())
+        if kind == "mirror":
+            m = ob.modifiers.new("m", "MIRROR")
+            m.use_clip = True
+            ob.location.x = 0.0
+            bm = bmesh.new()
+            bm.from_mesh(ob.data)
+            bmesh.ops.translate(bm, vec=(1.0, 0, 0), verts=bm.verts[:])   # half on +x, mirrored onto -x
+            bm.to_mesh(ob.data)
+            bm.free()
+        elif kind == "array":
+            m = ob.modifiers.new("a", "ARRAY")
+            m.count, m.relative_offset_displace = 3, (1.0, 0, 0)          # touching copies, merged
+            m.use_merge_vertices = True
+        elif kind == "subsurf":
+            m = ob.modifiers.new("s", "SUBSURF")
+            m.levels = 1
+        return ob
+    return make
+
+
+for kind in ("mirror", "array", "subsurf"):
+    run_case(f"after a {kind} modifier", stacked(kind), 0.1)
+
+# ---------------------------------------------------------------- pass 2: non-mesh input and data
+
+
+def gn_instances_object():
+    ob = from_bm("inst_src", cube_bm(0.5))
+    g = bpy.data.node_groups.new("MakeInstances", "GeometryNodeTree")
+    g.interface.new_socket("Geometry", in_out="INPUT", socket_type="NodeSocketGeometry")
+    g.interface.new_socket("Geometry", in_out="OUTPUT", socket_type="NodeSocketGeometry")
+    gi, go = g.nodes.new("NodeGroupInput"), g.nodes.new("NodeGroupOutput")
+    line = g.nodes.new("GeometryNodeMeshLine")
+    line.inputs["Count"].default_value = 3
+    inst = g.nodes.new("GeometryNodeInstanceOnPoints")
+    curve = g.nodes.new("GeometryNodeCurvePrimitiveCircle")
+    join = g.nodes.new("GeometryNodeJoinGeometry")
+    g.links.new(line.outputs[0], inst.inputs["Points"])
+    g.links.new(gi.outputs[0], inst.inputs["Instance"])
+    g.links.new(inst.outputs[0], join.inputs[0])
+    g.links.new(curve.outputs[0], join.inputs[0])
+    g.links.new(gi.outputs[0], join.inputs[0])
+    g.links.new(join.outputs[0], go.inputs[0])
+    m = ob.modifiers.new("inst", "NODES")
+    m.node_group = g
+    return ob
+
+
+ob = gn_instances_object()
+A.add_cr_bevel(ob, ng, 0.05, 2)
+try:
+    me = A.evaluate(ob)
+    check("instances + curve + mesh input: evaluates, mesh part beveled",
+          me is not None and "cr_bevel_face" in me.attributes, len(me.vertices))
+except Exception as exc:  # pragma: no cover
+    check("instances + curve + mesh input: evaluates", False, exc)
+
+
+def two_materials(ob):
+    ob.data.materials.append(bpy.data.materials.new("A"))
+    ob.data.materials.append(bpy.data.materials.new("B"))
+    for p in ob.data.polygons:
+        p.material_index = 1 if p.normal.z > 0.5 else 0
+
+
+me, _ = run_case("input with two materials", lambda: skew_box("mats"), 0.15, prepare=two_materials, exact_r=0.15)
+if me is not None:
+    flags = np.zeros(len(me.polygons), bool)
+    me.attributes["cr_bevel_face"].data.foreach_get("value", flags)
+    tops = [p for p in me.polygons if not flags[p.index] and p.normal.z > 0.5]
+    others = [p for p in me.polygons if not flags[p.index] and p.normal.z <= 0.5]
+    check("original faces keep their material", all(p.material_index == 1 for p in tops) and
+          all(p.material_index == 0 for p in others))
+
+
+def float_selection(ob):
+    a = ob.data.attributes.new("weight", "FLOAT", "EDGE")
+    for i, d in enumerate(a.data):
+        d.value = 1.0 if i % 2 == 0 else 0.0
+
+
+ob = skew_box("floatsel")
+float_selection(ob)
+mod = A.add_cr_bevel(ob, ng, 0.15, 4, angle_limit=0.0, selection_attr="weight")
+me = A.evaluate(ob)
+check("float attribute works as Selection", "cr_bevel_face" in me.attributes and len(me.vertices) > 8, len(me.vertices))
+
+# ---------------------------------------------------------------- pass 2: concave chains (cup cavity)
+
+
+def cup():
+    """Box with a tapered cavity: concave floor edges, convex rim edges."""
+    bm = cube_bm(2.0)
+    top = [f for f in bm.faces if f.normal.z > 0.9][0]
+    bmesh.ops.inset_region(bm, faces=[top], thickness=0.4)
+    ext = bmesh.ops.extrude_face_region(bm, geom=[top])
+    verts = [g for g in ext["geom"] if isinstance(g, bmesh.types.BMVert)]
+    bmesh.ops.translate(bm, vec=(0, 0, -1.2), verts=verts)
+    bmesh.ops.scale(bm, vec=(0.7, 0.8, 1.0), verts=verts)          # tapered walls, non-90 degree edges
+    bmesh.ops.recalc_face_normals(bm, faces=bm.faces[:])
+    return from_bm("cup", bm)
+
+
+floor = lambda e: all(abs(v.co.z + 0.2) < 1e-4 for v in e.verts)      # noqa: E731  cavity floor loop
+run_case("cup: concave cavity floor loop (concave joints)", cup, 0.1, selection=floor, exact_r=0.1)
+run_case("cup: all sharp edges (convex rims, concave corners)", cup, 0.1, exact_r=0.1)
+
+# ---------------------------------------------------------------- pass 2: extremes
+
+ob = A.new_object("empty", [], [])
+A.add_cr_bevel(ob, ng, 0.1, 4)
+try:
+    me = A.evaluate(ob)
+    check("empty mesh: evaluates to empty", len(me.vertices) == 0)
+except Exception as exc:  # pragma: no cover
+    check("empty mesh: evaluates", False, exc)
+
+ob = skew_box("limit180")
+A.add_cr_bevel(ob, ng, 0.1, 4, angle_limit=math.pi)
+me = A.evaluate(ob)
+check("Angle Limit 180 deg: nothing beveled, topology unchanged", len(me.vertices) == 8 and len(me.polygons) == 6)
+
+ob = from_bm("huge_r", cube_bm())
+mod = A.add_cr_bevel(ob, ng, 5.0, 4)
+A.set_input(mod, "Clamp", "None")
+me = A.evaluate(ob)
+check("Clamp None with radius 5 on a size-2 cube: overlaps but stays finite",
+      bool(np.isfinite(np.array([v.co[:] for v in me.vertices])).all()))
+
+import time  # noqa: E402
+ob = skew_box("seg256")
+A.add_cr_bevel(ob, ng, 0.15, 256)
+t0 = time.perf_counter()
+me = A.evaluate(ob)
+dt = time.perf_counter() - t0
+report["cases"]["256 segments"] = dict(verts=len(me.vertices), seconds=dt)
+check("256 segments: evaluates in reasonable time", dt < 20 and len(me.vertices) > 100000, f"{len(me.vertices)} verts, {dt:.1f} s")
+
+# ---------------------------------------------------------------- pass 2: determinism
+
+runs = []
+for _ in range(2):
+    ob = skew_box("det")
+    A.add_cr_bevel(ob, ng, 0.15, 6)
+    runs.append(np.array([v.co[:] for v in A.evaluate(ob).vertices]))
+check("two evaluations give identical positions", np.array_equal(runs[0], runs[1]))
+
 report["failures"] = failures
 with open(os.path.join(OUT, "robustness_results.json"), "w") as fh:
     json.dump(report, fh, indent=2, default=str)

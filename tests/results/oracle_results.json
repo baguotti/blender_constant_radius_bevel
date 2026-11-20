@@ -1,0 +1,157 @@
+{
+  "blender": "5.2.4 LTS",
+  "cases": {
+    "cube seg3": {
+      "dist_err": 3.967477666770118e-07,
+      "normal_err": 4.801916310827464e-05,
+      "verts": 96
+    },
+    "cube seg6": {
+      "dist_err": 6.014814074584152e-07,
+      "normal_err": 4.190957358503196e-05,
+      "verts": 296
+    },
+    "skew box seg3": {
+      "dist_err": 8.339015694636132e-07,
+      "normal_err": 4.742852872337687e-05,
+      "verts": 96
+    },
+    "skew box seg6": {
+      "dist_err": 9.550014687387254e-07,
+      "normal_err": 4.690256193510957e-05,
+      "verts": 296
+    },
+    "tapered pentagonal prism seg3": {
+      "dist_err": 1.570514261602559e-06,
+      "normal_err": 4.512535676779321e-05,
+      "verts": 120
+    },
+    "tapered pentagonal prism seg6": {
+      "dist_err": 1.570514261602559e-06,
+      "normal_err": 5.7579789090473775e-05,
+      "verts": 370
+    },
+    "12-sided cylinder seg3": {
+      "dist_err": 1.023706694275317e-06,
+      "normal_err": 4.9675652166385567e-05,
+      "verts": 288
+    },
+    "12-sided cylinder seg6": {
+      "dist_err": 1.0504160465052426e-06,
+      "normal_err": 4.4408567596734945e-05,
+      "verts": 888
+    },
+    "pentagonal prism seg3": {
+      "dist_err": 5.677401332393472e-07,
+      "normal_err": 4.879834628743384e-05,
+      "verts": 120
+    },
+    "pentagonal prism seg6": {
+      "dist_err": 6.209007587243409e-07,
+      "normal_err": 3.7216451988122844e-05,
+      "verts": 370
+    }
+  },
+  "checks": [
+    {
+      "name": "cube, 3 segments: every vertex at distance r from the eroded solid (4.0e-07 r)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "cube, 3 segments: shading normals point away from it (4.8e-05 rad)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "cube, 6 segments: every vertex at distance r from the eroded solid (6.0e-07 r)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "cube, 6 segments: shading normals point away from it (4.2e-05 rad)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "skew box, 3 segments: every vertex at distance r from the eroded solid (8.3e-07 r)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "skew box, 3 segments: shading normals point away from it (4.7e-05 rad)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "skew box, 6 segments: every vertex at distance r from the eroded solid (9.6e-07 r)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "skew box, 6 segments: shading normals point away from it (4.7e-05 rad)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "tapered pentagonal prism, 3 segments: every vertex at distance r from the eroded solid (1.6e-06 r)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "tapered pentagonal prism, 3 segments: shading normals point away from it (4.5e-05 rad)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "tapered pentagonal prism, 6 segments: every vertex at distance r from the eroded solid (1.6e-06 r)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "tapered pentagonal prism, 6 segments: shading normals point away from it (5.8e-05 rad)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "12-sided cylinder, 3 segments: every vertex at distance r from the eroded solid (1.0e-06 r)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "12-sided cylinder, 3 segments: shading normals point away from it (5.0e-05 rad)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "12-sided cylinder, 6 segments: every vertex at distance r from the eroded solid (1.1e-06 r)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "12-sided cylinder, 6 segments: shading normals point away from it (4.4e-05 rad)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "pentagonal prism, 3 segments: every vertex at distance r from the eroded solid (5.7e-07 r)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "pentagonal prism, 3 segments: shading normals point away from it (4.9e-05 rad)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "pentagonal prism, 6 segments: every vertex at distance r from the eroded solid (6.2e-07 r)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "pentagonal prism, 6 segments: shading normals point away from it (3.7e-05 rad)",
+      "ok": true,
+      "detail": ""
+    }
+  ]
+}

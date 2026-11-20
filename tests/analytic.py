@@ -176,7 +176,7 @@ def _line_dist(p, a, u):
     return (w - u * w.dot(u)).length
 
 
-def classify_vertices(bm, frames, r, gap_tol=1e-3):
+def classify_vertices(bm, frames, r, gap_tol=1e-3, coord_tol=1e-6):
     """Independent re-implementation of the node group's vertex modes.
 
     Returns {vertex index: dict(mode=..., centre=Vector or None, end_n=..., u=...)}
@@ -193,6 +193,7 @@ def classify_vertices(bm, frames, r, gap_tol=1e-3):
             off = f["a0"] - bm.edges[ei].verts[0].co      # same offset at both ends
             lines.append((v.co + off, f["u"], f["s"]))
         info = dict(mode=FALLBACK, centre=None, end_n=None, u=lines[0][1], edges=es)
+        tol = max(gap_tol * r, coord_tol * v.co.length)   # same rule as the node group
         nf = len(v.link_faces)
         if len(es) == 1 and nf == 3:
             u = lines[0][1]
@@ -203,7 +204,7 @@ def classify_vertices(bm, frames, r, gap_tol=1e-3):
             b = u0.dot(u1)
             den = 1 - b * b
             if den < 1e-8:
-                if len(es) == 2 and _line_dist(a1, a0, u0) < gap_tol * r:
+                if len(es) == 2 and _line_dist(a1, a0, u0) < tol:
                     info["mode"] = PIPE
             else:
                 w = a0 - a1
@@ -211,10 +212,10 @@ def classify_vertices(bm, frames, r, gap_tol=1e-3):
                 t1 = (u1.dot(w) - b * u0.dot(w)) / den
                 p0, p1 = a0 + u0 * t0, a1 + u1 * t1
                 meet = (p0 + p1) / 2
-                ok = (p0 - p1).length < gap_tol * r and s0 == s1 and nf == 3
+                ok = (p0 - p1).length < tol and s0 == s1 and nf == 3
                 if len(es) == 2 and ok:
                     info.update(mode=JOINT, centre=meet)
-                elif len(es) == 3 and ok and lines[2][2] == s0 and _line_dist(meet, lines[2][0], lines[2][1]) < gap_tol * r:
+                elif len(es) == 3 and ok and lines[2][2] == s0 and _line_dist(meet, lines[2][0], lines[2][1]) < tol:
                     info.update(mode=CORNER, centre=meet)
         out[v.index] = info
     return out
@@ -317,7 +318,7 @@ def normal_errors(me, bm, frames, modes, r):
         for li in p.loop_indices:
             n = Vector(cn[li].vector)
             if not flags[p.index]:
-                worst_f, nf = max(worst_f, n.angle(p.normal)), nf + 1
+                worst_f, nf = max(worst_f, angle_between(n, p.normal)), nf + 1
                 continue
             v = Vector(me.vertices[me.loops[li].vertex_index].co)
             vi = int(touched[np.argmin(np.linalg.norm(orig[touched] - np.array(v[:]), axis=1))])
@@ -333,8 +334,14 @@ def normal_errors(me, bm, frames, modes, r):
                 e = min(info["edges"], key=lambda e: abs(_line_dist(v, frames[e]["a0"], frames[e]["u"]) - r))
                 w = v - frames[e]["a0"]
                 exact = (w - frames[e]["u"] * w.dot(frames[e]["u"])).normalized() * s
-            worst_b, nb = max(worst_b, n.angle(exact)), nb + 1
+            worst_b, nb = max(worst_b, angle_between(n, exact)), nb + 1
     return worst_b, worst_f, nb, nf
+
+
+def angle_between(a, b):
+    """Angle between two vectors, accurate also for tiny angles (unlike acos)."""
+    a, b = Vector(a), Vector(b)
+    return math.atan2(a.cross(b).length, a.dot(b))
 
 
 def count_flips(me_a, me_b):

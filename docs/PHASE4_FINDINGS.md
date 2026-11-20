@@ -2,7 +2,7 @@
 
 - **Build:** Blender 5.2.4 LTS, headless
 - **Raw results:** `../tests/results/phase4_results.json`
-- **Build the zip:** `blender -b --factory-startup --python src/make_extension.py` → `dist/cr_bevel-1.0.1.zip`
+- **Build the zip:** `blender -b --factory-startup --python src/make_extension.py` → `dist/cr_bevel-1.0.2.zip`
 - **Test:** `blender -b --factory-startup --python tests/test_phase4.py`
 
 ## Verdict

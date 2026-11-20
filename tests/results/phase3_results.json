@@ -141,14 +141,14 @@
     },
     {
       "name": "normals cube: bevel corners match the exact normal (rad, n=1152)",
-      "value": 0.0,
+      "value": 6.639279008994908e-05,
       "limit": 0.0001,
       "ok": true
     },
     {
       "name": "normals cube: original faces shade flat (rad, n=24)",
       "value": 0.0,
-      "limit": 1e-05,
+      "limit": 0.0001,
       "ok": true
     },
     {
@@ -159,14 +159,14 @@
     },
     {
       "name": "normals skew_box: bevel corners match the exact normal (rad, n=1152)",
-      "value": 0.0,
+      "value": 8.280078348005006e-05,
       "limit": 0.0001,
       "ok": true
     },
     {
       "name": "normals skew_box: original faces shade flat (rad, n=24)",
-      "value": 0.0,
-      "limit": 1e-05,
+      "value": 5.424104508041937e-08,
+      "limit": 0.0001,
       "ok": true
     },
     {
@@ -177,14 +177,14 @@
     },
     {
       "name": "normals concave_notch: bevel corners match the exact normal (rad, n=1440)",
-      "value": 0.0,
+      "value": 7.903103462749756e-05,
       "limit": 0.0001,
       "ok": true
     },
     {
       "name": "normals concave_notch: original faces shade flat (rad, n=36)",
-      "value": 0.0,
-      "limit": 1e-05,
+      "value": 6.614165760736861e-08,
+      "limit": 0.0001,
       "ok": true
     },
     {
@@ -291,20 +291,20 @@
       ]
     },
     "normals_cube": {
-      "bevel_max_rad": 0.0,
+      "bevel_max_rad": 6.639279008994908e-05,
       "flat_max_rad": 0.0,
       "bevel_corners": 1152,
       "flat_corners": 24
     },
     "normals_skew_box": {
-      "bevel_max_rad": 0.0,
-      "flat_max_rad": 0.0,
+      "bevel_max_rad": 8.280078348005006e-05,
+      "flat_max_rad": 5.424104508041937e-08,
       "bevel_corners": 1152,
       "flat_corners": 24
     },
     "normals_concave_notch": {
-      "bevel_max_rad": 0.0,
-      "flat_max_rad": 0.0,
+      "bevel_max_rad": 7.903103462749756e-05,
+      "flat_max_rad": 6.614165760736861e-08,
       "bevel_corners": 1440,
       "flat_corners": 36
     }
