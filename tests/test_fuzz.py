@@ -224,6 +224,71 @@ for seed in range(20):
           np.isfinite(P).all() and flips == 0 and outside < native_outside + 1e-6 and
           detail.get("exact_error", 0) < 1e-4, detail)
 
+# ---------------------------------------------------------------- 4. clamp fuzz: oversized radii
+
+
+def random_boolean_block(seed):
+    rng = random.Random(seed)
+    bpy.ops.mesh.primitive_cube_add(size=2.0)
+    ob = bpy.context.object
+    bpy.ops.mesh.primitive_cylinder_add(radius=rng.uniform(0.2, 0.6), depth=3.0, vertices=rng.choice([12, 24, 32]),
+                                        location=(rng.uniform(-0.4, 0.4), rng.uniform(-0.4, 0.4), 0.0),
+                                        rotation=(rng.uniform(0, 3.1), rng.uniform(0, 3.1), 0))
+    cutter = bpy.context.object
+    mod = ob.modifiers.new("cut", "BOOLEAN")
+    mod.object, mod.solver = cutter, "EXACT"
+    bpy.context.view_layer.objects.active = ob
+    bpy.ops.object.modifier_apply(modifier=mod.name)
+    bpy.data.objects.remove(cutter)
+    return ob
+
+
+def min_radius(mod):
+    for w in mod.node_warnings:
+        if "smallest radius used:" in w.message:
+            return float(w.message.rsplit(":", 1)[1])
+    return None
+
+
+makers = [("convex", lambda s: random_convex(s)), ("star", lambda s: random_star_prism(s)),
+          ("boolean", lambda s: random_boolean_block(s))]
+for kind, make in makers:
+    for seed in range(6):
+        rng = random.Random(4000 + seed)
+        r_in, seg = rng.uniform(0.5, 2.0), rng.randint(2, 5)
+        radii = {}
+        for clamp in ("Uniform", "Per Edge"):
+            native, exact = make(seed), make(seed)
+            pts = np.array([v.co[:] for v in exact.data.vertices])
+            mod_n = A.add_cr_bevel(native, ng, r_in, seg, angle_limit=math.radians(25), exact=False)
+            A.set_input(mod_n, "Analytic Normals", False)
+            A.set_input(mod_n, "Clamp", clamp)
+            mod = A.add_cr_bevel(exact, ng, r_in, seg, angle_limit=math.radians(25))
+            A.set_input(mod, "Clamp", clamp)
+            me_n, me = A.evaluate(native), A.evaluate(exact)
+            P, Pn = np.array([v.co[:] for v in me.vertices]), np.array([v.co[:] for v in me_n.vertices])
+            out = float(np.maximum(P - pts.max(0), pts.min(0) - P).max())
+            out_n = max(0.0, float(np.maximum(Pn - pts.max(0), pts.min(0) - Pn).max()))
+            inverted = A.inverted_faces(me_n, A.original_bmesh(native))
+            flips = sum(A.count_flips(me, me_n))
+            radii[clamp] = min_radius(mod)
+            detail = dict(r_in=round(r_in, 3), seg=seg, inverted_native=inverted, flips=flips,
+                          outside=round(out, 6), outside_native=round(out_n, 6), min_radius=radii[clamp])
+            report["cases"][f"clamp {kind} {seed} {clamp}"] = detail
+            # CR Bevel must never be worse than the native bevel at the same radius.
+            check(f"clamp fuzz {kind} #{seed} {clamp}: no flips, no worse than native",
+                  np.isfinite(P).all() and flips == 0 and out <= out_n + 1e-6, detail)
+            if kind != "boolean":
+                # The per-face clamp rule is complete here: no overlap at all.
+                check(f"clamp fuzz {kind} #{seed} {clamp}: no overlap after clamping", inverted == 0, detail)
+            else:
+                # Known limit (shared with Blender's Bevel modifier): bevels can still
+                # collide across a thin wall between a hole and an outer edge.
+                report.setdefault("thin_wall_overlaps", []).append(dict(seed=seed, clamp=clamp, inverted=inverted))
+        if radii["Uniform"] is not None and radii["Per Edge"] is not None:
+            check(f"clamp fuzz {kind} #{seed}: Per Edge smallest radius >= Uniform radius",
+                  radii["Per Edge"] >= radii["Uniform"] - 1e-4, radii)
+
 with open(os.path.join(OUT, "fuzz_results.json"), "w") as fh:
     json.dump(report, fh, indent=2, default=str)
 print("FAILURES:", failures)

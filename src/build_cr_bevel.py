@@ -33,6 +33,7 @@ MAX_EDGE_ANGLE = math.radians(176.0)  # sharper edges (< 4 deg between faces) ar
 FALLBACK, TERMINAL, PIPE, JOINT, CORNER = range(5)
 GAP_TOL = 1e-3          # axes "meet" if closer than GAP_TOL * r ...
 COORD_TOL = 1e-6        # ... or COORD_TOL * |position| (float32 error far from the origin)
+RADIUS_TOL = 1e-6       # radii at one vertex count as equal within RADIUS_TOL * r
 PARALLEL_TOL = 1e-8     # 1 - (u0.u1)^2 below this means parallel axes
 EXTEND = 10.0           # uncut axis ends are extended by EXTEND * (r + d)
 CLAMP_SHARE = 0.95      # stay this far below the exact overlap limit (avoids zero-length edges)
@@ -524,9 +525,8 @@ def _vertex_modes(B, geo):
         away = B.vmath("NORMALIZE", B.sub(p12, B.scale(pos, 2.0)))
         lines.append((B.add(pos, off), u, s, away, rk, dk))
     (a0, u0, s0, away0, r0, d0), (a1, u1, s1, away1, r1, d1), (a2, u2, s2, away2, r2, _) = lines
-    # Radii are exact numbers: compare them relative to r. Axis positions carry
-    # float32 error that grows with the distance from the origin (face normals),
-    # so the geometric tolerance also scales with |position|.
+    # Axis positions carry float32 error that grows with the distance from the
+    # origin (face normals), so the geometric tolerance also scales with |position|.
     tol = B.math("MULTIPLY", r0, GAP_TOL)
     tol_geo = B.math("MAXIMUM", tol, B.math("MULTIPLY", B.vmath("LENGTH", pos), COORD_TOL))
 
@@ -544,8 +544,11 @@ def _vertex_modes(B, geo):
     gap_ok = B.compare("LESS_THAN", B.vmath("DISTANCE", p0, p1), tol_geo)
     crossing = B.compare("GREATER_EQUAL", den, PARALLEL_TOL)
     # Same convexity AND same radius (Per Edge clamp can give edges different radii).
-    same01 = B.bool_and(B.compare("EQUAL", s0, s1), B.compare("LESS_THAN", B.math("ABSOLUTE", B.math("SUBTRACT", r0, r1)), tol))
-    same12 = B.bool_and(B.compare("EQUAL", s1, s2), B.compare("LESS_THAN", B.math("ABSOLUTE", B.math("SUBTRACT", r1, r2)), tol))
+    # Radii must match tightly: a ball/seam snapped with one edge's radius next to
+    # a cylinder of a slightly different radius leaves a step (Per Edge clamp).
+    tol_r = B.math("MULTIPLY", r0, RADIUS_TOL)
+    same01 = B.bool_and(B.compare("EQUAL", s0, s1), B.compare("LESS_THAN", B.math("ABSOLUTE", B.math("SUBTRACT", r0, r1)), tol_r))
+    same12 = B.bool_and(B.compare("EQUAL", s1, s2), B.compare("LESS_THAN", B.math("ABSOLUTE", B.math("SUBTRACT", r1, r2)), tol_r))
 
     is1 = B.compare("EQUAL", count, 1.0)
     is2 = B.compare("EQUAL", count, 2.0)

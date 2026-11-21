@@ -767,6 +767,330 @@
         "joint": 0,
         "corner": 0
       }
+    },
+    "clamp convex 0 Uniform": {
+      "r_in": 1.115,
+      "seg": 5,
+      "inverted_native": 0,
+      "flips": 0,
+      "outside": 0.0,
+      "outside_native": 0.0,
+      "min_radius": 0.0771
+    },
+    "clamp convex 0 Per Edge": {
+      "r_in": 1.115,
+      "seg": 5,
+      "inverted_native": 0,
+      "flips": 0,
+      "outside": 0.0,
+      "outside_native": 0.0,
+      "min_radius": 0.0771
+    },
+    "clamp convex 1 Uniform": {
+      "r_in": 1.123,
+      "seg": 3,
+      "inverted_native": 0,
+      "flips": 0,
+      "outside": 0.0,
+      "outside_native": 0.0,
+      "min_radius": 0.2503
+    },
+    "clamp convex 1 Per Edge": {
+      "r_in": 1.123,
+      "seg": 3,
+      "inverted_native": 0,
+      "flips": 0,
+      "outside": 0.0,
+      "outside_native": 0.0,
+      "min_radius": 0.2503
+    },
+    "clamp convex 2 Uniform": {
+      "r_in": 1.865,
+      "seg": 5,
+      "inverted_native": 0,
+      "flips": 0,
+      "outside": 0.0,
+      "outside_native": 0.0,
+      "min_radius": 0.0235
+    },
+    "clamp convex 2 Per Edge": {
+      "r_in": 1.865,
+      "seg": 5,
+      "inverted_native": 0,
+      "flips": 0,
+      "outside": 0.029917,
+      "outside_native": 0.029917,
+      "min_radius": 0.0235
+    },
+    "clamp convex 3 Uniform": {
+      "r_in": 1.963,
+      "seg": 3,
+      "inverted_native": 0,
+      "flips": 0,
+      "outside": 0.0,
+      "outside_native": 0.0,
+      "min_radius": 0.2658
+    },
+    "clamp convex 3 Per Edge": {
+      "r_in": 1.963,
+      "seg": 3,
+      "inverted_native": 0,
+      "flips": 0,
+      "outside": 0.0,
+      "outside_native": 0.0,
+      "min_radius": 0.2658
+    },
+    "clamp convex 4 Uniform": {
+      "r_in": 1.213,
+      "seg": 4,
+      "inverted_native": 0,
+      "flips": 0,
+      "outside": 0.0,
+      "outside_native": 0.0,
+      "min_radius": 0.0285
+    },
+    "clamp convex 4 Per Edge": {
+      "r_in": 1.213,
+      "seg": 4,
+      "inverted_native": 0,
+      "flips": 0,
+      "outside": 0.0,
+      "outside_native": 0.0,
+      "min_radius": 0.0285
+    },
+    "clamp convex 5 Uniform": {
+      "r_in": 1.888,
+      "seg": 3,
+      "inverted_native": 0,
+      "flips": 0,
+      "outside": 0.0,
+      "outside_native": 0.0,
+      "min_radius": 0.3676
+    },
+    "clamp convex 5 Per Edge": {
+      "r_in": 1.888,
+      "seg": 3,
+      "inverted_native": 0,
+      "flips": 0,
+      "outside": 0.0,
+      "outside_native": 0.0,
+      "min_radius": 0.3676
+    },
+    "clamp star 0 Uniform": {
+      "r_in": 1.115,
+      "seg": 5,
+      "inverted_native": 0,
+      "flips": 0,
+      "outside": 0.0,
+      "outside_native": 0.0,
+      "min_radius": 0.5723
+    },
+    "clamp star 0 Per Edge": {
+      "r_in": 1.115,
+      "seg": 5,
+      "inverted_native": 0,
+      "flips": 0,
+      "outside": 0.0,
+      "outside_native": 0.0,
+      "min_radius": 0.5723
+    },
+    "clamp star 1 Uniform": {
+      "r_in": 1.123,
+      "seg": 3,
+      "inverted_native": 0,
+      "flips": 0,
+      "outside": 0.0,
+      "outside_native": 0.0,
+      "min_radius": 0.6015
+    },
+    "clamp star 1 Per Edge": {
+      "r_in": 1.123,
+      "seg": 3,
+      "inverted_native": 0,
+      "flips": 0,
+      "outside": 0.0,
+      "outside_native": 0.0,
+      "min_radius": 0.6015
+    },
+    "clamp star 2 Uniform": {
+      "r_in": 1.865,
+      "seg": 5,
+      "inverted_native": 0,
+      "flips": 0,
+      "outside": 0.0,
+      "outside_native": 0.0,
+      "min_radius": 0.5359
+    },
+    "clamp star 2 Per Edge": {
+      "r_in": 1.865,
+      "seg": 5,
+      "inverted_native": 0,
+      "flips": 0,
+      "outside": 0.0,
+      "outside_native": 0.0,
+      "min_radius": 0.5359
+    },
+    "clamp star 3 Uniform": {
+      "r_in": 1.963,
+      "seg": 3,
+      "inverted_native": 0,
+      "flips": 0,
+      "outside": 0.0,
+      "outside_native": 0.0,
+      "min_radius": 0.52
+    },
+    "clamp star 3 Per Edge": {
+      "r_in": 1.963,
+      "seg": 3,
+      "inverted_native": 0,
+      "flips": 0,
+      "outside": 0.0,
+      "outside_native": 0.0,
+      "min_radius": 0.52
+    },
+    "clamp star 4 Uniform": {
+      "r_in": 1.213,
+      "seg": 4,
+      "inverted_native": 0,
+      "flips": 0,
+      "outside": 0.0,
+      "outside_native": 0.0,
+      "min_radius": 0.6385
+    },
+    "clamp star 4 Per Edge": {
+      "r_in": 1.213,
+      "seg": 4,
+      "inverted_native": 0,
+      "flips": 0,
+      "outside": 0.0,
+      "outside_native": 0.0,
+      "min_radius": 0.6385
+    },
+    "clamp star 5 Uniform": {
+      "r_in": 1.888,
+      "seg": 3,
+      "inverted_native": 0,
+      "flips": 0,
+      "outside": 0.0,
+      "outside_native": 0.0,
+      "min_radius": 0.3628
+    },
+    "clamp star 5 Per Edge": {
+      "r_in": 1.888,
+      "seg": 3,
+      "inverted_native": 0,
+      "flips": 0,
+      "outside": 0.0,
+      "outside_native": 0.0,
+      "min_radius": 0.3628
+    },
+    "clamp boolean 0 Uniform": {
+      "r_in": 1.115,
+      "seg": 5,
+      "inverted_native": 2,
+      "flips": 0,
+      "outside": 0.104583,
+      "outside_native": 0.104583,
+      "min_radius": 0.1896
+    },
+    "clamp boolean 0 Per Edge": {
+      "r_in": 1.115,
+      "seg": 5,
+      "inverted_native": 4,
+      "flips": 0,
+      "outside": 0.124019,
+      "outside_native": 0.124019,
+      "min_radius": 0.1896
+    },
+    "clamp boolean 1 Uniform": {
+      "r_in": 1.123,
+      "seg": 3,
+      "inverted_native": 0,
+      "flips": 0,
+      "outside": 0.0,
+      "outside_native": 0.0,
+      "min_radius": 0.0813
+    },
+    "clamp boolean 1 Per Edge": {
+      "r_in": 1.123,
+      "seg": 3,
+      "inverted_native": 1,
+      "flips": 0,
+      "outside": 0.0,
+      "outside_native": 0.0,
+      "min_radius": 0.0813
+    },
+    "clamp boolean 2 Uniform": {
+      "r_in": 1.865,
+      "seg": 5,
+      "inverted_native": 0,
+      "flips": 0,
+      "outside": 0.0,
+      "outside_native": 0.0,
+      "min_radius": 0.0347
+    },
+    "clamp boolean 2 Per Edge": {
+      "r_in": 1.865,
+      "seg": 5,
+      "inverted_native": 0,
+      "flips": 0,
+      "outside": 0.0,
+      "outside_native": 0.0,
+      "min_radius": 0.0347
+    },
+    "clamp boolean 3 Uniform": {
+      "r_in": 1.963,
+      "seg": 3,
+      "inverted_native": 1,
+      "flips": 0,
+      "outside": 0.0,
+      "outside_native": 0.0,
+      "min_radius": 0.2952
+    },
+    "clamp boolean 3 Per Edge": {
+      "r_in": 1.963,
+      "seg": 3,
+      "inverted_native": 3,
+      "flips": 0,
+      "outside": 0.0,
+      "outside_native": 0.0,
+      "min_radius": 0.2952
+    },
+    "clamp boolean 4 Uniform": {
+      "r_in": 1.213,
+      "seg": 4,
+      "inverted_native": 0,
+      "flips": 0,
+      "outside": 0.0,
+      "outside_native": 0.0,
+      "min_radius": 0.2702
+    },
+    "clamp boolean 4 Per Edge": {
+      "r_in": 1.213,
+      "seg": 4,
+      "inverted_native": 4,
+      "flips": 0,
+      "outside": 0.0,
+      "outside_native": 0.0,
+      "min_radius": 0.2702
+    },
+    "clamp boolean 5 Uniform": {
+      "r_in": 1.888,
+      "seg": 3,
+      "inverted_native": 0,
+      "flips": 0,
+      "outside": 0.0,
+      "outside_native": 0.0,
+      "min_radius": 0.0002
+    },
+    "clamp boolean 5 Per Edge": {
+      "r_in": 1.888,
+      "seg": 3,
+      "inverted_native": 0,
+      "flips": 0,
+      "outside": 0.000953,
+      "outside_native": 0.000953,
+      "min_radius": 0.0002
     }
   },
   "checks": [
@@ -1194,6 +1518,458 @@
       "name": "random tilted prism #19 (Uniform, 3 seg): finite, no flips, inside bbox, exact where defined",
       "ok": true,
       "detail": "{'segments': 3, 'r': 0.057, 'clamp': 'Uniform', 'flips': 0, 'outside': 0.0, 'clamped': False, 'exact_error': 2.0279786577818977e-06, 'modes': {'fallback': 0, 'terminal': 6, 'pipe': 0, 'joint': 0, 'corner': 0}}"
+    },
+    {
+      "name": "clamp fuzz convex #0 Uniform: no flips, no worse than native",
+      "ok": true,
+      "detail": "{'r_in': 1.115, 'seg': 5, 'inverted_native': 0, 'flips': 0, 'outside': 0.0, 'outside_native': 0.0, 'min_radius': 0.0771}"
+    },
+    {
+      "name": "clamp fuzz convex #0 Uniform: no overlap after clamping",
+      "ok": true,
+      "detail": "{'r_in': 1.115, 'seg': 5, 'inverted_native': 0, 'flips': 0, 'outside': 0.0, 'outside_native': 0.0, 'min_radius': 0.0771}"
+    },
+    {
+      "name": "clamp fuzz convex #0 Per Edge: no flips, no worse than native",
+      "ok": true,
+      "detail": "{'r_in': 1.115, 'seg': 5, 'inverted_native': 0, 'flips': 0, 'outside': 0.0, 'outside_native': 0.0, 'min_radius': 0.0771}"
+    },
+    {
+      "name": "clamp fuzz convex #0 Per Edge: no overlap after clamping",
+      "ok": true,
+      "detail": "{'r_in': 1.115, 'seg': 5, 'inverted_native': 0, 'flips': 0, 'outside': 0.0, 'outside_native': 0.0, 'min_radius': 0.0771}"
+    },
+    {
+      "name": "clamp fuzz convex #0: Per Edge smallest radius >= Uniform radius",
+      "ok": true,
+      "detail": "{'Uniform': 0.0771, 'Per Edge': 0.0771}"
+    },
+    {
+      "name": "clamp fuzz convex #1 Uniform: no flips, no worse than native",
+      "ok": true,
+      "detail": "{'r_in': 1.123, 'seg': 3, 'inverted_native': 0, 'flips': 0, 'outside': 0.0, 'outside_native': 0.0, 'min_radius': 0.2503}"
+    },
+    {
+      "name": "clamp fuzz convex #1 Uniform: no overlap after clamping",
+      "ok": true,
+      "detail": "{'r_in': 1.123, 'seg': 3, 'inverted_native': 0, 'flips': 0, 'outside': 0.0, 'outside_native': 0.0, 'min_radius': 0.2503}"
+    },
+    {
+      "name": "clamp fuzz convex #1 Per Edge: no flips, no worse than native",
+      "ok": true,
+      "detail": "{'r_in': 1.123, 'seg': 3, 'inverted_native': 0, 'flips': 0, 'outside': 0.0, 'outside_native': 0.0, 'min_radius': 0.2503}"
+    },
+    {
+      "name": "clamp fuzz convex #1 Per Edge: no overlap after clamping",
+      "ok": true,
+      "detail": "{'r_in': 1.123, 'seg': 3, 'inverted_native': 0, 'flips': 0, 'outside': 0.0, 'outside_native': 0.0, 'min_radius': 0.2503}"
+    },
+    {
+      "name": "clamp fuzz convex #1: Per Edge smallest radius >= Uniform radius",
+      "ok": true,
+      "detail": "{'Uniform': 0.2503, 'Per Edge': 0.2503}"
+    },
+    {
+      "name": "clamp fuzz convex #2 Uniform: no flips, no worse than native",
+      "ok": true,
+      "detail": "{'r_in': 1.865, 'seg': 5, 'inverted_native': 0, 'flips': 0, 'outside': 0.0, 'outside_native': 0.0, 'min_radius': 0.0235}"
+    },
+    {
+      "name": "clamp fuzz convex #2 Uniform: no overlap after clamping",
+      "ok": true,
+      "detail": "{'r_in': 1.865, 'seg': 5, 'inverted_native': 0, 'flips': 0, 'outside': 0.0, 'outside_native': 0.0, 'min_radius': 0.0235}"
+    },
+    {
+      "name": "clamp fuzz convex #2 Per Edge: no flips, no worse than native",
+      "ok": true,
+      "detail": "{'r_in': 1.865, 'seg': 5, 'inverted_native': 0, 'flips': 0, 'outside': 0.029917, 'outside_native': 0.029917, 'min_radius': 0.0235}"
+    },
+    {
+      "name": "clamp fuzz convex #2 Per Edge: no overlap after clamping",
+      "ok": true,
+      "detail": "{'r_in': 1.865, 'seg': 5, 'inverted_native': 0, 'flips': 0, 'outside': 0.029917, 'outside_native': 0.029917, 'min_radius': 0.0235}"
+    },
+    {
+      "name": "clamp fuzz convex #2: Per Edge smallest radius >= Uniform radius",
+      "ok": true,
+      "detail": "{'Uniform': 0.0235, 'Per Edge': 0.0235}"
+    },
+    {
+      "name": "clamp fuzz convex #3 Uniform: no flips, no worse than native",
+      "ok": true,
+      "detail": "{'r_in': 1.963, 'seg': 3, 'inverted_native': 0, 'flips': 0, 'outside': 0.0, 'outside_native': 0.0, 'min_radius': 0.2658}"
+    },
+    {
+      "name": "clamp fuzz convex #3 Uniform: no overlap after clamping",
+      "ok": true,
+      "detail": "{'r_in': 1.963, 'seg': 3, 'inverted_native': 0, 'flips': 0, 'outside': 0.0, 'outside_native': 0.0, 'min_radius': 0.2658}"
+    },
+    {
+      "name": "clamp fuzz convex #3 Per Edge: no flips, no worse than native",
+      "ok": true,
+      "detail": "{'r_in': 1.963, 'seg': 3, 'inverted_native': 0, 'flips': 0, 'outside': 0.0, 'outside_native': 0.0, 'min_radius': 0.2658}"
+    },
+    {
+      "name": "clamp fuzz convex #3 Per Edge: no overlap after clamping",
+      "ok": true,
+      "detail": "{'r_in': 1.963, 'seg': 3, 'inverted_native': 0, 'flips': 0, 'outside': 0.0, 'outside_native': 0.0, 'min_radius': 0.2658}"
+    },
+    {
+      "name": "clamp fuzz convex #3: Per Edge smallest radius >= Uniform radius",
+      "ok": true,
+      "detail": "{'Uniform': 0.2658, 'Per Edge': 0.2658}"
+    },
+    {
+      "name": "clamp fuzz convex #4 Uniform: no flips, no worse than native",
+      "ok": true,
+      "detail": "{'r_in': 1.213, 'seg': 4, 'inverted_native': 0, 'flips': 0, 'outside': 0.0, 'outside_native': 0.0, 'min_radius': 0.0285}"
+    },
+    {
+      "name": "clamp fuzz convex #4 Uniform: no overlap after clamping",
+      "ok": true,
+      "detail": "{'r_in': 1.213, 'seg': 4, 'inverted_native': 0, 'flips': 0, 'outside': 0.0, 'outside_native': 0.0, 'min_radius': 0.0285}"
+    },
+    {
+      "name": "clamp fuzz convex #4 Per Edge: no flips, no worse than native",
+      "ok": true,
+      "detail": "{'r_in': 1.213, 'seg': 4, 'inverted_native': 0, 'flips': 0, 'outside': 0.0, 'outside_native': 0.0, 'min_radius': 0.0285}"
+    },
+    {
+      "name": "clamp fuzz convex #4 Per Edge: no overlap after clamping",
+      "ok": true,
+      "detail": "{'r_in': 1.213, 'seg': 4, 'inverted_native': 0, 'flips': 0, 'outside': 0.0, 'outside_native': 0.0, 'min_radius': 0.0285}"
+    },
+    {
+      "name": "clamp fuzz convex #4: Per Edge smallest radius >= Uniform radius",
+      "ok": true,
+      "detail": "{'Uniform': 0.0285, 'Per Edge': 0.0285}"
+    },
+    {
+      "name": "clamp fuzz convex #5 Uniform: no flips, no worse than native",
+      "ok": true,
+      "detail": "{'r_in': 1.888, 'seg': 3, 'inverted_native': 0, 'flips': 0, 'outside': 0.0, 'outside_native': 0.0, 'min_radius': 0.3676}"
+    },
+    {
+      "name": "clamp fuzz convex #5 Uniform: no overlap after clamping",
+      "ok": true,
+      "detail": "{'r_in': 1.888, 'seg': 3, 'inverted_native': 0, 'flips': 0, 'outside': 0.0, 'outside_native': 0.0, 'min_radius': 0.3676}"
+    },
+    {
+      "name": "clamp fuzz convex #5 Per Edge: no flips, no worse than native",
+      "ok": true,
+      "detail": "{'r_in': 1.888, 'seg': 3, 'inverted_native': 0, 'flips': 0, 'outside': 0.0, 'outside_native': 0.0, 'min_radius': 0.3676}"
+    },
+    {
+      "name": "clamp fuzz convex #5 Per Edge: no overlap after clamping",
+      "ok": true,
+      "detail": "{'r_in': 1.888, 'seg': 3, 'inverted_native': 0, 'flips': 0, 'outside': 0.0, 'outside_native': 0.0, 'min_radius': 0.3676}"
+    },
+    {
+      "name": "clamp fuzz convex #5: Per Edge smallest radius >= Uniform radius",
+      "ok": true,
+      "detail": "{'Uniform': 0.3676, 'Per Edge': 0.3676}"
+    },
+    {
+      "name": "clamp fuzz star #0 Uniform: no flips, no worse than native",
+      "ok": true,
+      "detail": "{'r_in': 1.115, 'seg': 5, 'inverted_native': 0, 'flips': 0, 'outside': 0.0, 'outside_native': 0.0, 'min_radius': 0.5723}"
+    },
+    {
+      "name": "clamp fuzz star #0 Uniform: no overlap after clamping",
+      "ok": true,
+      "detail": "{'r_in': 1.115, 'seg': 5, 'inverted_native': 0, 'flips': 0, 'outside': 0.0, 'outside_native': 0.0, 'min_radius': 0.5723}"
+    },
+    {
+      "name": "clamp fuzz star #0 Per Edge: no flips, no worse than native",
+      "ok": true,
+      "detail": "{'r_in': 1.115, 'seg': 5, 'inverted_native': 0, 'flips': 0, 'outside': 0.0, 'outside_native': 0.0, 'min_radius': 0.5723}"
+    },
+    {
+      "name": "clamp fuzz star #0 Per Edge: no overlap after clamping",
+      "ok": true,
+      "detail": "{'r_in': 1.115, 'seg': 5, 'inverted_native': 0, 'flips': 0, 'outside': 0.0, 'outside_native': 0.0, 'min_radius': 0.5723}"
+    },
+    {
+      "name": "clamp fuzz star #0: Per Edge smallest radius >= Uniform radius",
+      "ok": true,
+      "detail": "{'Uniform': 0.5723, 'Per Edge': 0.5723}"
+    },
+    {
+      "name": "clamp fuzz star #1 Uniform: no flips, no worse than native",
+      "ok": true,
+      "detail": "{'r_in': 1.123, 'seg': 3, 'inverted_native': 0, 'flips': 0, 'outside': 0.0, 'outside_native': 0.0, 'min_radius': 0.6015}"
+    },
+    {
+      "name": "clamp fuzz star #1 Uniform: no overlap after clamping",
+      "ok": true,
+      "detail": "{'r_in': 1.123, 'seg': 3, 'inverted_native': 0, 'flips': 0, 'outside': 0.0, 'outside_native': 0.0, 'min_radius': 0.6015}"
+    },
+    {
+      "name": "clamp fuzz star #1 Per Edge: no flips, no worse than native",
+      "ok": true,
+      "detail": "{'r_in': 1.123, 'seg': 3, 'inverted_native': 0, 'flips': 0, 'outside': 0.0, 'outside_native': 0.0, 'min_radius': 0.6015}"
+    },
+    {
+      "name": "clamp fuzz star #1 Per Edge: no overlap after clamping",
+      "ok": true,
+      "detail": "{'r_in': 1.123, 'seg': 3, 'inverted_native': 0, 'flips': 0, 'outside': 0.0, 'outside_native': 0.0, 'min_radius': 0.6015}"
+    },
+    {
+      "name": "clamp fuzz star #1: Per Edge smallest radius >= Uniform radius",
+      "ok": true,
+      "detail": "{'Uniform': 0.6015, 'Per Edge': 0.6015}"
+    },
+    {
+      "name": "clamp fuzz star #2 Uniform: no flips, no worse than native",
+      "ok": true,
+      "detail": "{'r_in': 1.865, 'seg': 5, 'inverted_native': 0, 'flips': 0, 'outside': 0.0, 'outside_native': 0.0, 'min_radius': 0.5359}"
+    },
+    {
+      "name": "clamp fuzz star #2 Uniform: no overlap after clamping",
+      "ok": true,
+      "detail": "{'r_in': 1.865, 'seg': 5, 'inverted_native': 0, 'flips': 0, 'outside': 0.0, 'outside_native': 0.0, 'min_radius': 0.5359}"
+    },
+    {
+      "name": "clamp fuzz star #2 Per Edge: no flips, no worse than native",
+      "ok": true,
+      "detail": "{'r_in': 1.865, 'seg': 5, 'inverted_native': 0, 'flips': 0, 'outside': 0.0, 'outside_native': 0.0, 'min_radius': 0.5359}"
+    },
+    {
+      "name": "clamp fuzz star #2 Per Edge: no overlap after clamping",
+      "ok": true,
+      "detail": "{'r_in': 1.865, 'seg': 5, 'inverted_native': 0, 'flips': 0, 'outside': 0.0, 'outside_native': 0.0, 'min_radius': 0.5359}"
+    },
+    {
+      "name": "clamp fuzz star #2: Per Edge smallest radius >= Uniform radius",
+      "ok": true,
+      "detail": "{'Uniform': 0.5359, 'Per Edge': 0.5359}"
+    },
+    {
+      "name": "clamp fuzz star #3 Uniform: no flips, no worse than native",
+      "ok": true,
+      "detail": "{'r_in': 1.963, 'seg': 3, 'inverted_native': 0, 'flips': 0, 'outside': 0.0, 'outside_native': 0.0, 'min_radius': 0.52}"
+    },
+    {
+      "name": "clamp fuzz star #3 Uniform: no overlap after clamping",
+      "ok": true,
+      "detail": "{'r_in': 1.963, 'seg': 3, 'inverted_native': 0, 'flips': 0, 'outside': 0.0, 'outside_native': 0.0, 'min_radius': 0.52}"
+    },
+    {
+      "name": "clamp fuzz star #3 Per Edge: no flips, no worse than native",
+      "ok": true,
+      "detail": "{'r_in': 1.963, 'seg': 3, 'inverted_native': 0, 'flips': 0, 'outside': 0.0, 'outside_native': 0.0, 'min_radius': 0.52}"
+    },
+    {
+      "name": "clamp fuzz star #3 Per Edge: no overlap after clamping",
+      "ok": true,
+      "detail": "{'r_in': 1.963, 'seg': 3, 'inverted_native': 0, 'flips': 0, 'outside': 0.0, 'outside_native': 0.0, 'min_radius': 0.52}"
+    },
+    {
+      "name": "clamp fuzz star #3: Per Edge smallest radius >= Uniform radius",
+      "ok": true,
+      "detail": "{'Uniform': 0.52, 'Per Edge': 0.52}"
+    },
+    {
+      "name": "clamp fuzz star #4 Uniform: no flips, no worse than native",
+      "ok": true,
+      "detail": "{'r_in': 1.213, 'seg': 4, 'inverted_native': 0, 'flips': 0, 'outside': 0.0, 'outside_native': 0.0, 'min_radius': 0.6385}"
+    },
+    {
+      "name": "clamp fuzz star #4 Uniform: no overlap after clamping",
+      "ok": true,
+      "detail": "{'r_in': 1.213, 'seg': 4, 'inverted_native': 0, 'flips': 0, 'outside': 0.0, 'outside_native': 0.0, 'min_radius': 0.6385}"
+    },
+    {
+      "name": "clamp fuzz star #4 Per Edge: no flips, no worse than native",
+      "ok": true,
+      "detail": "{'r_in': 1.213, 'seg': 4, 'inverted_native': 0, 'flips': 0, 'outside': 0.0, 'outside_native': 0.0, 'min_radius': 0.6385}"
+    },
+    {
+      "name": "clamp fuzz star #4 Per Edge: no overlap after clamping",
+      "ok": true,
+      "detail": "{'r_in': 1.213, 'seg': 4, 'inverted_native': 0, 'flips': 0, 'outside': 0.0, 'outside_native': 0.0, 'min_radius': 0.6385}"
+    },
+    {
+      "name": "clamp fuzz star #4: Per Edge smallest radius >= Uniform radius",
+      "ok": true,
+      "detail": "{'Uniform': 0.6385, 'Per Edge': 0.6385}"
+    },
+    {
+      "name": "clamp fuzz star #5 Uniform: no flips, no worse than native",
+      "ok": true,
+      "detail": "{'r_in': 1.888, 'seg': 3, 'inverted_native': 0, 'flips': 0, 'outside': 0.0, 'outside_native': 0.0, 'min_radius': 0.3628}"
+    },
+    {
+      "name": "clamp fuzz star #5 Uniform: no overlap after clamping",
+      "ok": true,
+      "detail": "{'r_in': 1.888, 'seg': 3, 'inverted_native': 0, 'flips': 0, 'outside': 0.0, 'outside_native': 0.0, 'min_radius': 0.3628}"
+    },
+    {
+      "name": "clamp fuzz star #5 Per Edge: no flips, no worse than native",
+      "ok": true,
+      "detail": "{'r_in': 1.888, 'seg': 3, 'inverted_native': 0, 'flips': 0, 'outside': 0.0, 'outside_native': 0.0, 'min_radius': 0.3628}"
+    },
+    {
+      "name": "clamp fuzz star #5 Per Edge: no overlap after clamping",
+      "ok": true,
+      "detail": "{'r_in': 1.888, 'seg': 3, 'inverted_native': 0, 'flips': 0, 'outside': 0.0, 'outside_native': 0.0, 'min_radius': 0.3628}"
+    },
+    {
+      "name": "clamp fuzz star #5: Per Edge smallest radius >= Uniform radius",
+      "ok": true,
+      "detail": "{'Uniform': 0.3628, 'Per Edge': 0.3628}"
+    },
+    {
+      "name": "clamp fuzz boolean #0 Uniform: no flips, no worse than native",
+      "ok": true,
+      "detail": "{'r_in': 1.115, 'seg': 5, 'inverted_native': 2, 'flips': 0, 'outside': 0.104583, 'outside_native': 0.104583, 'min_radius': 0.1896}"
+    },
+    {
+      "name": "clamp fuzz boolean #0 Per Edge: no flips, no worse than native",
+      "ok": true,
+      "detail": "{'r_in': 1.115, 'seg': 5, 'inverted_native': 4, 'flips': 0, 'outside': 0.124019, 'outside_native': 0.124019, 'min_radius': 0.1896}"
+    },
+    {
+      "name": "clamp fuzz boolean #0: Per Edge smallest radius >= Uniform radius",
+      "ok": true,
+      "detail": "{'Uniform': 0.1896, 'Per Edge': 0.1896}"
+    },
+    {
+      "name": "clamp fuzz boolean #1 Uniform: no flips, no worse than native",
+      "ok": true,
+      "detail": "{'r_in': 1.123, 'seg': 3, 'inverted_native': 0, 'flips': 0, 'outside': 0.0, 'outside_native': 0.0, 'min_radius': 0.0813}"
+    },
+    {
+      "name": "clamp fuzz boolean #1 Per Edge: no flips, no worse than native",
+      "ok": true,
+      "detail": "{'r_in': 1.123, 'seg': 3, 'inverted_native': 1, 'flips': 0, 'outside': 0.0, 'outside_native': 0.0, 'min_radius': 0.0813}"
+    },
+    {
+      "name": "clamp fuzz boolean #1: Per Edge smallest radius >= Uniform radius",
+      "ok": true,
+      "detail": "{'Uniform': 0.0813, 'Per Edge': 0.0813}"
+    },
+    {
+      "name": "clamp fuzz boolean #2 Uniform: no flips, no worse than native",
+      "ok": true,
+      "detail": "{'r_in': 1.865, 'seg': 5, 'inverted_native': 0, 'flips': 0, 'outside': 0.0, 'outside_native': 0.0, 'min_radius': 0.0347}"
+    },
+    {
+      "name": "clamp fuzz boolean #2 Per Edge: no flips, no worse than native",
+      "ok": true,
+      "detail": "{'r_in': 1.865, 'seg': 5, 'inverted_native': 0, 'flips': 0, 'outside': 0.0, 'outside_native': 0.0, 'min_radius': 0.0347}"
+    },
+    {
+      "name": "clamp fuzz boolean #2: Per Edge smallest radius >= Uniform radius",
+      "ok": true,
+      "detail": "{'Uniform': 0.0347, 'Per Edge': 0.0347}"
+    },
+    {
+      "name": "clamp fuzz boolean #3 Uniform: no flips, no worse than native",
+      "ok": true,
+      "detail": "{'r_in': 1.963, 'seg': 3, 'inverted_native': 1, 'flips': 0, 'outside': 0.0, 'outside_native': 0.0, 'min_radius': 0.2952}"
+    },
+    {
+      "name": "clamp fuzz boolean #3 Per Edge: no flips, no worse than native",
+      "ok": true,
+      "detail": "{'r_in': 1.963, 'seg': 3, 'inverted_native': 3, 'flips': 0, 'outside': 0.0, 'outside_native': 0.0, 'min_radius': 0.2952}"
+    },
+    {
+      "name": "clamp fuzz boolean #3: Per Edge smallest radius >= Uniform radius",
+      "ok": true,
+      "detail": "{'Uniform': 0.2952, 'Per Edge': 0.2952}"
+    },
+    {
+      "name": "clamp fuzz boolean #4 Uniform: no flips, no worse than native",
+      "ok": true,
+      "detail": "{'r_in': 1.213, 'seg': 4, 'inverted_native': 0, 'flips': 0, 'outside': 0.0, 'outside_native': 0.0, 'min_radius': 0.2702}"
+    },
+    {
+      "name": "clamp fuzz boolean #4 Per Edge: no flips, no worse than native",
+      "ok": true,
+      "detail": "{'r_in': 1.213, 'seg': 4, 'inverted_native': 4, 'flips': 0, 'outside': 0.0, 'outside_native': 0.0, 'min_radius': 0.2702}"
+    },
+    {
+      "name": "clamp fuzz boolean #4: Per Edge smallest radius >= Uniform radius",
+      "ok": true,
+      "detail": "{'Uniform': 0.2702, 'Per Edge': 0.2702}"
+    },
+    {
+      "name": "clamp fuzz boolean #5 Uniform: no flips, no worse than native",
+      "ok": true,
+      "detail": "{'r_in': 1.888, 'seg': 3, 'inverted_native': 0, 'flips': 0, 'outside': 0.0, 'outside_native': 0.0, 'min_radius': 0.0002}"
+    },
+    {
+      "name": "clamp fuzz boolean #5 Per Edge: no flips, no worse than native",
+      "ok": true,
+      "detail": "{'r_in': 1.888, 'seg': 3, 'inverted_native': 0, 'flips': 0, 'outside': 0.000953, 'outside_native': 0.000953, 'min_radius': 0.0002}"
+    },
+    {
+      "name": "clamp fuzz boolean #5: Per Edge smallest radius >= Uniform radius",
+      "ok": true,
+      "detail": "{'Uniform': 0.0002, 'Per Edge': 0.0002}"
+    }
+  ],
+  "thin_wall_overlaps": [
+    {
+      "seed": 0,
+      "clamp": "Uniform",
+      "inverted": 2
+    },
+    {
+      "seed": 0,
+      "clamp": "Per Edge",
+      "inverted": 4
+    },
+    {
+      "seed": 1,
+      "clamp": "Uniform",
+      "inverted": 0
+    },
+    {
+      "seed": 1,
+      "clamp": "Per Edge",
+      "inverted": 1
+    },
+    {
+      "seed": 2,
+      "clamp": "Uniform",
+      "inverted": 0
+    },
+    {
+      "seed": 2,
+      "clamp": "Per Edge",
+      "inverted": 0
+    },
+    {
+      "seed": 3,
+      "clamp": "Uniform",
+      "inverted": 1
+    },
+    {
+      "seed": 3,
+      "clamp": "Per Edge",
+      "inverted": 3
+    },
+    {
+      "seed": 4,
+      "clamp": "Uniform",
+      "inverted": 0
+    },
+    {
+      "seed": 4,
+      "clamp": "Per Edge",
+      "inverted": 4
+    },
+    {
+      "seed": 5,
+      "clamp": "Uniform",
+      "inverted": 0
+    },
+    {
+      "seed": 5,
+      "clamp": "Per Edge",
+      "inverted": 0
     }
   ]
 }
