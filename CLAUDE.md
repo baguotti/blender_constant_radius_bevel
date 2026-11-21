@@ -47,6 +47,8 @@ Constant-radius bevel for Blender, built as a Geometry Nodes modifier on top of 
 - A menu group input can feed only ONE Menu Switch node; derive other values from its output (see `_menu`).
 - Separate Store Named Attribute nodes each evaluate their field on their own: store several values with `Builder.store_many` (one Capture Attribute), and pass a Selection when only some elements need them.
 - Geometry Switch with a single-value condition is lazy: use it to skip whole branches (e.g. the Per Edge loop).
+- Named Attribute's "Exists" output is a field at runtime: a Switch or Warning fed from it fails ("Type cannot be switched by a field"). Count with Attribute Statistic instead.
+- Object scale: the group works at the object's size in the scene (`_scene_scale`) and scales back BEFORE writing custom normals (tangent-space normals don't survive a non-uniform scale); exact normals are mapped with `normal_to_object`.
 - Warning node only shows if its output is used: route geometry through a Switch on it.
 - A multi-input socket (String Join) stacks new links on top: link parts in reverse order.
 - The vertex modes (FALLBACK/TERMINAL/PIPE/JOINT/CORNER) are described in the builder's docstring; `tests/analytic.py` re-implements them independently and the tests compare both.

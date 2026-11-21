@@ -391,6 +391,22 @@
         "216 edge(s) clamped to avoid overlaps; smallest radius used: 0.0029"
       ]
     },
+    "Bevel Weight 0.5 everywhere, Radius 0.4 (= r 0.2)": {
+      "verts": 152,
+      "faces": 150,
+      "finite": true,
+      "same_topology": true,
+      "flips": 0,
+      "warnings": [],
+      "exact_error": 1.401640375986446e-07,
+      "mode_counts": {
+        "fallback": 0,
+        "terminal": 0,
+        "pipe": 0,
+        "joint": 0,
+        "corner": 8
+      }
+    },
     "skew box corners, 2 segments": {
       "verts": 56,
       "faces": 54,
@@ -621,7 +637,7 @@
     },
     "256 segments": {
       "verts": 396296,
-      "seconds": 0.9862305620004008
+      "seconds": 1.0873315110000021
     }
   },
   "checks": [
@@ -1001,6 +1017,91 @@
       "detail": "0.950001 of |g|"
     },
     {
+      "name": "Edges: Bevel Weight: exactly the 4 marked edges, exact (1.4e-07 r), Angle Limit ignored",
+      "ok": true,
+      "detail": "(16, [])"
+    },
+    {
+      "name": "Edges: Bevel Weight on a mesh without marks: unchanged, with a warning",
+      "ok": true,
+      "detail": "['Edges is set to Bevel Weight, but no edge has a bevel weight: nothing is beveled.']"
+    },
+    {
+      "name": "Edges: Sharp Edges: exactly the 4 marked edges, exact (1.4e-07 r), Angle Limit ignored",
+      "ok": true,
+      "detail": "(16, [])"
+    },
+    {
+      "name": "Edges: Sharp Edges on a mesh without marks: unchanged, with a warning",
+      "ok": true,
+      "detail": "['Edges is set to Sharp Edges, but no edge has Mark Sharp: nothing is beveled.']"
+    },
+    {
+      "name": "Edges: Seams: exactly the 4 marked edges, exact (1.4e-07 r), Angle Limit ignored",
+      "ok": true,
+      "detail": "(16, [])"
+    },
+    {
+      "name": "Edges: Seams on a mesh without marks: unchanged, with a warning",
+      "ok": true,
+      "detail": "['Edges is set to Seams, but no edge has Mark Seam: nothing is beveled.']"
+    },
+    {
+      "name": "Bevel Weight 0.5 everywhere, Radius 0.4 (= r 0.2): finite, same topology as native, no flips",
+      "ok": true,
+      "detail": "{'verts': 152, 'faces': 150, 'finite': True, 'same_topology': True, 'flips': 0, 'warnings': []}"
+    },
+    {
+      "name": "Bevel Weight 0.5 everywhere, Radius 0.4 (= r 0.2): exact (error 1.4e-07 r, tolerance 1e-04)",
+      "ok": true,
+      "detail": "{'fallback': 0, 'terminal': 0, 'pipe': 0, 'joint': 0, 'corner': 8}"
+    },
+    {
+      "name": "Bevel Weight + Clamp Uniform: one base radius (ratios kept), no overlap",
+      "ok": true,
+      "detail": "base radius 0.95000, worst 0.9500 |g|"
+    },
+    {
+      "name": "Bevel Weight + Clamp Per Edge: each edge <= Radius x weight, no overlap",
+      "ok": true,
+      "detail": "radius/weight 0.9500..3.0000, worst 0.9500 |g|"
+    },
+    {
+      "name": "Bevel Weight + Clamp None: each edge at exactly Radius x weight",
+      "ok": true,
+      "detail": "radius/weight 3.0000..3.0000"
+    },
+    {
+      "name": "Bevel Weight on a polyline: corner radius = Radius x mean weight (0.3), weight-0 piece kept",
+      "ok": true,
+      "detail": "12"
+    },
+    {
+      "name": "Scene Units, object scale (2.0, 2.0, 2.0): same rounds in the scene as with the scale applied (position 4.8e-06 r, normals 8.2e-05 rad)",
+      "ok": true,
+      "detail": "1168 of 1176 corners compared"
+    },
+    {
+      "name": "Scene Units, object scale (1.0, 2.0, 0.5): same rounds in the scene as with the scale applied (position 9.5e-06 r, normals 1.3e-04 rad)",
+      "ok": true,
+      "detail": "1164 of 1176 corners compared"
+    },
+    {
+      "name": "Scene Units, object scale (0.01, 0.01, 0.01): same rounds in the scene as with the scale applied (position 5.6e-06 r, normals 7.4e-05 rad)",
+      "ok": true,
+      "detail": "1176 of 1176 corners compared"
+    },
+    {
+      "name": "Scene Units off: radius in the object's own units (same mesh as unscaled)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "Scene Units on a scaled polyline: arc radius 0.3 in the scene",
+      "ok": true,
+      "detail": "11"
+    },
+    {
       "name": "skew box corners, 2 segments: finite, same topology as native, no flips",
       "ok": true,
       "detail": "{'verts': 56, 'faces': 54, 'finite': True, 'same_topology': True, 'flips': 0, 'warnings': []}"
@@ -1188,7 +1289,7 @@
     {
       "name": "256 segments: evaluates in reasonable time",
       "ok": true,
-      "detail": "396296 verts, 1.0 s"
+      "detail": "396296 verts, 1.1 s"
     },
     {
       "name": "two evaluations give identical positions",

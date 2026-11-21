@@ -45,6 +45,9 @@ PER_EDGE_PASSES = 32    # Per Edge: passes of the shrink-until-valid loop
 JOINT_SPREAD = 1.0      # JOINT: the two cylinders must touch the unbeveled edge within this * r
 INLINE_SIN = math.sin(math.radians(2.0))   # BMesh bevel's in-line threshold (BEVEL_EPSILON_ANG)
 CLAMP_MODES = ("Uniform", "Per Edge", "None")
+EDGE_MODES = ("Angle", "Bevel Weight", "Sharp Edges", "Seams")   # which edges to bevel
+EDGE_ATTRS = (None, "bevel_weight_edge", "sharp_edge", "uv_seam")
+MENU_DEFAULTS = {"Clamp": CLAMP_MODES[0], "Edges": EDGE_MODES[0]}
 
 
 def _offset_corner(B, corner, offset):
@@ -72,24 +75,35 @@ def _menu_mode(B, gi):
     return B.clamp_mode
 
 
-def _menu(B, gi, data_type, values):
-    """Pick one of `values` (in CLAMP_MODES order) from the Clamp input.
+def _mode_number(B, gi, input_name, items):
+    """The index of the chosen item of a menu input.
 
-    A menu input may feed only one Menu Switch, so a single switch (created on
-    first use) outputs the mode number and the values are chosen from it.
+    A menu input may feed only one Menu Switch, so a single switch per input
+    (created on first use) outputs the mode number; values are chosen from it.
     """
-    if not hasattr(B, "clamp_mode"):
+    modes = B.__dict__.setdefault("modes", {})
+    if input_name not in modes:
         menu = B.node("GeometryNodeMenuSwitch", data_type="INT")
         menu.enum_items.clear()
-        for i, item in enumerate(CLAMP_MODES):
+        for i, item in enumerate(items):
             menu.enum_items.new(item)
             menu.inputs[item].default_value = i
-        B.link(gi.outputs["Clamp"], menu.inputs["Menu"])
-        B.clamp_mode = menu.outputs["Output"]
+        B.link(gi.outputs[input_name], menu.inputs["Menu"])
+        modes[input_name] = menu.outputs["Output"]
+    return modes[input_name]
+
+
+def _pick(B, number, data_type, values):
     out = values[0]
     for i in range(1, len(values)):
-        out = B.switch(data_type, B.compare("EQUAL", B.clamp_mode, i, data_type="INT"), out, values[i])
+        out = B.switch(data_type, B.compare("EQUAL", number, i, data_type="INT"), out, values[i])
     return out
+
+
+def _menu(B, gi, data_type, values):
+    """Pick one of `values` (in CLAMP_MODES order) from the Clamp input."""
+    B.clamp_mode = _mode_number(B, gi, "Clamp", CLAMP_MODES)
+    return _pick(B, B.clamp_mode, data_type, values)
 
 
 class Builder:
@@ -179,6 +193,12 @@ class Builder:
             self._feed(n.inputs["Selection"], selection)
         return n.outputs["Geometry"]
 
+    def node_out(self, idname, geo, output, **props):
+        """A node that takes a geometry; returns one of its outputs."""
+        n = self.node(idname, **props)
+        self.link(geo, n.inputs["Geometry"])
+        return n.outputs[output]
+
     def store_many(self, geo, domain, items, selection=None):
         """Store several (name, value, data_type) at once. Separate Store nodes
         would each evaluate their field on its own, repeating the shared work;
@@ -257,12 +277,16 @@ def _interface(ng):
         s.description = description
         return s
 
-    add("Selection", "NodeSocketBool", default=True, description="Edges to bevel (combined with Angle Limit)")
+    add("Edges", "NodeSocketMenu",
+        description="Which edges to round. Angle: sharper than Angle Limit. Bevel Weight: edges with a bevel "
+                    "weight, each at Radius x its weight. Sharp Edges / Seams: edges marked sharp / as seams")
+    add("Selection", "NodeSocketBool", default=True, description="Only these edges (combined with Edges)")
     add("Radius", "NodeSocketFloat", default=0.05, min_value=0.0, subtype="DISTANCE",
-        description="Fillet radius, the same on every edge")
+        description="Fillet radius (in scene units unless Advanced > Scene Units is off). "
+                    "With Edges: Bevel Weight, each edge uses Radius x its weight")
     add("Segments", "NodeSocketInt", default=4, min_value=1, max_value=256)
     add("Angle Limit", "NodeSocketFloat", default=math.radians(30.0), min_value=0.0, max_value=math.pi,
-        subtype="ANGLE", description="Only bevel edges whose face normals differ by more than this")
+        subtype="ANGLE", description="Edges: Angle only: bevel edges whose face normals differ by more than this")
     add("Clamp", "NodeSocketMenu",
         description="Avoid overlapping bevels. Uniform: lower the radius everywhere so it stays constant. "
                     "Per Edge: lower it only on edges that need it. None: no limit")
@@ -278,6 +302,9 @@ def _interface(ng):
     advanced = it.new_panel("Advanced", default_closed=True)
     add("Exact Profile", "NodeSocketBool", advanced, default=True,
         description="Snap the bevel onto true circular arcs (off = native profile)")
+    add("Scene Units", "NodeSocketBool", advanced, default=True,
+        description="Measure the radius in scene units and keep the rounds circular on scaled objects, also "
+                    "with non-uniform scale. Off: the radius is in the object's own units (like Blender's Bevel)")
 
 
 def build(name=GROUP_NAME, debug_output=None):
@@ -297,14 +324,19 @@ def build(name=GROUP_NAME, debug_output=None):
     gi = B.node("NodeGroupInput")
     gi.location = (-400, 0)
 
-    solid, wire_curves, wire_limit = _wires(B, gi)
-    prepared, warnings, uniform_limit = _edge_data(B, gi, solid, wire_limit)
+    geo_in, back_to_object, normal_to_object = _scene_scale(B, gi)
+    rule = _edge_rule(B, gi, geo_in)
+    solid, wire_curves, wire_limit = _wires(B, gi, geo_in, rule)
+    prepared, warnings, uniform_limit = _edge_data(B, gi, solid, wire_limit, rule)
     wires = _wire_fillet(B, gi, wire_curves, uniform_limit)
     prepared = _vertex_modes(B, prepared)
     skeleton = _skeleton(B, gi, prepared)
     beveled = _bevel(B, gi, prepared)
     snapped = _snap(B, gi, beveled, skeleton)
-    finished = _finish(B, gi, snapped, warnings)
+    # Back to the object's own size before the normals are written: tangent-space
+    # custom normals would not survive a non-uniform scale afterwards.
+    finished = _finish(B, gi, back_to_object(snapped), warnings, normal_to_object)
+    wires = back_to_object(wires)
     join = B.node("GeometryNodeJoinGeometry")
     B.link(wires, join.inputs["Geometry"])        # multi-input: stacked on top
     B.link(finished, join.inputs["Geometry"])
@@ -319,6 +351,7 @@ def build(name=GROUP_NAME, debug_output=None):
     has_wires = B.compare("GREATER_THAN", n_wire.outputs["Point Count"], 0, data_type="INT")
     finished = B.switch("GEOMETRY", has_wires, finished, merge.outputs["Geometry"])
 
+
     B.stage("11. Remove internal attributes")
     rm = B.node("GeometryNodeRemoveAttribute")
     B.link(finished, rm.inputs["Geometry"])
@@ -329,13 +362,90 @@ def build(name=GROUP_NAME, debug_output=None):
     go.parent = None
     go.location = (B.x0 + 2 * B.COL_W + B.STAGE_GAP, 0)
     B.link(skeleton if debug_output == "skeleton" else rm.outputs["Geometry"], go.inputs["Geometry"])
-    for item in ng.interface.items_tree:
-        if getattr(item, "name", "") == "Clamp" and item.in_out == "INPUT":
-            item.default_value = CLAMP_MODES[0]
+    set_menu_defaults(ng)
     return ng
 
 
-def _wires(B, gi):
+def set_menu_defaults(ng):
+    """Menu defaults can only be set once the menu input feeds a Menu Switch."""
+    for item in ng.interface.items_tree:
+        if getattr(item, "in_out", None) == "INPUT" and item.name in MENU_DEFAULTS:
+            item.default_value = MENU_DEFAULTS[item.name]
+
+
+def _scene_scale(B, gi):
+    """Work on the object at its size in the scene, so the radius is in scene
+    units and the rounds stay circular on scaled objects (also non-uniform).
+    Returns the scaled input and a function that scales a result back.
+    Mirroring (negative scale) doesn't change the shape: only |scale| is used."""
+    B.stage("Scene units: scale to the object's size in the scene")
+    info = B.node("GeometryNodeObjectInfo", transform_space="ORIGINAL")
+    B.link(B.node("GeometryNodeSelfObject").outputs["Self Object"], info.inputs["Object"])
+    scale = B.vmath("ABSOLUTE", info.outputs["Scale"])
+    xyz = B.node("ShaderNodeSeparateXYZ")
+    B.link(scale, xyz.inputs["Vector"])
+    smallest = B.math("MINIMUM", xyz.outputs["X"], B.math("MINIMUM", xyz.outputs["Y"], xyz.outputs["Z"]))
+    off_one = B.vmath("LENGTH", B.sub(scale, (1.0, 1.0, 1.0)))
+    use = B.bool_and(gi.outputs["Scene Units"], B.compare("GREATER_THAN", smallest, 1e-8),
+                     B.compare("GREATER_THAN", off_one, 1e-7))
+    to_scene = B.node("GeometryNodeTransform")
+    B.link(gi.outputs["Geometry"], to_scene.inputs["Geometry"])
+    B.link(scale, to_scene.inputs["Scale"])
+    inverse = B.vmath("DIVIDE", (1.0, 1.0, 1.0), scale)
+
+    def back_to_object(geo):
+        back = B.node("GeometryNodeTransform")
+        B.link(geo, back.inputs["Geometry"])
+        B.link(inverse, back.inputs["Scale"])
+        return B.switch("GEOMETRY", use, geo, back.outputs["Geometry"])
+
+    def normal_to_object(n):
+        """A normal computed at scene size, as a normal of the object-size mesh:
+        normals map with the inverse transpose of the scale-back, i.e. times |scale|."""
+        return B.switch("VECTOR", use, n, B.vmath("NORMALIZE", B.vmath("MULTIPLY", n, scale)))
+
+    return (B.switch("GEOMETRY", use, gi.outputs["Geometry"], to_scene.outputs["Geometry"]),
+            back_to_object, normal_to_object)
+
+
+class EdgeRule:
+    """Which edges the user wants (edge fields) and the radius factor per edge."""
+
+
+def _edge_rule(B, gi, geo):
+    """The Edges menu: selection mask, per-edge radius weight, Angle Limit use."""
+    B.stage("Edges: Angle / Bevel Weight / Sharp Edges / Seams")
+    mode = _mode_number(B, gi, "Edges", EDGE_MODES)
+    marks = [True]
+    weight_attr = B.node("GeometryNodeInputNamedAttribute", data_type="FLOAT")
+    weight_attr.inputs["Name"].default_value = EDGE_ATTRS[1]
+    marks.append(B.compare("GREATER_THAN", weight_attr.outputs["Attribute"], 0.0))
+    for name in EDGE_ATTRS[2:]:
+        n = B.node("GeometryNodeInputNamedAttribute", data_type="BOOLEAN")
+        n.inputs["Name"].default_value = name
+        marks.append(n.outputs["Attribute"])
+    rule = EdgeRule()
+    mark = _pick(B, mode, "BOOLEAN", marks)
+    rule.selection = B.bool_and(gi.outputs["Selection"], mark)
+    # Nothing marked (no such attribute, or all zero): say so instead of silently doing nothing.
+    n_marked = B.node("GeometryNodeAttributeStatistic", domain="EDGE", data_type="FLOAT")
+    B.link(geo, n_marked.inputs["Geometry"])
+    B.link(mark, n_marked.inputs["Attribute"])
+    has_edges = B.compare("GREATER_THAN", B.node_out("GeometryNodeAttributeDomainSize", geo, "Edge Count", component="MESH"),
+                          0, data_type="INT")
+    rule.weight = B.switch("FLOAT", B.compare("EQUAL", mode, 1, data_type="INT"), 1.0,
+                           B.math("MAXIMUM", weight_attr.outputs["Attribute"], 0.0))
+    rule.by_angle = B.compare("EQUAL", mode, 0, data_type="INT")
+    rule.missing = B.bool_and(B.bool_not(rule.by_angle), has_edges,
+                              B.compare("LESS_THAN", n_marked.outputs["Max"], 0.5))
+    labels = {1: "a bevel weight", 2: "Mark Sharp", 3: "Mark Seam"}
+    rule.missing_message = _pick(B, mode, "STRING", [""] + [
+        f"Edges is set to {EDGE_MODES[i]}, but no edge has {labels[i]}: nothing is beveled." for i in (1, 2, 3)])
+    rule.radius = B.math("MAXIMUM", gi.outputs["Radius"], 0.0)          # base radius
+    return rule
+
+
+def _wires(B, gi, geo_in, rule):
     """Stage 0: split off the selected loose edges (no faces), e.g. polylines.
 
     Returns (everything else, the wires as curves, the Uniform radius limit of
@@ -343,15 +453,24 @@ def _wires(B, gi):
     """
     B.stage("0. Wire edges: split off polylines")
     nb = B.node("GeometryNodeInputMeshEdgeNeighbors")
-    wire = B.bool_and(gi.outputs["Wire Corners"], gi.outputs["Selection"],
+    wire = B.bool_and(gi.outputs["Wire Corners"], rule.selection,
                       B.compare("EQUAL", nb.outputs["Face Count"], 0, data_type="INT"))
     # Most meshes have no wire edges: then this stage passes the mesh through
     # untouched (no attributes, no copies).
     any_wire = B.node("GeometryNodeAttributeStatistic", domain="EDGE", data_type="FLOAT")
-    B.link(gi.outputs["Geometry"], any_wire.inputs["Geometry"])
+    B.link(geo_in, any_wire.inputs["Geometry"])
     B.link(wire, any_wire.inputs["Attribute"])
     has_wire = B.compare("GREATER_THAN", any_wire.outputs["Max"], 0.5)
-    geo = B.store(gi.outputs["Geometry"], "_cr_wire", wire, "FLOAT", "EDGE")
+    geo = B.store(geo_in, "_cr_wire", wire, "FLOAT", "EDGE")
+    # Radius weight of each wire point: the mean over its wire edges (Bevel
+    # Weight mode; 1 otherwise). Point attributes ride along to the curves.
+    w_sum = B.node("GeometryNodeFieldOnDomain", domain="POINT", data_type="FLOAT")
+    B.link(B.math("MULTIPLY", B.named("_cr_wire", "FLOAT"), rule.weight), w_sum.inputs["Value"])
+    w_cnt = B.node("GeometryNodeFieldOnDomain", domain="POINT", data_type="FLOAT")
+    B.link(B.named("_cr_wire", "FLOAT"), w_cnt.inputs["Value"])
+    geo = B.store(geo, "_cr_ww", B.switch("FLOAT", B.compare("GREATER_THAN", w_cnt.outputs["Value"], 0.0), 0.0,
+                                          B.math("DIVIDE", w_sum.outputs["Value"], w_cnt.outputs["Value"])),
+                  "FLOAT", "POINT")
     is_wire = B.compare("GREATER_THAN", B.named("_cr_wire", "FLOAT"), 0.5)
     sep = B.node("GeometryNodeSeparateGeometry", domain="EDGE")
     B.link(geo, sep.inputs["Geometry"])
@@ -404,8 +523,10 @@ def _wires(B, gi):
     corner = B.bool_and(prv.outputs["Is Valid Offset"], nxt.outputs["Is Valid Offset"],
                         B.compare("GREATER_THAN", B.math("ADD", 1.0, cos_a), 1e-9),
                         B.compare("GREATER_THAN", B.math("MINIMUM", l_prev, l_next), 1e-7))
-    r_max = B.switch("FLOAT", corner, NO_LIMIT,
-                     B.math("MULTIPLY", B.math("MINIMUM", room_prev, room_next), tan_half))
+    # In base-radius units (the point's radius is weight x base).
+    w_pt = B.named("_cr_ww", "FLOAT")
+    r_max = B.switch("FLOAT", B.bool_and(corner, B.compare("GREATER_THAN", w_pt, 1e-9)), NO_LIMIT,
+                     B.math("DIVIDE", B.math("MULTIPLY", B.math("MINIMUM", room_prev, room_next), tan_half), w_pt))
     stat = B.node("GeometryNodeAttributeStatistic", domain="POINT", data_type="FLOAT")
     B.link(curves, stat.inputs["Geometry"])
     B.link(r_max, stat.inputs["Attribute"])
@@ -413,15 +534,16 @@ def _wires(B, gi):
     B.link(curves, size.inputs["Geometry"])
     limit = B.switch("FLOAT", B.compare("GREATER_THAN", size.outputs["Point Count"], 0, data_type="INT"),
                      NO_LIMIT, stat.outputs["Min"])
-    return B.switch("GEOMETRY", has_wire, gi.outputs["Geometry"], del_edges.outputs["Geometry"]), curves, limit
+    return B.switch("GEOMETRY", has_wire, geo_in, del_edges.outputs["Geometry"]), curves, limit
 
 
 def _wire_fillet(B, gi, curves, uniform_limit):
     """Round the wire corners with true circular arcs of radius r (like Bevel's
     Vertices mode) by Blender's Fillet Curve node, then turn them back into edges."""
     B.stage("0b. Wire edges: round polyline corners with arcs of radius r")
-    radius = B.math("MAXIMUM", gi.outputs["Radius"], 0.0)
-    radius = _menu(B, gi, "FLOAT", (B.math("MINIMUM", radius, uniform_limit), radius, radius))
+    base = B.math("MAXIMUM", gi.outputs["Radius"], 0.0)
+    base = _menu(B, gi, "FLOAT", (B.math("MINIMUM", base, uniform_limit), base, base))
+    radius = B.math("MULTIPLY", base, B.named("_cr_ww", "FLOAT"))
     fillet = B.node("GeometryNodeFilletCurve")
     B.link(curves, fillet.inputs["Curve"])
     B.link(radius, fillet.inputs["Radius"])
@@ -438,14 +560,14 @@ def _wire_fillet(B, gi, curves, uniform_limit):
     return to_mesh.outputs["Mesh"]
 
 
-def _edge_data(B, gi, src, wire_limit):
+def _edge_data(B, gi, src, wire_limit, rule):
     """Stages 1-3: clamp, per-edge offset, axis offset, direction and convexity.
 
     Returns the prepared geometry, a list of (show, message) warnings and the
     Uniform clamp's radius limit (shared with the wires, so one radius holds everywhere).
     """
     B.stage("1. Clamp: largest radius each edge can take without overlapping")
-    radius_in = gi.outputs["Radius"]
+    radius_in = B.math("MULTIPLY", rule.radius, rule.weight)     # this edge's radius before clamping
     ang = B.node("GeometryNodeInputMeshEdgeAngle")
     # Measured in 5.2.4: convex > 0, concave < 0 (the manual states the opposite).
     sigma = ang.outputs["Signed Angle"]
@@ -462,9 +584,9 @@ def _edge_data(B, gi, src, wire_limit):
     manifold = B.compare("EQUAL", coe.outputs["Total"], 2, data_type="INT")
     flipped = B.bool_and(manifold, B.compare("EQUAL", corner_vertex[0], corner_vertex[1], data_type="INT"))
     valid = B.bool_and(
-        gi.outputs["Selection"],
+        rule.selection,
         B.bool_not(flipped),
-        B.compare("GREATER_THAN", phi, gi.outputs["Angle Limit"]),
+        B.bool_or(B.bool_not(rule.by_angle), B.compare("GREATER_THAN", phi, gi.outputs["Angle Limit"])),
         B.compare("GREATER_THAN", phi, 1e-4),
         B.compare("LESS_THAN", phi, MAX_EDGE_ANGLE),
         B.compare("GREATER_THAN", radius_in, 0.0),
@@ -530,19 +652,25 @@ def _edge_data(B, gi, src, wire_limit):
         return B.switch("FLOAT", B.compare("GREATER_THAN", coe.outputs["Total"], 0, data_type="INT"), NO_LIMIT,
                         B.at_index("CORNER", "FLOAT", near, coe.outputs["Corner Index"]))
 
-    # Uniform: every offset is r * D, so each corner gives r <= |g| / shrink(D).
+    # Per Edge: with equal radii at a corner, r <= |g| / shrink(D).
     k_unit = shrink_of(unit_d)
     r_corner = B.switch("FLOAT", B.compare("GREATER_THAN", k_unit, 1e-9), NO_LIMIT, B.math("DIVIDE", g_len, k_unit))
+    # Uniform: one base radius R, each edge at R x its weight w (w = 1 unless
+    # Edges is Bevel Weight), so offsets are R w D and each corner gives
+    # R <= |g| / shrink(w D). Lowering R keeps the weights' ratios.
+    k_weighted = shrink_of(B.math("MULTIPLY", unit_d, rule.weight))
+    r_base = B.switch("FLOAT", B.compare("GREATER_THAN", k_weighted, 1e-9), NO_LIMIT,
+                      B.math("DIVIDE", g_len, k_weighted))
     stat = B.node("GeometryNodeAttributeStatistic", domain="CORNER", data_type="FLOAT")
     B.link(src, stat.inputs["Geometry"])
-    B.link(r_corner, stat.inputs["Attribute"])
+    B.link(r_base, stat.inputs["Attribute"])
     # The statistic of an empty mesh is 0: then there is no limit (wires only).
     corners = B.node("GeometryNodeAttributeDomainSize", component="MESH")
     B.link(src, corners.inputs["Geometry"])
     solid_limit = B.switch("FLOAT", B.compare("GREATER_THAN", corners.outputs["Face Corner Count"], 0, data_type="INT"),
                            NO_LIMIT, B.math("MULTIPLY", stat.outputs["Min"], CLAMP_SHARE))
-    uniform_limit = B.math("MINIMUM", solid_limit, wire_limit)
-    r_uniform = B.math("MINIMUM", radius_in, uniform_limit)
+    uniform_limit = B.math("MINIMUM", solid_limit, wire_limit)       # on the base radius
+    r_uniform = B.math("MULTIPLY", B.math("MINIMUM", rule.radius, uniform_limit), rule.weight)
 
     # Per Edge: start from each edge's own limit. Radii then differ, so check
     # every corner with the actual offsets; where one is violated, give its three
@@ -642,11 +770,12 @@ def _edge_data(B, gi, src, wire_limit):
     warnings = [(B.compare("GREATER_THAN", n_clamped.outputs["Sum"], 0.5), join.outputs["String"])]
     n_flipped = B.node("GeometryNodeAttributeStatistic", domain="EDGE", data_type="FLOAT")
     B.link(src, n_flipped.inputs["Geometry"])
-    B.link(gi.outputs["Selection"], n_flipped.inputs["Selection"])   # only edges the user asked for
+    B.link(rule.selection, n_flipped.inputs["Selection"])   # only edges the user asked for
     B.link(flipped, n_flipped.inputs["Attribute"])
     msg = B.node("FunctionNodeInputString")
     msg.string = "Some faces point the wrong way: their edges are not beveled. Recalculate normals (Shift N)."
     warnings.append((B.compare("GREATER_THAN", n_flipped.outputs["Sum"], 0.5), msg.outputs["String"]))
+    warnings.append((rule.missing, rule.missing_message))
 
     B.stage("2. Per-edge offset d = r tan(phi/2) and cylinder axis")
     d = B.math("MULTIPLY", radius, tan_half)
@@ -932,7 +1061,7 @@ def _snap(B, gi, geo, skeleton):
     return sp.outputs["Geometry"]
 
 
-def _finish(B, gi, geo, warnings):
+def _finish(B, gi, geo, warnings, normal_to_object=lambda n: n):
     """Stages 9-10: exact custom normals, bevel material, warnings."""
     B.stage("9. Custom normals: exact on the bevel, input shading on original faces")
     face_n = B.node("GeometryNodeFieldOnDomain", domain="FACE", data_type="FLOAT_VECTOR")
@@ -954,7 +1083,8 @@ def _finish(B, gi, geo, warnings):
     B.link(masked_e.outputs["Value"], per_point_e.inputs["Value"])
     on_strip = B.compare("GREATER_THAN", B.named("_cr_ef", "FLOAT"), 0.0)
     approx = B.switch("VECTOR", on_strip, smooth_bevel, B.vmath("NORMALIZE", per_point_e.outputs["Value"]))
-    on_bevel = B.switch("VECTOR", B.named("_cr_hasn", "BOOLEAN"), approx, B.named("_cr_n", "FLOAT_VECTOR"))
+    on_bevel = B.switch("VECTOR", B.named("_cr_hasn", "BOOLEAN"), approx,
+                        normal_to_object(B.named("_cr_n", "FLOAT_VECTOR")))
     # Original faces keep the input's shading: flat stays flat; smooth faces use the
     # average over the adjacent smooth original faces (the bevel doesn't bleed in).
     smooth = B.node("GeometryNodeInputShadeSmooth").outputs["Smooth"]

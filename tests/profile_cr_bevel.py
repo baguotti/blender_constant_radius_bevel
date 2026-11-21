@@ -34,9 +34,11 @@ def build_cut(cut):
     CB._interface(ng)
     B = CB.Builder(ng)
     gi = B.node("NodeGroupInput")
-    solid, wire_curves, wire_limit = CB._wires(B, gi)
+    geo_in = CB._scene_scale(B, gi)[0]
+    rule = CB._edge_rule(B, gi, geo_in)
+    solid, wire_curves, wire_limit = CB._wires(B, gi, geo_in, rule)
     stages = {"0 wires split": solid}
-    prepared, warnings, uniform_limit = CB._edge_data(B, gi, solid, wire_limit)
+    prepared, warnings, uniform_limit = CB._edge_data(B, gi, solid, wire_limit, rule)
     stages["1-3 clamp + edge data"] = prepared
     prepared = CB._vertex_modes(B, prepared)
     stages["4-5 vertex modes"] = prepared
@@ -49,9 +51,7 @@ def build_cut(cut):
     stages["9-10 normals, material"] = finished
     go = B.node("NodeGroupOutput")
     B.link(stages[cut], go.inputs["Geometry"])
-    for item in ng.interface.items_tree:
-        if getattr(item, "name", "") == "Clamp" and item.in_out == "INPUT":
-            item.default_value = CB.CLAMP_MODES[0]
+    CB.set_menu_defaults(ng)
     return ng, list(stages)
 
 

@@ -1,42 +1,42 @@
 {
   "blender": "5.2.4 LTS",
-  "repeat": 3,
+  "repeat": 2,
   "models": {
     "cube grid (all edges beveled)": {
-      "faces": 81000,
+      "faces": 12288,
       "configs": {
-        "native Mesh Bevel node alone": 3.81947706200026,
-        "CR Bevel default": 6.5893779809998705,
-        "Analytic Normals off": 4.275082269999984,
-        "Clamp None": 6.450051044999782,
-        "Clamp Per Edge": 7.251595545999862,
-        "Exact Profile off": 6.423921269999937
+        "native Mesh Bevel node alone": 0.48249528099995587,
+        "CR Bevel default": 0.9885425790000681,
+        "Analytic Normals off": 0.6613141220000216,
+        "Clamp None": 0.97296143199992,
+        "Clamp Per Edge": 1.157209449999982,
+        "Exact Profile off": 1.0494435860000522
       },
       "stages": {
-        "0 wires split": 0.003176402999997663,
-        "1-3 clamp + edge data": 0.08039791800001694,
-        "4-5 vertex modes": 0.17221143000006123,
-        "7 native bevel": 4.002698503999909,
-        "6+8 skeleton + snap": 4.258521675999873,
-        "9-10 normals, material": 6.626413334000063
+        "0 wires split": 0.0026729440000963223,
+        "1-3 clamp + edge data": 0.019060038999896278,
+        "4-5 vertex modes": 0.052399336999997104,
+        "7 native bevel": 0.6222416049999993,
+        "6+8 skeleton + snap": 0.6089027349999014,
+        "9-10 normals, material": 1.1293068749998838
       }
     },
     "subdivided Suzanne (angle limit 30 deg)": {
-      "faces": 31488,
+      "faces": 7872,
       "configs": {
-        "CR Bevel default": 0.09892414199975974,
-        "Analytic Normals off": 0.08012393800026985,
-        "Clamp None": 0.08480850500018278,
-        "Clamp Per Edge": 0.3041050780002479,
-        "Exact Profile off": 0.08088418899978933
+        "CR Bevel default": 0.05437730099993132,
+        "Analytic Normals off": 0.03697744200007946,
+        "Clamp None": 0.02937121299987666,
+        "Clamp Per Edge": 0.14714544299999943,
+        "Exact Profile off": 0.04225771899996289
       },
       "stages": {
-        "0 wires split": 0.003191796000010072,
-        "1-3 clamp + edge data": 0.03037942099990687,
-        "4-5 vertex modes": 0.05759397799965882,
-        "7 native bevel": 0.06730712700027652,
-        "6+8 skeleton + snap": 0.055945157000223844,
-        "9-10 normals, material": 0.09807503299998643
+        "0 wires split": 0.0019139500000164844,
+        "1-3 clamp + edge data": 0.012964696999915759,
+        "4-5 vertex modes": 0.027455108999902222,
+        "7 native bevel": 0.0287627220000104,
+        "6+8 skeleton + snap": 0.03370136200010165,
+        "9-10 normals, material": 0.04577988699998059
       }
     }
   }
