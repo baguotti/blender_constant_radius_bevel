@@ -48,6 +48,8 @@ It builds on Blender's own Mesh Bevel node (new in Blender 5.2), so the topology
 
 - **Exact constant radius on every edge**, convex and concave, from about 4° to 180° between faces.
 - **Exact corners:** a true sphere where three rounded edges meet, the true intersection where two meet, and clean ends where a rounded edge stops at an unrounded face, even a slanted one.
+- **Open meshes too:** a rounded edge that runs out at an open border (a mesh with missing faces) stays exact, ending in the plane of the missing face.
+- **Polylines:** corners of loose edges (wires without faces) are rounded with true arcs of the same radius, like the Bevel modifier's *Vertices* mode.
 - **Exact shading:** custom normals follow the true surface, original faces keep your smooth/flat shading, and normals survive deforming modifiers placed afterwards (armatures, lattices…).
 - **Overlap clamp:** lowers the radius where a bevel would overlap itself, either uniformly (keeps one radius) or per edge, with a warning on the modifier when it does.
 - **Safe on messy meshes:** boolean results, triangles, open boundaries, imported meshes with custom normals. Where no exact answer exists, it keeps Blender's native bevel there instead of guessing.
@@ -85,6 +87,7 @@ It builds on Blender's own Mesh Bevel node (new in Blender 5.2), so the topology
 | **Segments** | 4 | Number of faces across each round (1–256). |
 | **Angle Limit** | 30° | Only edges whose faces meet at more than this angle are rounded; flat or gently curved areas are left alone. Set it to 0° to allow every selected edge. |
 | **Clamp** | Uniform | How to avoid overlapping bevels when the radius is too large for the geometry. **Uniform** lowers the radius everywhere just enough, so it stays constant (CAD-like). **Per Edge** lowers it only on edges that need it, best for boolean results and busy models. **None** applies the radius as typed and may overlap. A warning on the modifier tells you when, and by how much, the radius was lowered. |
+| **Wire Corners** | On | Round the corners of loose edges (polylines without faces) with arcs of radius r, like Bevel's *Vertices* mode. Open ends stay where they are. |
 | **Shading > Analytic Normals** | On | Exact shading normals on the rounds; original faces keep their own smooth/flat shading. Turn it off for about 30% more speed while modelling heavy scenes. |
 | **Shading > Set Bevel Material / Bevel Material** | Off | Give the new bevel faces a material of their own. |
 | **Advanced > Exact Profile** | On | Off shows Blender's native profile, for comparison. |
@@ -119,6 +122,8 @@ CR Bevel is exact wherever the exact rolling-ball answer fits Blender's bevel to
 | Two rounded edges meeting (chain, cylinder rim) | Exact intersection of the two rounds |
 | Rounded edge continuing straight through extra vertices | Exact |
 | Rounded edge ending at an unrounded face, also slanted | Exact, and the end stays flat in that face |
+| Rounded edge ending at an open border (missing faces) | Exact, ending in the plane of the missing face |
+| Corners of polylines (loose edges, Wire Corners) | Exact circular arcs |
 | 4 or more rounded edges at one vertex, mixed convex/concave corners, different radii meeting (Per Edge) | Native bevel kept |
 | Corners, joints or ends at vertices with more than 3 faces (e.g. triangulated) | Native bevel kept |
 | Edges sharper than 4° between faces (knife edges) | Not rounded: the exact arc would be thinner than floating-point precision |
@@ -140,7 +145,7 @@ Accuracy, where exact: positions to about a millionth of the radius. Normals to 
 - Edges must be sharper than **Angle Limit**.
 - Radius must be above 0.
 - If you switched Selection to an attribute, check the attribute's name.
-- Only edges with exactly two faces can be rounded (no open borders).
+- On meshes with faces, only edges between exactly two faces are rounded (border edges of open meshes aren't). Edges without any faces are polylines: their corners are rounded by **Wire Corners**.
 
 **There's a warning "N edge(s) clamped…".** The radius was too large for some edges and was lowered to avoid overlaps. The message gives the smallest radius actually used. Lower the radius, or switch to **Per Edge** so only those edges shrink.
 

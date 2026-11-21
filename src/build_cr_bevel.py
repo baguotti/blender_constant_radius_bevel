@@ -16,7 +16,8 @@ How it works (math in docs/PLAN.md):
 
 Vertex modes (attribute _cr_mode, per original vertex):
     0 FALLBACK  no exact answer: the native geometry is kept
-    1 TERMINAL  one beveled edge ending at a 3-face vertex
+    1 TERMINAL  one beveled edge ending at a 3-face vertex, or at an open border
+                (2 faces; the two border edges give the end plane)
     2 PIPE      two collinear beveled edges on the same cylinder
     3 JOINT     two beveled edges whose axes cross, 3 faces, and both cylinders
                 touch the third (unbeveled) edge at nearly the same point
@@ -241,6 +242,9 @@ def _interface(ng):
     add("Clamp", "NodeSocketMenu",
         description="Avoid overlapping bevels. Uniform: lower the radius everywhere so it stays constant. "
                     "Per Edge: lower it only on edges that need it. None: no limit")
+    add("Wire Corners", "NodeSocketBool", default=True,
+        description="Round the corners of loose edges (polylines without faces) with arcs of the same radius, "
+                    "like the Bevel modifier's Vertices mode")
     shading = it.new_panel("Shading", default_closed=True)
     add("Analytic Normals", "NodeSocketBool", shading, default=True,
         description="Exact shading normals on the bevel; original faces keep their smooth/flat shading")
@@ -269,12 +273,17 @@ def build(name=GROUP_NAME, debug_output=None):
     gi = B.node("NodeGroupInput")
     gi.location = (-400, 0)
 
-    prepared, warnings = _edge_data(B, gi)
+    solid, wires = _wires(B, gi)
+    prepared, warnings = _edge_data(B, gi, solid)
     prepared = _vertex_modes(B, prepared)
     skeleton = _skeleton(B, gi, prepared)
     beveled = _bevel(B, gi, prepared)
     snapped = _snap(B, gi, beveled, skeleton)
     finished = _finish(B, gi, snapped, warnings)
+    join = B.node("GeometryNodeJoinGeometry")
+    B.link(wires, join.inputs["Geometry"])        # multi-input: stacked on top
+    B.link(finished, join.inputs["Geometry"])
+    finished = join.outputs["Geometry"]
 
     B.stage("11. Remove internal attributes")
     rm = B.node("GeometryNodeRemoveAttribute")
@@ -292,7 +301,32 @@ def build(name=GROUP_NAME, debug_output=None):
     return ng
 
 
-def _edge_data(B, gi):
+def _wires(B, gi):
+    """Stage 0: loose edges (no faces), e.g. polylines, get their corners rounded
+    with true circular arcs of radius r (like Bevel's Vertices mode) by Blender's
+    Fillet Curve node. Returns (everything else, rounded wires)."""
+    B.stage("0. Wire edges: round polyline corners with arcs of radius r")
+    nb = B.node("GeometryNodeInputMeshEdgeNeighbors")
+    wire = B.bool_and(gi.outputs["Wire Corners"], gi.outputs["Selection"],
+                      B.compare("EQUAL", nb.outputs["Face Count"], 0, data_type="INT"))
+    sep = B.node("GeometryNodeSeparateGeometry", domain="EDGE")
+    B.link(gi.outputs["Geometry"], sep.inputs["Geometry"])
+    B.link(wire, sep.inputs["Selection"])
+    to_curve = B.node("GeometryNodeMeshToCurve")
+    B.link(sep.outputs["Selection"], to_curve.inputs["Mesh"])
+    fillet = B.node("GeometryNodeFilletCurve")
+    B.link(to_curve.outputs["Curve"], fillet.inputs["Curve"])
+    B.link(gi.outputs["Radius"], fillet.inputs["Radius"])
+    B.link(gi.outputs["Segments"], fillet.inputs["Count"])        # Poly mode: Count = arc segments
+    fillet.inputs["Mode"].default_value = "Poly"
+    # Clamp Uniform / Per Edge: never let neighbouring arcs overlap.
+    B.link(B.compare("NOT_EQUAL", _menu(B, gi, "INT", (0, 1, 2)), 2, data_type="INT"), fillet.inputs["Limit Radius"])
+    to_mesh = B.node("GeometryNodeCurveToMesh")
+    B.link(fillet.outputs["Curve"], to_mesh.inputs["Curve"])
+    return sep.outputs["Inverted"], to_mesh.outputs["Mesh"]
+
+
+def _edge_data(B, gi, src):
     """Stages 1-3: clamp, per-edge offset, axis offset, direction and convexity.
 
     Returns the prepared geometry and a list of (show, message) warnings.
@@ -387,7 +421,7 @@ def _edge_data(B, gi):
     k_unit = shrink_of(unit_d)
     r_corner = B.switch("FLOAT", B.compare("GREATER_THAN", k_unit, 1e-9), NO_LIMIT, B.math("DIVIDE", g_len, k_unit))
     stat = B.node("GeometryNodeAttributeStatistic", domain="CORNER", data_type="FLOAT")
-    B.link(gi.outputs["Geometry"], stat.inputs["Geometry"])
+    B.link(src, stat.inputs["Geometry"])
     B.link(r_corner, stat.inputs["Attribute"])
     r_uniform = B.math("MINIMUM", radius_in, B.math("MULTIPLY", stat.outputs["Min"], CLAMP_SHARE))
 
@@ -399,7 +433,7 @@ def _edge_data(B, gi):
     # (Straight chains longer than PER_EDGE_PASSES pieces may not fully equalize.)
     steps = _menu(B, gi, "INT", (0, PER_EDGE_PASSES, 0))
     r_start = B.math("MINIMUM", radius_in, B.math("MULTIPLY", per_edge_min(r_corner), CLAMP_SHARE))
-    geo = B.store(gi.outputs["Geometry"], "_cr_rpe", r_start, "FLOAT", "EDGE")
+    geo = B.store(src, "_cr_rpe", r_start, "FLOAT", "EDGE")
     rin, rout = B.node("GeometryNodeRepeatInput"), B.node("GeometryNodeRepeatOutput")
     rin.pair_with_output(rout)
     B.link(steps, rin.inputs["Iterations"])
@@ -453,7 +487,7 @@ def _edge_data(B, gi):
         B.link(part, join.inputs["Strings"])
     warnings = [(B.compare("GREATER_THAN", n_clamped.outputs["Sum"], 0.5), join.outputs["String"])]
     n_flipped = B.node("GeometryNodeAttributeStatistic", domain="EDGE", data_type="FLOAT")
-    B.link(gi.outputs["Geometry"], n_flipped.inputs["Geometry"])
+    B.link(src, n_flipped.inputs["Geometry"])
     B.link(gi.outputs["Selection"], n_flipped.inputs["Selection"])   # only edges the user asked for
     B.link(flipped, n_flipped.inputs["Attribute"])
     msg = B.node("FunctionNodeInputString")
@@ -556,7 +590,14 @@ def _vertex_modes(B, geo):
     is2 = B.compare("EQUAL", count, 2.0)
     is3 = B.compare("EQUAL", count, 3.0)
     three_faces = B.compare("EQUAL", nb.outputs["Face Count"], 3, data_type="INT")
-    terminal = B.bool_and(is1, three_faces)
+    # TERMINAL also at an open border: the vertex has 2 faces and, besides the
+    # beveled edge, two border edges. They span the plane of the "missing" face,
+    # which the bevel end closes against (exactly like a real end face).
+    border_cross = B.vmath("CROSS_PRODUCT", away1, away2)
+    open_end = B.bool_and(B.compare("EQUAL", nb.outputs["Face Count"], 2, data_type="INT"),
+                          B.compare("EQUAL", nb.outputs["Vertex Count"], 3, data_type="INT"),
+                          B.compare("GREATER_THAN", B.vmath("LENGTH", border_cross), 1e-3))
+    terminal = B.bool_and(is1, B.bool_or(three_faces, open_end))
     pipe = B.bool_and(is2, B.bool_not(crossing), same01, B.compare("LESS_THAN", B.dist_to_line(a1, a0, u0), tol_geo))
     # JOINT and CORNER need the standard layout: exactly 3 faces at the vertex
     # (otherwise e.g. folded faces or extra unbeveled edges break the formulas).
@@ -591,6 +632,8 @@ def _vertex_modes(B, geo):
             better = B.compare("GREATER_THAN", a, best_a)
             best_n = B.switch("VECTOR", better, best_n, n)
             best_a = B.math("MAXIMUM", a, best_a)
+
+    best_n = B.switch("VECTOR", open_end, best_n, B.vmath("NORMALIZE", border_cross))
 
     B.stage("5. Store per-vertex data")
     geo = B.store(geo, "_cr_mode", mode, "INT", "POINT")

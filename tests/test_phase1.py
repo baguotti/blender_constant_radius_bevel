@@ -222,8 +222,11 @@ for name, (ob, kw) in cases.items():
     except Exception as exc:  # pragma: no cover
         robust[name] = dict(ok=False, error=str(exc))
 report["robustness"] = robust
+# A polyline (loose edges) gets its corner rounded by Wire Corners (on by default);
+# every other case must come out unchanged.
 check("robustness_cases_unchanged_topology",
-      sum(1 for v in robust.values() if not v["ok"] or v["verts_in"] != v["verts_out"]), 0)
+      sum(1 for k, v in robust.items() if not v["ok"] or
+          (v["verts_in"] != v["verts_out"]) != (k == "loose_edges_only")), 0)
 
 # ---------------------------------------------------------------- 5. performance
 

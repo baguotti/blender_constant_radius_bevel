@@ -107,7 +107,15 @@
       "finite": true,
       "same_topology": true,
       "flips": 0,
-      "warnings": []
+      "warnings": [],
+      "exact_error": 3.303090186553467e-07,
+      "mode_counts": {
+        "fallback": 0,
+        "terminal": 4,
+        "pipe": 0,
+        "joint": 0,
+        "corner": 4
+      }
     },
     "cube with a zero-length edge": {
       "verts": 157,
@@ -118,7 +126,7 @@
       "warnings": []
     },
     "cube with loose vertex and edge": {
-      "verts": 155,
+      "verts": 154,
       "faces": 150,
       "finite": true,
       "same_topology": true,
@@ -243,6 +251,54 @@
         "pipe": 0,
         "joint": 0,
         "corner": 8
+      }
+    },
+    "profile bar open on both sides": {
+      "verts": 56,
+      "faces": 28,
+      "finite": true,
+      "same_topology": true,
+      "flips": 0,
+      "warnings": [],
+      "exact_error": 8.684870274333623e-07,
+      "mode_counts": {
+        "fallback": 0,
+        "terminal": 8,
+        "pipe": 0,
+        "joint": 0,
+        "corner": 0
+      }
+    },
+    "profile bar open on one side": {
+      "verts": 176,
+      "faces": 161,
+      "finite": true,
+      "same_topology": true,
+      "flips": 0,
+      "warnings": [],
+      "exact_error": 1.1054805071353258e-06,
+      "mode_counts": {
+        "fallback": 0,
+        "terminal": 4,
+        "pipe": 0,
+        "joint": 0,
+        "corner": 4
+      }
+    },
+    "profile bar open on both sides, slanted open end": {
+      "verts": 56,
+      "faces": 28,
+      "finite": true,
+      "same_topology": true,
+      "flips": 0,
+      "warnings": [],
+      "exact_error": 1.0081966513031393e-06,
+      "mode_counts": {
+        "fallback": 0,
+        "terminal": 8,
+        "pipe": 0,
+        "joint": 0,
+        "corner": 0
       }
     },
     "skew box corners, 2 segments": {
@@ -475,7 +531,7 @@
     },
     "256 segments": {
       "verts": 396296,
-      "seconds": 0.8997568439999668
+      "seconds": 0.8575539099999787
     }
   },
   "checks": [
@@ -560,6 +616,11 @@
       "detail": "{'verts': 96, 'faces': 85, 'finite': True, 'same_topology': True, 'flips': 0, 'warnings': []}"
     },
     {
+      "name": "open box (boundary edges): exact (error 3.3e-07 r, tolerance 1e-04)",
+      "ok": true,
+      "detail": "{'fallback': 0, 'terminal': 4, 'pipe': 0, 'joint': 0, 'corner': 4}"
+    },
+    {
       "name": "cube with a zero-length edge: finite, same topology as native, no flips",
       "ok": true,
       "detail": "{'verts': 157, 'faces': 154, 'finite': True, 'same_topology': True, 'flips': 0, 'warnings': []}"
@@ -567,7 +628,7 @@
     {
       "name": "cube with loose vertex and edge: finite, same topology as native, no flips",
       "ok": true,
-      "detail": "{'verts': 155, 'faces': 150, 'finite': True, 'same_topology': True, 'flips': 0, 'warnings': []}"
+      "detail": "{'verts': 154, 'faces': 150, 'finite': True, 'same_topology': True, 'flips': 0, 'warnings': []}"
     },
     {
       "name": "cube with loose vertex and edge: exact (error 3.3e-07 r, tolerance 1e-04)",
@@ -653,6 +714,66 @@
       "name": "input smooth/flat face flags survive",
       "ok": true,
       "detail": "18"
+    },
+    {
+      "name": "profile bar open on both sides: finite, same topology as native, no flips",
+      "ok": true,
+      "detail": "{'verts': 56, 'faces': 28, 'finite': True, 'same_topology': True, 'flips': 0, 'warnings': []}"
+    },
+    {
+      "name": "profile bar open on both sides: exact (error 8.7e-07 r, tolerance 1e-04)",
+      "ok": true,
+      "detail": "{'fallback': 0, 'terminal': 8, 'pipe': 0, 'joint': 0, 'corner': 0}"
+    },
+    {
+      "name": "profile bar open on both sides: open ends are exact (no fallback)",
+      "ok": true,
+      "detail": "{'fallback': 0, 'terminal': 8, 'pipe': 0, 'joint': 0, 'corner': 0}"
+    },
+    {
+      "name": "profile bar open on one side: finite, same topology as native, no flips",
+      "ok": true,
+      "detail": "{'verts': 176, 'faces': 161, 'finite': True, 'same_topology': True, 'flips': 0, 'warnings': []}"
+    },
+    {
+      "name": "profile bar open on one side: exact (error 1.1e-06 r, tolerance 1e-04)",
+      "ok": true,
+      "detail": "{'fallback': 0, 'terminal': 4, 'pipe': 0, 'joint': 0, 'corner': 4}"
+    },
+    {
+      "name": "profile bar open on one side: open ends are exact (no fallback)",
+      "ok": true,
+      "detail": "{'fallback': 0, 'terminal': 4, 'pipe': 0, 'joint': 0, 'corner': 4}"
+    },
+    {
+      "name": "profile bar open on both sides, slanted open end: finite, same topology as native, no flips",
+      "ok": true,
+      "detail": "{'verts': 56, 'faces': 28, 'finite': True, 'same_topology': True, 'flips': 0, 'warnings': []}"
+    },
+    {
+      "name": "profile bar open on both sides, slanted open end: exact (error 1.0e-06 r, tolerance 1e-04)",
+      "ok": true,
+      "detail": "{'fallback': 0, 'terminal': 8, 'pipe': 0, 'joint': 0, 'corner': 0}"
+    },
+    {
+      "name": "profile bar open on both sides, slanted open end: open ends are exact (no fallback)",
+      "ok": true,
+      "detail": "{'fallback': 0, 'terminal': 8, 'pipe': 0, 'joint': 0, 'corner': 0}"
+    },
+    {
+      "name": "polyline open 3D zigzag: every corner an arc of radius r (2.2e-06 r), ends kept",
+      "ok": true,
+      "detail": "23"
+    },
+    {
+      "name": "polyline closed square loop: every corner an arc of radius r (4.4e-07 r), ends kept",
+      "ok": true,
+      "detail": "28"
+    },
+    {
+      "name": "Wire Corners off: polyline left unchanged",
+      "ok": true,
+      "detail": ""
     },
     {
       "name": "skew box corners, 2 segments: finite, same topology as native, no flips",

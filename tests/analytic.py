@@ -209,10 +209,17 @@ def classify_vertices(bm, frames, r, gap_tol=1e-3, coord_tol=1e-6):
         info = dict(mode=FALLBACK, centre=None, end_n=None, u=lines[0][1], edges=es)
         tol = max(gap_tol * r, coord_tol * v.co.length)   # same rule as the node group
         nf = len(v.link_faces)
+        border = [e for e in v.link_edges if e.index not in frames]
         if len(es) == 1 and nf == 3:
             u = lines[0][1]
             info["end_n"] = max((f.normal for f in v.link_faces), key=lambda n: abs(n.dot(u))).copy()
             info["mode"] = TERMINAL
+        elif len(es) == 1 and nf == 2 and len(v.link_edges) == 3:
+            # open border: the two border edges span the end plane
+            b0, b1 = [(e.other_vert(v).co - v.co).normalized() for e in border]
+            n = b0.cross(b1)
+            if n.length > 1e-3:
+                info.update(mode=TERMINAL, end_n=n.normalized())
         elif len(es) in (2, 3):
             (a0, u0, s0), (a1, u1, s1) = lines[:2]
             b = u0.dot(u1)

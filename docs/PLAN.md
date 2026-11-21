@@ -8,7 +8,7 @@ Build a reusable Geometry Nodes group, "CR Bevel", that bevels selected mesh edg
 
 - **Target:** Blender 5.2 LTS minimum, because the Mesh Bevel node first shipped there. Build in 5.2 so the file also opens in 5.3.
 - **Deliverable:** a .blend asset library with the group flagged as a modifier. A thin extension (add-on) is optional.
-- **Status:** v1.0.3 after seven bug passes ([REVIEW_FINDINGS.md](REVIEW_FINDINGS.md)). Phase 4 done: installable extension. Phase 3: production-ready. Exact geometry and normals, overlap clamp, input shading kept. See [PHASE0](PHASE0_FINDINGS.md), [PHASE1](PHASE1_FINDINGS.md), [PHASE2](PHASE2_FINDINGS.md) [PHASE3](PHASE3_FINDINGS.md) and [PHASE4](PHASE4_FINDINGS.md) findings.
+- **Status:** v1.0.4: open meshes and polylines. v1.0.3 after seven bug passes ([REVIEW_FINDINGS.md](REVIEW_FINDINGS.md)). Phase 4 done: installable extension. Phase 3: production-ready. Exact geometry and normals, overlap clamp, input shading kept. See [PHASE0](PHASE0_FINDINGS.md), [PHASE1](PHASE1_FINDINGS.md), [PHASE2](PHASE2_FINDINGS.md) [PHASE3](PHASE3_FINDINGS.md) and [PHASE4](PHASE4_FINDINGS.md) findings.
 
 ## Background: why the 2019 attempt failed
 
@@ -79,6 +79,8 @@ Notation: n1, n2 = the edge's face normals; φ = angle between them = |Signed An
 | 3 edges, same sign, same r | Sphere | Yes |
 | Chain joint (3 faces) | Cylinder–cylinder intersection; the seam end next to an unbeveled edge stays native | Yes, except that one vertex when the angles differ |
 | Terminal end | Cylinder ∩ end face | Yes |
+| Terminal end at an open border (2 faces) | Cylinder ∩ the plane of the two border edges (the missing face) | Yes |
+| Polyline corners (wire edges) | Fillet Curve: circular arcs of radius r | Yes |
 | Concave edge | s = −1 | Yes |
 | 4+ edges, mixed convex/concave, >3 faces at a corner/joint | Native geometry kept unchanged (FALLBACK) | No |
 | Knife edge (φ near 180°), overlap | Clamp, flag `cr_clamped` | Clamped |

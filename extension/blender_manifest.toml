@@ -1,7 +1,7 @@
 schema_version = "1.0.0"
 
 id = "cr_bevel"
-version = "1.0.3"
+version = "1.0.4"
 name = "CR Bevel"
 tagline = "Constant-radius bevel with exact rolling-ball corners"
 maintainer = "baguotti"

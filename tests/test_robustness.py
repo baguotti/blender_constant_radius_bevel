@@ -202,7 +202,7 @@ def cube_with_loose_parts():
 
 
 run_case("triangulated cube", triangulated_cube, 0.15)
-run_case("open box (boundary edges)", open_box, 0.15)
+run_case("open box (boundary edges)", open_box, 0.15, exact_r=0.15)
 run_case("cube with a zero-length edge", cube_with_duplicate_vertex, 0.15)
 run_case("cube with loose vertex and edge", cube_with_loose_parts, 0.15, exact_r=0.15)
 
@@ -269,6 +269,73 @@ me.attributes["cr_bevel_face"].data.foreach_get("value", flags)
 orig = [p for p in me.polygons if not flags[p.index]]
 check("input smooth/flat face flags survive",
       all(p.use_smooth == (abs(p.normal.z) < 0.5) for p in orig), len(orig))
+
+# ---------------------------------------------------------------- open meshes (reported by the user)
+
+
+def profile_bar(name, open_front=False, open_back=False, tilt=0.0):
+    """The user's test shape: a profile with a 45 and a 135 degree edge, extruded
+    along y. Optionally without its front/back face; `tilt` slants the front."""
+    prof = [(1.0, 1.0), (3.0, -1.0), (-1.0, -1.0), (-1.0, 1.0)]       # x, z
+    front = [(x, -1.0 - tilt * x, z) for x, z in prof]
+    back = [(x, 1.0, z) for x, z in prof]
+    v = front + back
+    faces = [[i, (i + 1) % 4, 4 + (i + 1) % 4, 4 + i] for i in range(4)]
+    if not open_front:
+        faces.append([3, 2, 1, 0])
+    if not open_back:
+        faces.append([4, 5, 6, 7])
+    ob = A.new_object(name, v, faces)
+    bm = bmesh.new()
+    bm.from_mesh(ob.data)
+    bmesh.ops.recalc_face_normals(bm, faces=bm.faces[:])
+    bm.to_mesh(ob.data)
+    bm.free()
+    return ob
+
+
+for label, kw in (("open on both sides", dict(open_front=True, open_back=True)),
+                  ("open on one side", dict(open_front=True)),
+                  ("open on both sides, slanted open end", dict(open_front=True, open_back=True, tilt=0.3))):
+    _, st = run_case(f"profile bar {label}", lambda: profile_bar("bar", **kw), 0.1, segments=6,
+                     angle=math.radians(20), exact_r=0.1)
+    check(f"profile bar {label}: open ends are exact (no fallback)",
+          st.get("mode_counts", {}).get("fallback", 1) == 0, st.get("mode_counts"))
+
+# ---------------------------------------------------------------- polylines (wire edges)
+
+
+def polyline(name, pts, closed=False):
+    n = len(pts)
+    edges = [(i, i + 1) for i in range(n - 1)] + ([(n - 1, 0)] if closed else [])
+    return A.new_object(name, pts, [], edges)
+
+
+for label, pts, closed in (("open 3D zigzag", [(0, 0, 0), (2, 0, 0), (2.5, 1.5, 0.5), (1, 2, 1.5), (1, 3, 0)], False),
+                           ("closed square loop", [(0, 0, 0), (2, 0, 0), (2, 2, 0), (0, 2, 0)], True)):
+    r = 0.15
+    ob = polyline(f"wire_{label}", pts, closed)
+    A.add_cr_bevel(ob, ng, r, 6)
+    me = A.evaluate(ob)
+    P = np.array([v.co[:] for v in me.vertices])
+    corners = pts if closed else pts[1:-1]
+    worst = 0.0
+    for c in corners:
+        near = P[np.linalg.norm(P - np.array(c), axis=1) < 3 * r]
+        cen = near.mean(0)
+        _, _, vt = np.linalg.svd(near - cen)          # arc plane
+        uv = (near - cen) @ vt[:2].T
+        sol = np.linalg.lstsq(np.c_[2 * uv, np.ones(len(uv))], (uv ** 2).sum(1), rcond=None)[0]
+        rad = math.sqrt(sol[2] + sol[:2] @ sol[:2])
+        worst = max(worst, abs(rad - r) / r, float(np.abs(np.linalg.norm(uv - sol[:2], axis=1) - rad).max()) / r)
+    ends_ok = closed or all(np.min(np.linalg.norm(P - np.array(e), axis=1)) < 1e-6 for e in (pts[0], pts[-1]))
+    check(f"polyline {label}: every corner an arc of radius r ({worst:.1e} r), ends kept",
+          worst < 1e-5 and ends_ok and len(me.polygons) == 0, len(P))
+
+ob = polyline("wire_off", [(0, 0, 0), (2, 0, 0), (2, 2, 0)])
+mod = A.add_cr_bevel(ob, ng, 0.15, 6)
+A.set_input(mod, "Wire Corners", False)
+check("Wire Corners off: polyline left unchanged", len(A.evaluate(ob).vertices) == 3)
 
 # ---------------------------------------------------------------- pass 2: segment parity at corners
 
