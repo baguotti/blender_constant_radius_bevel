@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: CC0-1.0
 """Phase 1 tests: exact cylindrical edge strips.
 
 Run:  blender -b --factory-startup --python tests/test_phase1.py

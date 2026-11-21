@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: CC0-1.0
 """Phase 0 harness: run Blender's Mesh Bevel node with constant-radius offsets
 and measure the result against the analytic rolling-ball surface.
 

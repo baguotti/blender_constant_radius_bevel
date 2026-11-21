@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: CC0-1.0
 """Phase 3 tests: clamp, exact normals, bevel material, UVs, modifier stacking.
 
 Run:  blender -b --factory-startup --python tests/test_phase3.py

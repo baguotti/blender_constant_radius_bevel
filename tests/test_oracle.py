@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: CC0-1.0
 """Independent oracle: convex solids with every edge rounded.
 
 Run:  blender -b --factory-startup --python tests/test_oracle.py

@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: CC0-1.0
 """Phase 2 tests: corners, chain joints, straight continuations, slanted end caps.
 
 Run:  blender -b --factory-startup --python tests/test_phase2.py

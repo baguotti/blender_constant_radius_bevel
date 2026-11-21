@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: CC0-1.0
 """Analytic reference geometry and measurements for CR Bevel tests.
 
 Everything here works on the ORIGINAL mesh (bmesh) to compute where the exact

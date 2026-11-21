@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: CC0-1.0
 """Build the "CR Bevel" Geometry Nodes group (constant-radius bevel).
 
 Usage inside Blender (headless or UI):

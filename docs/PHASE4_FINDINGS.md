@@ -13,7 +13,7 @@
 
 | Path | Contents |
 | --- | --- |
-| `extension/blender_manifest.toml` | Extension manifest: id `cr_bevel`, version 1.0.0, Blender 5.2+, GPL-3.0-or-later |
+| `extension/blender_manifest.toml` | Extension manifest: id `cr_bevel`, version 1.0.0, Blender 5.2+, GPL-3.0-or-later (the bundled node group library is CC0 since 1.1) |
 | `extension/__init__.py` | One operator, "CR Bevel", in Add Modifier > Generate. It appends the node group from the bundled `.blend` the first time it's used in a file, then reuses that copy, so your edits to it are kept |
 | `library/cr_bevel_library.blend` | The same node group as an asset, for anyone who prefers the Asset Browser |
 

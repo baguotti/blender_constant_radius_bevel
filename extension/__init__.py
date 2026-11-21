@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
 """CR Bevel: constant-radius bevel as a Geometry Nodes modifier.
 
 Adds "CR Bevel" and "CR Bevel (Scene Units)" to Add Modifier > Generate. The node

@@ -2,7 +2,7 @@
 
 **CR Bevel** is a Geometry Nodes modifier for Blender 5.2+ that rounds edges with a **true constant radius**, like the fillet tool in CAD software. Every rounded edge is an exact circular arc of the radius you type, every corner where three rounded edges meet is an exact sphere, and the shading follows the true curved surface.
 
-**[⬇ Download the latest release](https://github.com/baguotti/blender_constant_radius_bevel/releases/latest)** · Blender 5.2 LTS or newer · Free and open source (GPL-3.0-or-later)
+**[⬇ Download the latest release](https://github.com/baguotti/blender_constant_radius_bevel/releases/latest)** · Blender 5.2 LTS or newer · Free and open source (node groups CC0, add-on GPL-3.0-or-later)
 
 ![Native bevel (top) and CR Bevel (bottom) on the same object, reflecting a striped environment](docs/images/corner_closeup.png)
 
@@ -221,4 +221,7 @@ GitHub Actions then downloads Blender 5.2 LTS, builds the zip from source, runs 
 
 Inspired by the 2019 [Bevel Constant Radius project](https://devtalk.blender.org/t/fall-2019-bevel-constant-radius-project/9872) by Hans Goudey, and built on the Mesh Bevel node by Howard Trickey (Blender 5.2).
 
-Licensed under the **GNU General Public License v3.0 or later**: see [LICENSE](LICENSE).
+- **The CR Bevel node groups, and everything else in this repository** (the script that builds them, tests, docs): **CC0**, public domain. Copy them into your files or asset packs, change them, sell them, no credit needed.
+- **The add-on code** (`extension/__init__.py`, the Add Modifier menu entry) and the extension zip built from it: **GPL-3.0-or-later**, as Blender's Extensions platform requires for add-ons. The node groups inside the zip stay CC0.
+
+What you make with CR Bevel (models, renders) is yours and isn't covered by either license. Details: [LICENSE](LICENSE), full texts in [LICENSES/](LICENSES/).

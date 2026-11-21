@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: CC0-1.0
 """Shading renders: native Mesh Bevel (top row) vs CR Bevel (bottom row).
 
 Run:  blender -b --factory-startup --python tests/render_phase3.py

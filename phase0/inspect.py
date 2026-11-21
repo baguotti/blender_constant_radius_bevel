@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: CC0-1.0
 import bpy
 names=[n for n in dir(bpy.types) if 'Bevel' in n and n.startswith('GeometryNode')]
 print("TYPES",names)

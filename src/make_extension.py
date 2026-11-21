@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: CC0-1.0
 """Build the installable extension: dist/cr_bevel-<version>.zip
 
 Run:  blender -b --factory-startup --python src/make_extension.py

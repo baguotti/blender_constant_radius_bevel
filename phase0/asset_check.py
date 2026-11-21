@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: CC0-1.0
 import bpy
 ng=bpy.data.node_groups.new("CR Bevel test","GeometryNodeTree")
 print("has is_modifier:", hasattr(ng,"is_modifier"), "has is_tool:", hasattr(ng,"is_tool"))

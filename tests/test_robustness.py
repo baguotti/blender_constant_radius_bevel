@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: CC0-1.0
 """Robustness tests: awkward inputs the phase tests don't cover.
 
 Run:  blender -b --factory-startup --python tests/test_robustness.py

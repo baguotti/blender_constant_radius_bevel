@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: CC0-1.0
 """Fuzz tests with random shapes (fixed seeds, so failures are reproducible).
 
 Run:  blender -b --factory-startup --python tests/test_fuzz.py

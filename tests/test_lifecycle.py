@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: CC0-1.0
 """Lifecycle tests: what a user does with the modifier beyond one evaluation.
 
 Run:  blender -b --factory-startup --python tests/test_lifecycle.py

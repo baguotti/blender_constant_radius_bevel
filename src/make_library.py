@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: CC0-1.0
 """Build library/cr_bevel_library.blend: the CR Bevel group, marked as a modifier asset.
 
 Run:  blender -b --factory-startup --python src/make_library.py
@@ -24,6 +25,7 @@ def build_library(path=LIBRARY):
         ng.use_fake_user = True
         ng.asset_mark()
         ng.asset_data.description = ng.description
+        ng.asset_data.license = "CC0-1.0"
     os.makedirs(os.path.dirname(path), exist_ok=True)
     bpy.ops.wm.save_as_mainfile(filepath=path, compress=True)
     backup = path + "1"

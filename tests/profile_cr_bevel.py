@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: CC0-1.0
 """Performance profile of CR Bevel: total time per configuration and time per stage.
 
 Run:  blender -b --factory-startup --python tests/profile_cr_bevel.py [-- quick]

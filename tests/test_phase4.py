@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: CC0-1.0
 """Phase 4 tests: the installable extension.
 
 Run (after src/make_extension.py):
