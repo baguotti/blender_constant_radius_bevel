@@ -199,6 +199,13 @@ for t in phase1 phase2 phase3 phase4 robustness oracle fuzz lifecycle; do blende
 
 Shading renders come from `tests/render_phase3.py`; look at them after any visual change.
 
+**Releasing a new version:**
+1. Bump `version` in `extension/blender_manifest.toml`.
+2. Add `docs/release_notes/vX.Y.Z.md`.
+3. Push a tag `vX.Y.Z`, or run the **Release** workflow from the Actions tab.
+
+GitHub Actions then downloads Blender 5.2 LTS, builds the zip from source, runs the install test and publishes the release with the zip attached.
+
 ## Credits and license
 
 Inspired by the 2019 [Bevel Constant Radius project](https://devtalk.blender.org/t/fall-2019-bevel-constant-radius-project/9872) by Hans Goudey, and built on the Mesh Bevel node by Howard Trickey (Blender 5.2).

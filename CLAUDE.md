@@ -57,3 +57,4 @@ Constant-radius bevel for Blender, built as a Geometry Nodes modifier on top of 
     - commit to `main`
 - Visual checks: render with `tests/render_phase3.py` and LOOK at the images (numeric tests missed three shading bugs in Phase 3). The user checks the Add Modifier menu in their own Blender.
 - Don't commit `*.blend1` or `__pycache__/`.
+- Releasing: bump `version` in `extension/blender_manifest.toml`, add `docs/release_notes/vX.Y.Z.md`, then start `.github/workflows/release.yml`. This session can't push tags or create releases directly, so dispatch it: `gh api -X POST repos/baguotti/blender_constant_radius_bevel/actions/workflows/release.yml/dispatches -f ref=main`. CI builds, tests and publishes.
