@@ -88,7 +88,7 @@ It builds on Blender's own Mesh Bevel node (new in Blender 5.2), so the topology
 | **Angle Limit** | 30° | Only edges whose faces meet at more than this angle are rounded; flat or gently curved areas are left alone. Set it to 0° to allow every selected edge. |
 | **Clamp** | Uniform | How to avoid overlapping bevels when the radius is too large for the geometry. **Uniform** lowers the radius everywhere just enough, so it stays constant (CAD-like). **Per Edge** lowers it only on edges that need it, best for boolean results and busy models. **None** applies the radius as typed and may overlap. A warning on the modifier tells you when, and by how much, the radius was lowered. |
 | **Wire Corners** | On | Round the corners of loose edges (polylines without faces) with arcs of radius r, like Bevel's *Vertices* mode. Open ends stay where they are; branch points (3 or more wires) aren't rounded. |
-| **Shading > Analytic Normals** | On | Exact shading normals on the rounds; original faces keep their own smooth/flat shading. Turn it off for about 30% more speed while modelling heavy scenes. |
+| **Shading > Analytic Normals** | On | Exact shading normals on the rounds; original faces keep their own smooth/flat shading. Turn it off for about 35% more speed while modelling heavy scenes. |
 | **Shading > Set Bevel Material / Bevel Material** | Off | Give the new bevel faces a material of their own. |
 | **Advanced > Exact Profile** | On | Off shows Blender's native profile, for comparison. |
 
@@ -108,7 +108,7 @@ An edge is rounded when it is in **Selection** *and* sharper than **Angle Limit*
 - **Stacking:** put CR Bevel after modifiers that create the edges (Boolean, Mirror, Array), and before Subdivision if you want subdivided rounds.
 - **Animation:** the radius and segment count can be keyframed. Normals stay correct under later deform modifiers.
 - **Applying:** applying the modifier keeps the exact geometry, the custom normals and the `cr_bevel_face` attribute.
-- **Performance:** on an 81,000-face test mesh with 8 segments (6.5 million output faces) it takes about 1.8× Blender's native bevel; most of that is the exact normals. For interactive work on heavy scenes, turn Analytic Normals off or lower Segments.
+- **Performance:** with every edge of an 81,000-face mesh beveled (2 million faces out) it takes about 1.8× Blender's native bevel, almost all of it Blender's encoding of the exact normals; with Analytic Normals off, about 1.2×. On typical models, where only the sharp edges are beveled, the overhead is much smaller. For interactive work on heavy scenes, turn Analytic Normals off or lower Segments. Details: [docs/PERFORMANCE.md](docs/PERFORMANCE.md).
 - **Two rounds:** two CR Bevel modifiers can be stacked, for example a large radius on main edges and a small one on everything.
 
 ## What is exact, and what isn't
@@ -157,7 +157,7 @@ Accuracy, where exact: positions to about a millionth of the radius. Normals to 
 
 **I updated the extension but my file still behaves like the old version.** Each file keeps the CR Bevel node group it was made with, so your files don't change unexpectedly. To use the new version in an old file, delete the old "CR Bevel" node group (or rename it), then add the modifier again.
 
-**Is it slower than Blender's bevel?** Somewhat: about 1.1–1.8× depending on settings. See [Tips](#tips-and-workflows).
+**Is it slower than Blender's bevel?** Somewhat: up to about 1.8× with every edge beveled, about 1.2× with Analytic Normals off, less on typical models. Clamp Per Edge costs little extra since 1.0.6. See [Tips](#tips-and-workflows).
 
 ## How it works
 

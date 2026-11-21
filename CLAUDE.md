@@ -6,6 +6,7 @@ Constant-radius bevel for Blender, built as a Geometry Nodes modifier on top of 
 - `docs/PLAN.md`: approach, math, node group spec, roadmap. It is the source of truth.
 - `docs/PHASE0_FINDINGS.md`, `docs/PHASE1_FINDINGS.md`, ...: measured results of each phase.
 - `docs/REVIEW_FINDINGS.md`: deep bug pass (robustness).
+- `docs/PERFORMANCE.md`: timings and what makes the node group fast.
 
 ## Environment
 - Blender 5.2.4 LTS is on PATH as `blender`; the cloud environment's setup script installs it. If it is missing, install it by hand:
@@ -25,6 +26,7 @@ Constant-radius bevel for Blender, built as a Geometry Nodes modifier on top of 
     - `blender -b --factory-startup --python tests/test_oracle.py` (independent check: convex solids and a concave cavity vs the eroded-solid distance)
     - `blender -b --factory-startup --python tests/test_fuzz.py` (random shapes, fixed seeds)
     - `blender -b --factory-startup --python tests/test_lifecycle.py` (save/reopen, apply, stacking, keyframes, linking, Edit Mode)
+- Performance profile (per configuration and per stage; see docs/PERFORMANCE.md): `blender -b --factory-startup --python tests/profile_cr_bevel.py` (`-- quick` for small meshes)
 - Shading renders (look at them after visual changes): `blender -b --factory-startup --python tests/render_phase3.py`
 - Phase 0 record (frozen): `blender -b --factory-startup --python phase0/run_phase0.py`
 
@@ -43,6 +45,8 @@ Constant-radius bevel for Blender, built as a Geometry Nodes modifier on top of 
 - Measure small angles with `analytic.angle_between` (atan2), never `acos`/`Vector.angle`: they round tiny angles to 0.
 - Tangent-space custom normals are stored quantized (~5e-5 rad): normal limits below 1e-4 can't pass.
 - A menu group input can feed only ONE Menu Switch node; derive other values from its output (see `_menu`).
+- Separate Store Named Attribute nodes each evaluate their field on their own: store several values with `Builder.store_many` (one Capture Attribute), and pass a Selection when only some elements need them.
+- Geometry Switch with a single-value condition is lazy: use it to skip whole branches (e.g. the Per Edge loop).
 - Warning node only shows if its output is used: route geometry through a Switch on it.
 - A multi-input socket (String Join) stacks new links on top: link parts in reverse order.
 - The vertex modes (FALLBACK/TERMINAL/PIPE/JOINT/CORNER) are described in the builder's docstring; `tests/analytic.py` re-implements them independently and the tests compare both.

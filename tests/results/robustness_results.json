@@ -381,6 +381,16 @@
         "corner": 0
       }
     },
+    "subdivided Suzanne, Per Edge": {
+      "verts": 9256,
+      "faces": 9266,
+      "finite": true,
+      "same_topology": true,
+      "flips": 0,
+      "warnings": [
+        "216 edge(s) clamped to avoid overlaps; smallest radius used: 0.0029"
+      ]
+    },
     "skew box corners, 2 segments": {
       "verts": 56,
       "faces": 54,
@@ -611,7 +621,7 @@
     },
     "256 segments": {
       "verts": 396296,
-      "seconds": 1.245744596999998
+      "seconds": 0.9862305620004008
     }
   },
   "checks": [
@@ -981,6 +991,16 @@
       "detail": "100"
     },
     {
+      "name": "subdivided Suzanne, Per Edge: finite, same topology as native, no flips",
+      "ok": true,
+      "detail": "{'verts': 9256, 'faces': 9266, 'finite': True, 'same_topology': True, 'flips': 0, 'warnings': ['216 edge(s) clamped to avoid overlaps; smallest radius used: 0.0029']}"
+    },
+    {
+      "name": "subdivided Suzanne, Per Edge: every corner within its overlap limit (t0 + t1 <= 0.95 |g|)",
+      "ok": true,
+      "detail": "0.950001 of |g|"
+    },
+    {
       "name": "skew box corners, 2 segments: finite, same topology as native, no flips",
       "ok": true,
       "detail": "{'verts': 56, 'faces': 54, 'finite': True, 'same_topology': True, 'flips': 0, 'warnings': []}"
@@ -1168,7 +1188,7 @@
     {
       "name": "256 segments: evaluates in reasonable time",
       "ok": true,
-      "detail": "396296 verts, 1.2 s"
+      "detail": "396296 verts, 1.0 s"
     },
     {
       "name": "two evaluations give identical positions",

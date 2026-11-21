@@ -459,6 +459,65 @@ for on in (True, False):
     check(f"loose point kept (Wire Corners {'on' if on else 'off'})",
           loose and len(P) == 96 + 1 + (2 + 4 if on else 3), len(P))
 
+# ---------------------------------------------------------------- Per Edge on an organic model (v1.0.6)
+
+
+def suzanne():
+    bpy.ops.mesh.primitive_monkey_add()
+    ob = bpy.context.active_object
+    mod = ob.modifiers.new("s", "SUBSURF")
+    mod.levels = 2
+    bpy.ops.object.modifier_apply(modifier="s")
+    return ob
+
+
+me_pe, st = run_case("subdivided Suzanne, Per Edge", suzanne, 0.05, clamp="Per Edge", angle=math.radians(30))
+# Every corner of every face must keep its bevels apart with the final radii:
+# the inset rule t0 + t1 <= |g| (radii read back from the internal group output).
+ng_dbg = bpy.data.node_groups.new("CR prepared", "GeometryNodeTree")
+ng_dbg.is_modifier = True
+build_cr_bevel._interface(ng_dbg)
+Bd = build_cr_bevel.Builder(ng_dbg)
+gid = Bd.node("NodeGroupInput")
+_solid, _wc, _wl = build_cr_bevel._wires(Bd, gid)
+_prep, _, _ = build_cr_bevel._edge_data(Bd, gid, _solid, _wl)
+Bd.link(_prep, Bd.node("NodeGroupOutput").inputs["Geometry"])
+for item in ng_dbg.interface.items_tree:
+    if getattr(item, "name", "") == "Clamp" and item.in_out == "INPUT":
+        item.default_value = build_cr_bevel.CLAMP_MODES[0]
+ob = suzanne()
+A.set_input(A.add_cr_bevel(ob, ng_dbg, 0.05, 4, angle_limit=math.radians(30)), "Clamp", "Per Edge")
+mp = A.evaluate(ob)
+dd = np.zeros(len(mp.edges))
+mp.attributes["_cr_d"].data.foreach_get("value", dd)
+beveled = np.zeros(len(mp.edges), bool)
+mp.attributes["_cr_sel"].data.foreach_get("value", beveled)
+dd *= beveled                      # _cr_d is stored on every edge; only selected ones are beveled
+worst = 0.0
+key_to_edge = {e.key: e.index for e in mp.edges}
+for f in mp.polygons:
+    vs, es = list(f.vertices), list(f.edge_keys)
+    n = len(vs)
+    nrm = Vector(f.normal)
+    for i in range(n):
+        a, b = Vector(mp.vertices[vs[i]].co), Vector(mp.vertices[vs[(i + 1) % n]].co)
+        prv, nxt = Vector(mp.vertices[vs[i - 1]].co), Vector(mp.vertices[vs[(i + 2) % n]].co)
+        g = key_to_edge[tuple(sorted((vs[i], vs[(i + 1) % n])))]
+        ep = key_to_edge[tuple(sorted((vs[i - 1], vs[i])))]
+        en = key_to_edge[tuple(sorted((vs[(i + 1) % n], vs[(i + 2) % n])))]
+        if dd[g] == 0 and dd[ep] == 0 and dd[en] == 0:
+            continue
+        def t(here, to_prev, to_next, d_side):
+            """Inset of the bevel's boundary point along g at this corner (as in the builder):
+            (D_side + D_g cos) / sin, with sin = (to_next x to_prev) . n (< 0 if reflex)."""
+            p_, n_ = (to_prev - here).normalized(), (to_next - here).normalized()
+            sn = n_.cross(p_).dot(nrm)
+            return 0.0 if abs(sn) < build_cr_bevel.INLINE_SIN else (d_side + dd[g] * p_.dot(n_)) / sn
+        shrink = t(a, prv, b, dd[ep]) + t(b, a, nxt, dd[en])
+        worst = max(worst, shrink / (b - a).length)
+check("subdivided Suzanne, Per Edge: every corner within its overlap limit (t0 + t1 <= 0.95 |g|)",
+      0 < worst <= 0.95 * (1 + 1e-5), f"{worst:.6f} of |g|")
+
 # ---------------------------------------------------------------- pass 2: segment parity at corners
 
 

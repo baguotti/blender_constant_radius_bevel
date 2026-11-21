@@ -818,8 +818,8 @@
       "seg": 5,
       "inverted_native": 0,
       "flips": 0,
-      "outside": 0.029917,
-      "outside_native": 0.029917,
+      "outside": 0.029918,
+      "outside_native": 0.029918,
       "min_radius": 0.0235
     },
     "clamp convex 3 Uniform": {
@@ -1050,7 +1050,7 @@
     "clamp boolean 3 Per Edge": {
       "r_in": 1.963,
       "seg": 3,
-      "inverted_native": 3,
+      "inverted_native": 4,
       "flips": 0,
       "outside": 0.0,
       "outside_native": 0.0,
@@ -1582,12 +1582,12 @@
     {
       "name": "clamp fuzz convex #2 Per Edge: no flips, no worse than native",
       "ok": true,
-      "detail": "{'r_in': 1.865, 'seg': 5, 'inverted_native': 0, 'flips': 0, 'outside': 0.029917, 'outside_native': 0.029917, 'min_radius': 0.0235}"
+      "detail": "{'r_in': 1.865, 'seg': 5, 'inverted_native': 0, 'flips': 0, 'outside': 0.029918, 'outside_native': 0.029918, 'min_radius': 0.0235}"
     },
     {
       "name": "clamp fuzz convex #2 Per Edge: no overlap after clamping",
       "ok": true,
-      "detail": "{'r_in': 1.865, 'seg': 5, 'inverted_native': 0, 'flips': 0, 'outside': 0.029917, 'outside_native': 0.029917, 'min_radius': 0.0235}"
+      "detail": "{'r_in': 1.865, 'seg': 5, 'inverted_native': 0, 'flips': 0, 'outside': 0.029918, 'outside_native': 0.029918, 'min_radius': 0.0235}"
     },
     {
       "name": "clamp fuzz convex #2: Per Edge smallest radius >= Uniform radius",
@@ -1872,7 +1872,7 @@
     {
       "name": "clamp fuzz boolean #3 Per Edge: no flips, no worse than native",
       "ok": true,
-      "detail": "{'r_in': 1.963, 'seg': 3, 'inverted_native': 3, 'flips': 0, 'outside': 0.0, 'outside_native': 0.0, 'min_radius': 0.2952}"
+      "detail": "{'r_in': 1.963, 'seg': 3, 'inverted_native': 4, 'flips': 0, 'outside': 0.0, 'outside_native': 0.0, 'min_radius': 0.2952}"
     },
     {
       "name": "clamp fuzz boolean #3: Per Edge smallest radius >= Uniform radius",
@@ -1949,7 +1949,7 @@
     {
       "seed": 3,
       "clamp": "Per Edge",
-      "inverted": 3
+      "inverted": 4
     },
     {
       "seed": 4,

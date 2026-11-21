@@ -66,6 +66,12 @@ def _face_of(B, corner):
     return n.outputs["Face Index"]
 
 
+def _menu_mode(B, gi):
+    """The Clamp mode number (index in CLAMP_MODES)."""
+    _menu(B, gi, "INT", (0,))
+    return B.clamp_mode
+
+
 def _menu(B, gi, data_type, values):
     """Pick one of `values` (in CLAMP_MODES order) from the Clamp input.
 
@@ -172,6 +178,24 @@ class Builder:
         if selection is not None:
             self._feed(n.inputs["Selection"], selection)
         return n.outputs["Geometry"]
+
+    def store_many(self, geo, domain, items, selection=None):
+        """Store several (name, value, data_type) at once. Separate Store nodes
+        would each evaluate their field on its own, repeating the shared work;
+        one Capture Attribute evaluates all values together, then they're stored."""
+        kinds = {"FLOAT": "FLOAT", "FLOAT_VECTOR": "VECTOR", "INT": "INT", "BOOLEAN": "BOOLEAN"}
+        cap = self.node("GeometryNodeCaptureAttribute", domain=domain)
+        for name, _, data_type in items:
+            cap.capture_items.new(kinds[data_type], name)
+        self.link(geo, cap.inputs["Geometry"])
+        for name, value, _ in items:
+            self._feed(cap.inputs[name], value)
+        if selection is not None:
+            self._feed(cap.inputs["Selection"], selection)
+        geo = cap.outputs["Geometry"]
+        for name, _, data_type in items:
+            geo = self.store(geo, name, cap.outputs[name], data_type, domain)
+        return geo
 
     # ---- extra shortcuts used by the per-vertex classification -----------
     def dot(self, a, b):
@@ -289,7 +313,11 @@ def build(name=GROUP_NAME, debug_output=None):
     B.link(join.outputs["Geometry"], merge.inputs["Geometry"])
     B.link(B.named("_cr_wtouch", "BOOLEAN"), merge.inputs["Selection"])
     merge.inputs["Distance"].default_value = 1e-6
-    finished = merge.outputs["Geometry"]
+    # No wires (the usual case): skip the join and merge, which copy the whole mesh.
+    n_wire = B.node("GeometryNodeAttributeDomainSize", component="MESH")
+    B.link(wires, n_wire.inputs["Geometry"])
+    has_wires = B.compare("GREATER_THAN", n_wire.outputs["Point Count"], 0, data_type="INT")
+    finished = B.switch("GEOMETRY", has_wires, finished, merge.outputs["Geometry"])
 
     B.stage("11. Remove internal attributes")
     rm = B.node("GeometryNodeRemoveAttribute")
@@ -317,6 +345,12 @@ def _wires(B, gi):
     nb = B.node("GeometryNodeInputMeshEdgeNeighbors")
     wire = B.bool_and(gi.outputs["Wire Corners"], gi.outputs["Selection"],
                       B.compare("EQUAL", nb.outputs["Face Count"], 0, data_type="INT"))
+    # Most meshes have no wire edges: then this stage passes the mesh through
+    # untouched (no attributes, no copies).
+    any_wire = B.node("GeometryNodeAttributeStatistic", domain="EDGE", data_type="FLOAT")
+    B.link(gi.outputs["Geometry"], any_wire.inputs["Geometry"])
+    B.link(wire, any_wire.inputs["Attribute"])
+    has_wire = B.compare("GREATER_THAN", any_wire.outputs["Max"], 0.5)
     geo = B.store(gi.outputs["Geometry"], "_cr_wire", wire, "FLOAT", "EDGE")
     is_wire = B.compare("GREATER_THAN", B.named("_cr_wire", "FLOAT"), 0.5)
     sep = B.node("GeometryNodeSeparateGeometry", domain="EDGE")
@@ -340,7 +374,10 @@ def _wires(B, gi):
 
     to_curve = B.node("GeometryNodeMeshToCurve")
     B.link(sep.outputs["Selection"], to_curve.inputs["Mesh"])
-    curves = to_curve.outputs["Curve"]
+    no_curves = B.node("GeometryNodeSwitch", input_type="GEOMETRY")   # False: empty geometry
+    B._feed(no_curves.inputs["Switch"], has_wire)
+    B.link(to_curve.outputs["Curve"], no_curves.inputs["True"])
+    curves = no_curves.outputs["Output"]
 
     # Uniform clamp: the largest radius every corner can take. A corner with
     # interior angle a moves its arc ends r / tan(a/2) along each segment; that
@@ -376,7 +413,7 @@ def _wires(B, gi):
     B.link(curves, size.inputs["Geometry"])
     limit = B.switch("FLOAT", B.compare("GREATER_THAN", size.outputs["Point Count"], 0, data_type="INT"),
                      NO_LIMIT, stat.outputs["Min"])
-    return del_edges.outputs["Geometry"], curves, limit
+    return B.switch("GEOMETRY", has_wire, gi.outputs["Geometry"], del_edges.outputs["Geometry"]), curves, limit
 
 
 def _wire_fillet(B, gi, curves, uniform_limit):
@@ -511,34 +548,69 @@ def _edge_data(B, gi, src, wire_limit):
     # every corner with the actual offsets; where one is violated, give its three
     # edges their smallest radius, capped by the corner's uniform limit (equal
     # radii within that limit always satisfy it). Values never drop below the
-    # Uniform result, which is the worst case. Zero passes unless Per Edge.
+    # Uniform result, which is the worst case.
     # (Straight chains longer than PER_EDGE_PASSES pieces may not fully equalize.)
-    steps = _menu(B, gi, "INT", (0, PER_EDGE_PASSES, 0))
-    r_start = B.math("MINIMUM", radius_in, B.math("MULTIPLY", per_edge_min(r_corner), CLAMP_SHARE))
-    geo = B.store(src, "_cr_rpe", r_start, "FLOAT", "EDGE")
-    rin, rout = B.node("GeometryNodeRepeatInput"), B.node("GeometryNodeRepeatOutput")
-    rin.pair_with_output(rout)
-    B.link(steps, rin.inputs["Iterations"])
-    B.link(geo, rin.inputs["Geometry"])
-    r_cur = B.named("_cr_rpe", "FLOAT")
-    k_now = shrink_of(B.math("MULTIPLY", r_cur, unit_d))
-    violated = B.compare("GREATER_THAN", k_now, B.math("MULTIPLY", g_len, CLAMP_SHARE))
-    r_three = B.math("MINIMUM", B.at_index("EDGE", "FLOAT", r_cur, g), B.math("MINIMUM",
-                     B.at_index("EDGE", "FLOAT", r_cur, eoc0.outputs["Previous Edge Index"]),
-                     B.at_index("EDGE", "FLOAT", r_cur, eoc1.outputs["Next Edge Index"])))
-    target = B.switch("FLOAT", violated, NO_LIMIT,
-                      B.math("MINIMUM", r_three, B.math("MULTIPLY", r_corner, CLAMP_SHARE)))
+    # Everything that doesn't change between passes is stored on the corners
+    # first, so a pass is only lookups: with r on the edges, the shrink along g is
+    # k(c) = wp r_prev + wg r_g + wn r_next. Only built when Per Edge is chosen.
+    def coef(num, sin):
+        tiny = B.compare("LESS_THAN", B.math("ABSOLUTE", sin), INLINE_SIN)
+        return B.switch("FLOAT", tiny, B.math("DIVIDE", num, sin), 0.0)
+    e_prev = eoc0.outputs["Previous Edge Index"]
+    e_next = eoc1.outputs["Next Edge Index"]
+    pre = B.store(src, "_cr_rpe", B.math("MINIMUM", radius_in, B.math("MULTIPLY", per_edge_min(r_corner), CLAMP_SHARE)),
+                  "FLOAT", "EDGE")
     # Pieces of one straight edge (in-line corners) share the smaller radius,
     # otherwise the bevel's width steps along the edge.
     inline = B.bool_and(B.compare("LESS_THAN", B.math("ABSOLUTE", sin_a), INLINE_SIN),
                         B.compare("LESS_THAN", cos_a, 0.0))
-    pair_min = B.math("MINIMUM", B.at_index("EDGE", "FLOAT", r_cur, g),
-                      B.at_index("EDGE", "FLOAT", r_cur, eoc0.outputs["Previous Edge Index"]))
-    target = B.math("MINIMUM", target, B.switch("FLOAT", inline, NO_LIMIT, pair_min))
-    looped = B.store(rin.outputs["Geometry"], "_cr_rpe", B.math("MINIMUM", r_cur, per_edge_min(target)),
-                     "FLOAT", "EDGE")
-    B.link(looped, rout.inputs["Geometry"])
-    geo = rout.outputs["Geometry"]
+    pre = B.store_many(pre, "CORNER", [
+        ("_cr_pe_wp", B.math("MULTIPLY", coef(1.0, sin_a), B.at_index("EDGE", "FLOAT", unit_d, e_prev)), "FLOAT"),
+        ("_cr_pe_wg", B.math("MULTIPLY", B.math("ADD", coef(cos_a, sin_a), coef(cos_b, sin_b)),
+                             B.at_index("EDGE", "FLOAT", unit_d, g)), "FLOAT"),
+        ("_cr_pe_wn", B.math("MULTIPLY", coef(1.0, sin_b), B.at_index("EDGE", "FLOAT", unit_d, e_next)), "FLOAT"),
+        ("_cr_pe_lim", B.math("MULTIPLY", g_len, CLAMP_SHARE), "FLOAT"),
+        ("_cr_pe_rc", B.math("MULTIPLY", r_corner, CLAMP_SHARE), "FLOAT"),
+        ("_cr_pe_inl", inline, "BOOLEAN"),
+        ("_cr_pe_ep", e_prev, "INT"), ("_cr_pe_eg", g, "INT"), ("_cr_pe_en", e_next, "INT"),
+        ("_cr_pe_cm", _offset_corner(B, index, -1), "INT"), ("_cr_pe_cn", c1, "INT")])
+
+    rin, rout = B.node("GeometryNodeRepeatInput"), B.node("GeometryNodeRepeatOutput")
+    rin.pair_with_output(rout)
+    rin.inputs["Iterations"].default_value = PER_EDGE_PASSES
+    B.link(pre, rin.inputs["Geometry"])
+    r_cur = B.named("_cr_rpe", "FLOAT")
+    r_p, r_g, r_n = (B.at_index("EDGE", "FLOAT", r_cur, B.named(n, "INT")) for n in ("_cr_pe_ep", "_cr_pe_eg", "_cr_pe_en"))
+    k_now = B.math("ADD", B.math("ADD", B.math("MULTIPLY", B.named("_cr_pe_wp", "FLOAT"), r_p),
+                                 B.math("MULTIPLY", B.named("_cr_pe_wg", "FLOAT"), r_g)),
+                   B.math("MULTIPLY", B.named("_cr_pe_wn", "FLOAT"), r_n))
+    # A corner just equalized sits exactly on its limit; whether k > limit then
+    # holds is decided by float rounding, and a false "violated" lowers its
+    # neighbours for nothing. Count only real violations.
+    violated = B.compare("GREATER_THAN", k_now, B.math("MULTIPLY", B.named("_cr_pe_lim", "FLOAT"), 1.0 + 1e-6))
+    pair_min = B.math("MINIMUM", r_g, r_p)
+    target = B.switch("FLOAT", violated, NO_LIMIT,
+                      B.math("MINIMUM", B.math("MINIMUM", pair_min, r_n), B.named("_cr_pe_rc", "FLOAT")))
+    target = B.math("MINIMUM", target, B.switch("FLOAT", B.named("_cr_pe_inl", "BOOLEAN"), NO_LIMIT, pair_min))
+    # Each edge takes the smallest target of the corners whose constraint
+    # involves it: where it is g, and the corners just before and after.
+    loop = B.store(rin.outputs["Geometry"], "_cr_pe_t", target, "FLOAT", "CORNER")
+    t = B.named("_cr_pe_t", "FLOAT")
+    near = B.math("MINIMUM", t, B.math("MINIMUM", B.at_index("CORNER", "FLOAT", t, B.named("_cr_pe_cm", "INT")),
+                                       B.at_index("CORNER", "FLOAT", t, B.named("_cr_pe_cn", "INT"))))
+    loop = B.store(loop, "_cr_pe_t", near, "FLOAT", "CORNER")
+    coe = B.node("GeometryNodeCornersOfEdge")
+    B.link(B.named("_cr_pe_t", "FLOAT"), coe.inputs["Weights"])
+    edge_t = B.switch("FLOAT", B.compare("GREATER_THAN", coe.outputs["Total"], 0, data_type="INT"), NO_LIMIT,
+                      B.at_index("CORNER", "FLOAT", B.named("_cr_pe_t", "FLOAT"), coe.outputs["Corner Index"]))
+    loop = B.store(loop, "_cr_rpe", B.math("MINIMUM", r_cur, edge_t), "FLOAT", "EDGE")
+    B.link(loop, rout.inputs["Geometry"])
+    done = B.node("GeometryNodeRemoveAttribute")       # don't carry them through the bevel
+    B.link(rout.outputs["Geometry"], done.inputs["Geometry"])
+    done.inputs["Pattern Mode"].default_value = "Wildcard"
+    done.inputs["Name"].default_value = "_cr_pe_*"
+    per_edge = B.compare("EQUAL", _menu_mode(B, gi), 1, data_type="INT")
+    geo = B.switch("GEOMETRY", per_edge, src, done.outputs["Geometry"])
 
     radius = _menu(B, gi, "FLOAT", (r_uniform, B.named("_cr_rpe", "FLOAT"), radius_in))
 
@@ -602,17 +674,13 @@ def _edge_data(B, gi, src, wire_limit):
     B.link(B.bool_not(B.node("GeometryNodeInputEdgeSmooth").outputs["Smooth"]), clear.inputs["Edge Sharpness"])
     B.link(B.bool_not(B.node("GeometryNodeInputShadeSmooth").outputs["Smooth"]), clear.inputs["Face Sharpness"])
     g = clear.outputs["Mesh"]
-    g = B.store(g, "_cr_vid", B.node("GeometryNodeInputIndex").outputs["Index"], "INT", "POINT")
-    g = B.store(g, "_cr_vpos", B.node("GeometryNodeInputPosition").outputs["Position"], "FLOAT_VECTOR", "POINT")
-    g = B.store(g, "_cr_sel", valid, "BOOLEAN", "EDGE")
-    g = B.store(g, "_cr_self", valid, "FLOAT", "EDGE")
-    g = B.store(g, "_cr_d", d, "FLOAT", "EDGE")
-    g = B.store(g, "_cr_r", radius, "FLOAT", "EDGE")
-    g = B.store(g, "_cr_s", convex_sign, "FLOAT", "EDGE")
-    g = B.store(g, "_cr_off", axis_off, "FLOAT_VECTOR", "EDGE")
-    g = B.store(g, "_cr_u", direction, "FLOAT_VECTOR", "EDGE")
-    g = B.store(g, "_cr_va", ev.outputs["Vertex Index 1"], "INT", "EDGE")
-    g = B.store(g, "_cr_vb", ev.outputs["Vertex Index 2"], "INT", "EDGE")
+    g = B.store_many(g, "POINT", [("_cr_vid", B.node("GeometryNodeInputIndex").outputs["Index"], "INT"),
+                                  ("_cr_vpos", B.node("GeometryNodeInputPosition").outputs["Position"], "FLOAT_VECTOR")])
+    g = B.store_many(g, "EDGE", [("_cr_sel", valid, "BOOLEAN"), ("_cr_self", valid, "FLOAT"),
+                                 ("_cr_d", d, "FLOAT"), ("_cr_r", radius, "FLOAT"), ("_cr_s", convex_sign, "FLOAT"),
+                                 ("_cr_off", axis_off, "FLOAT_VECTOR"), ("_cr_u", direction, "FLOAT_VECTOR"),
+                                 ("_cr_va", ev.outputs["Vertex Index 1"], "INT"),
+                                 ("_cr_vb", ev.outputs["Vertex Index 2"], "INT")])
     return g, warnings, uniform_limit
 
 
@@ -718,16 +786,18 @@ def _vertex_modes(B, geo):
     best_n = B.switch("VECTOR", open_end, best_n, B.vmath("NORMALIZE", border_cross))
 
     B.stage("5. Store per-vertex data")
-    geo = B.store(geo, "_cr_mode", mode, "INT", "POINT")
-    geo = B.store(geo, "_cr_X", meet, "FLOAT_VECTOR", "POINT")
-    geo = B.store(geo, "_cr_endn", best_n, "FLOAT_VECTOR", "POINT")
-    geo = B.store(geo, "_cr_u0", u0, "FLOAT_VECTOR", "POINT")
-    geo = B.store(geo, "_cr_rv", r0, "FLOAT", "POINT")      # radius at this vertex
-    geo = B.store(geo, "_cr_sv", s0, "FLOAT", "POINT")      # convexity at this vertex
-    geo = B.store(geo, "_cr_u1", u1, "FLOAT_VECTOR", "POINT")
-    # JOINT seam plane: through the meeting point, normal = difference of the
-    # two away-from-vertex edge directions (it bisects the two edges).
-    geo = B.store(geo, "_cr_seam_n", B.sub(away0, away1), "FLOAT_VECTOR", "POINT")
+    # Only vertices on a beveled edge produce bevel geometry; the others keep 0
+    # (mode FALLBACK) and are not evaluated at all.
+    geo = B.store_many(geo, "POINT", [
+        ("_cr_mode", mode, "INT"), ("_cr_X", meet, "FLOAT_VECTOR"), ("_cr_endn", best_n, "FLOAT_VECTOR"),
+        ("_cr_u0", u0, "FLOAT_VECTOR"),
+        ("_cr_rv", r0, "FLOAT"),        # radius at this vertex
+        ("_cr_sv", s0, "FLOAT"),        # convexity at this vertex
+        ("_cr_u1", u1, "FLOAT_VECTOR"),
+        # JOINT seam plane: through the meeting point, normal = difference of the
+        # two away-from-vertex edge directions (it bisects the two edges).
+        ("_cr_seam_n", B.sub(away0, away1), "FLOAT_VECTOR")],
+        selection=B.compare("GREATER_THAN", count, 0.5))
     return geo
 
 
@@ -774,12 +844,10 @@ def _bevel(B, gi, prepared):
     B.link(gi.outputs["Segments"], bev.inputs["Segments"])
     bev.inputs["Shape"].default_value = 0.5
     # Stored as 0/1 floats so that reading them per vertex means "touches any such face".
-    g = B.store(bev.outputs["Mesh"], "_cr_ef", bev.outputs["Edge Face"], "FLOAT", "FACE")
-    g = B.store(g, "_cr_vf", bev.outputs["Vertex Face"], "FLOAT", "FACE")
-    g = B.store(g, "_cr_of", B.bool_not(B.bool_or(bev.outputs["Edge Face"], bev.outputs["Vertex Face"])),
-                "FLOAT", "FACE")
-    return B.store(g, "cr_bevel_face", B.bool_or(bev.outputs["Edge Face"], bev.outputs["Vertex Face"]),
-                   "BOOLEAN", "FACE")
+    ef, vf = bev.outputs["Edge Face"], bev.outputs["Vertex Face"]
+    return B.store_many(bev.outputs["Mesh"], "FACE", [("_cr_ef", ef, "FLOAT"), ("_cr_vf", vf, "FLOAT"),
+                                                      ("_cr_of", B.bool_not(B.bool_or(ef, vf)), "FLOAT"),
+                                                      ("cr_bevel_face", B.bool_or(ef, vf), "BOOLEAN")])
 
 
 def _snap(B, gi, geo, skeleton):
@@ -850,13 +918,17 @@ def _snap(B, gi, geo, skeleton):
     n_seam = B.vmath("NORMALIZE", B.add(B.vmath("NORMALIZE", rad0), B.vmath("NORMALIZE", rad1)))
     n = B.switch("VECTOR", is_joint, n_strip, n_seam)
     has_n = B.bool_and(gi.outputs["Exact Profile"], B.bool_or(move, joint_end))
-    geo = B.store(geo, "_cr_n", B.scale(n, sign), "FLOAT_VECTOR", "POINT")
-    geo = B.store(geo, "_cr_hasn", has_n, "BOOLEAN", "POINT")
+    # Evaluated once, and only on points of bevel faces: the skeleton queries are
+    # the expensive part, and points of original faces never move.
+    on_bevel = B.compare("GREATER_THAN", B.math("ADD", B.named("_cr_ef", "FLOAT"), B.named("_cr_vf", "FLOAT")), 0.0)
+    geo = B.store_many(geo, "POINT", [("_cr_n", B.scale(n, sign), "FLOAT_VECTOR"), ("_cr_hasn", has_n, "BOOLEAN"),
+                                      ("_cr_move", move, "BOOLEAN"), ("_cr_tgt", target, "FLOAT_VECTOR")],
+                       selection=on_bevel)
 
     sp = B.node("GeometryNodeSetPosition")
     B.link(geo, sp.inputs["Geometry"])
-    B.link(move, sp.inputs["Selection"])
-    B.link(target, sp.inputs["Position"])
+    B.link(B.named("_cr_move", "BOOLEAN"), sp.inputs["Selection"])
+    B.link(B.named("_cr_tgt", "FLOAT_VECTOR"), sp.inputs["Position"])
     return sp.outputs["Geometry"]
 
 
