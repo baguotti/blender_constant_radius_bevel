@@ -273,8 +273,9 @@ def build(name=GROUP_NAME, debug_output=None):
     gi = B.node("NodeGroupInput")
     gi.location = (-400, 0)
 
-    solid, wires = _wires(B, gi)
-    prepared, warnings = _edge_data(B, gi, solid)
+    solid, wire_curves, wire_limit = _wires(B, gi)
+    prepared, warnings, uniform_limit = _edge_data(B, gi, solid, wire_limit)
+    wires = _wire_fillet(B, gi, wire_curves, uniform_limit)
     prepared = _vertex_modes(B, prepared)
     skeleton = _skeleton(B, gi, prepared)
     beveled = _bevel(B, gi, prepared)
@@ -283,7 +284,12 @@ def build(name=GROUP_NAME, debug_output=None):
     join = B.node("GeometryNodeJoinGeometry")
     B.link(wires, join.inputs["Geometry"])        # multi-input: stacked on top
     B.link(finished, join.inputs["Geometry"])
-    finished = join.outputs["Geometry"]
+    # Reconnect the wires where they were split (exact copies of the same point).
+    merge = B.node("GeometryNodeMergeByDistance")
+    B.link(join.outputs["Geometry"], merge.inputs["Geometry"])
+    B.link(B.named("_cr_wtouch", "BOOLEAN"), merge.inputs["Selection"])
+    merge.inputs["Distance"].default_value = 1e-6
+    finished = merge.outputs["Geometry"]
 
     B.stage("11. Remove internal attributes")
     rm = B.node("GeometryNodeRemoveAttribute")
@@ -302,34 +308,104 @@ def build(name=GROUP_NAME, debug_output=None):
 
 
 def _wires(B, gi):
-    """Stage 0: loose edges (no faces), e.g. polylines, get their corners rounded
-    with true circular arcs of radius r (like Bevel's Vertices mode) by Blender's
-    Fillet Curve node. Returns (everything else, rounded wires)."""
-    B.stage("0. Wire edges: round polyline corners with arcs of radius r")
+    """Stage 0: split off the selected loose edges (no faces), e.g. polylines.
+
+    Returns (everything else, the wires as curves, the Uniform radius limit of
+    their corners). Their corners are rounded later by _wire_fillet.
+    """
+    B.stage("0. Wire edges: split off polylines")
     nb = B.node("GeometryNodeInputMeshEdgeNeighbors")
     wire = B.bool_and(gi.outputs["Wire Corners"], gi.outputs["Selection"],
                       B.compare("EQUAL", nb.outputs["Face Count"], 0, data_type="INT"))
+    geo = B.store(gi.outputs["Geometry"], "_cr_wire", wire, "FLOAT", "EDGE")
+    is_wire = B.compare("GREATER_THAN", B.named("_cr_wire", "FLOAT"), 0.5)
     sep = B.node("GeometryNodeSeparateGeometry", domain="EDGE")
-    B.link(gi.outputs["Geometry"], sep.inputs["Geometry"])
-    B.link(wire, sep.inputs["Selection"])
+    B.link(geo, sep.inputs["Geometry"])
+    B.link(is_wire, sep.inputs["Selection"])
+    # The rest: remove the wire edges, and the points used only by them, but keep
+    # everything else (Separate Geometry on edges would also drop loose points).
+    # The 0/1 edge flag read on points is its mean over the point's edges.
+    wire_only = B.node("GeometryNodeFieldOnDomain", domain="POINT", data_type="FLOAT")
+    B.link(B.named("_cr_wire", "FLOAT"), wire_only.inputs["Value"])
+    # Points where a wire meets the rest: the wire is re-attached there at the end.
+    geo = B.store(geo, "_cr_wtouch", B.bool_and(B.compare("GREATER_THAN", wire_only.outputs["Value"], 0.0),
+                                                 B.compare("LESS_THAN", wire_only.outputs["Value"], 0.999)),
+                  "BOOLEAN", "POINT")
+    del_pts = B.node("GeometryNodeDeleteGeometry", domain="POINT", mode="ALL")
+    B.link(geo, del_pts.inputs["Geometry"])
+    B.link(B.compare("GREATER_THAN", wire_only.outputs["Value"], 0.999), del_pts.inputs["Selection"])
+    del_edges = B.node("GeometryNodeDeleteGeometry", domain="EDGE", mode="EDGE_FACE")
+    B.link(del_pts.outputs["Geometry"], del_edges.inputs["Geometry"])
+    B.link(is_wire, del_edges.inputs["Selection"])
+
     to_curve = B.node("GeometryNodeMeshToCurve")
     B.link(sep.outputs["Selection"], to_curve.inputs["Mesh"])
+    curves = to_curve.outputs["Curve"]
+
+    # Uniform clamp: the largest radius every corner can take. A corner with
+    # interior angle a moves its arc ends r / tan(a/2) along each segment; that
+    # must fit in half the segment (all of it when the other end is an open end),
+    # the same rule as Fillet Curve's Limit Radius.
+    pos = B.node("GeometryNodeInputPosition").outputs["Position"]
+    def neighbour(offset):
+        n = B.node("GeometryNodeOffsetPointInCurve")
+        n.inputs["Offset"].default_value = offset
+        return n
+    prv, nxt, prv2, nxt2 = neighbour(-1), neighbour(1), neighbour(-2), neighbour(2)
+    p_prev = B.at_index("POINT", "FLOAT_VECTOR", pos, prv.outputs["Point Index"])
+    p_next = B.at_index("POINT", "FLOAT_VECTOR", pos, nxt.outputs["Point Index"])
+    l_prev = B.vmath("DISTANCE", p_prev, pos)
+    l_next = B.vmath("DISTANCE", p_next, pos)
+    room_prev = B.switch("FLOAT", prv2.outputs["Is Valid Offset"], l_prev, B.math("MULTIPLY", l_prev, 0.5))
+    room_next = B.switch("FLOAT", nxt2.outputs["Is Valid Offset"], l_next, B.math("MULTIPLY", l_next, 0.5))
+    cos_a = B.dot(B.vmath("NORMALIZE", B.sub(p_prev, pos)), B.vmath("NORMALIZE", B.sub(p_next, pos)))
+    # tan(a/2) = sqrt((1 - cos a) / (1 + cos a)); straight (cos a = -1) never limits.
+    tan_half = B.math("SQRT", B.math("DIVIDE", B.math("SUBTRACT", 1.0, cos_a),
+                                     B.math("MAXIMUM", B.math("ADD", 1.0, cos_a), 1e-12)))
+    # Duplicate points (zero-length segments) have no direction: Fillet leaves
+    # them as they are, so they don't limit the others.
+    corner = B.bool_and(prv.outputs["Is Valid Offset"], nxt.outputs["Is Valid Offset"],
+                        B.compare("GREATER_THAN", B.math("ADD", 1.0, cos_a), 1e-9),
+                        B.compare("GREATER_THAN", B.math("MINIMUM", l_prev, l_next), 1e-7))
+    r_max = B.switch("FLOAT", corner, NO_LIMIT,
+                     B.math("MULTIPLY", B.math("MINIMUM", room_prev, room_next), tan_half))
+    stat = B.node("GeometryNodeAttributeStatistic", domain="POINT", data_type="FLOAT")
+    B.link(curves, stat.inputs["Geometry"])
+    B.link(r_max, stat.inputs["Attribute"])
+    size = B.node("GeometryNodeAttributeDomainSize", component="CURVE")
+    B.link(curves, size.inputs["Geometry"])
+    limit = B.switch("FLOAT", B.compare("GREATER_THAN", size.outputs["Point Count"], 0, data_type="INT"),
+                     NO_LIMIT, stat.outputs["Min"])
+    return del_edges.outputs["Geometry"], curves, limit
+
+
+def _wire_fillet(B, gi, curves, uniform_limit):
+    """Round the wire corners with true circular arcs of radius r (like Bevel's
+    Vertices mode) by Blender's Fillet Curve node, then turn them back into edges."""
+    B.stage("0b. Wire edges: round polyline corners with arcs of radius r")
+    radius = B.math("MAXIMUM", gi.outputs["Radius"], 0.0)
+    radius = _menu(B, gi, "FLOAT", (B.math("MINIMUM", radius, uniform_limit), radius, radius))
     fillet = B.node("GeometryNodeFilletCurve")
-    B.link(to_curve.outputs["Curve"], fillet.inputs["Curve"])
-    B.link(gi.outputs["Radius"], fillet.inputs["Radius"])
+    B.link(curves, fillet.inputs["Curve"])
+    B.link(radius, fillet.inputs["Radius"])
     B.link(gi.outputs["Segments"], fillet.inputs["Count"])        # Poly mode: Count = arc segments
     fillet.inputs["Mode"].default_value = "Poly"
     # Clamp Uniform / Per Edge: never let neighbouring arcs overlap.
     B.link(B.compare("NOT_EQUAL", _menu(B, gi, "INT", (0, 1, 2)), 2, data_type="INT"), fillet.inputs["Limit Radius"])
+    # Curve ends: wire ends, and the points where Mesh to Curve split the wire
+    # (branches, contacts with faces). They are merged back at the end.
+    ends = B.store(fillet.outputs["Curve"], "_cr_wtouch", B.node("GeometryNodeCurveEndpointSelection").outputs["Selection"],
+                   "BOOLEAN", "POINT")
     to_mesh = B.node("GeometryNodeCurveToMesh")
-    B.link(fillet.outputs["Curve"], to_mesh.inputs["Curve"])
-    return sep.outputs["Inverted"], to_mesh.outputs["Mesh"]
+    B.link(ends, to_mesh.inputs["Curve"])
+    return to_mesh.outputs["Mesh"]
 
 
-def _edge_data(B, gi, src):
+def _edge_data(B, gi, src, wire_limit):
     """Stages 1-3: clamp, per-edge offset, axis offset, direction and convexity.
 
-    Returns the prepared geometry and a list of (show, message) warnings.
+    Returns the prepared geometry, a list of (show, message) warnings and the
+    Uniform clamp's radius limit (shared with the wires, so one radius holds everywhere).
     """
     B.stage("1. Clamp: largest radius each edge can take without overlapping")
     radius_in = gi.outputs["Radius"]
@@ -423,7 +499,13 @@ def _edge_data(B, gi, src):
     stat = B.node("GeometryNodeAttributeStatistic", domain="CORNER", data_type="FLOAT")
     B.link(src, stat.inputs["Geometry"])
     B.link(r_corner, stat.inputs["Attribute"])
-    r_uniform = B.math("MINIMUM", radius_in, B.math("MULTIPLY", stat.outputs["Min"], CLAMP_SHARE))
+    # The statistic of an empty mesh is 0: then there is no limit (wires only).
+    corners = B.node("GeometryNodeAttributeDomainSize", component="MESH")
+    B.link(src, corners.inputs["Geometry"])
+    solid_limit = B.switch("FLOAT", B.compare("GREATER_THAN", corners.outputs["Face Corner Count"], 0, data_type="INT"),
+                           NO_LIMIT, B.math("MULTIPLY", stat.outputs["Min"], CLAMP_SHARE))
+    uniform_limit = B.math("MINIMUM", solid_limit, wire_limit)
+    r_uniform = B.math("MINIMUM", radius_in, uniform_limit)
 
     # Per Edge: start from each edge's own limit. Radii then differ, so check
     # every corner with the actual offsets; where one is violated, give its three
@@ -531,7 +613,7 @@ def _edge_data(B, gi, src):
     g = B.store(g, "_cr_u", direction, "FLOAT_VECTOR", "EDGE")
     g = B.store(g, "_cr_va", ev.outputs["Vertex Index 1"], "INT", "EDGE")
     g = B.store(g, "_cr_vb", ev.outputs["Vertex Index 2"], "INT", "EDGE")
-    return g, warnings
+    return g, warnings, uniform_limit
 
 
 def _vertex_modes(B, geo):

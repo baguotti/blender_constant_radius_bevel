@@ -87,7 +87,7 @@ It builds on Blender's own Mesh Bevel node (new in Blender 5.2), so the topology
 | **Segments** | 4 | Number of faces across each round (1–256). |
 | **Angle Limit** | 30° | Only edges whose faces meet at more than this angle are rounded; flat or gently curved areas are left alone. Set it to 0° to allow every selected edge. |
 | **Clamp** | Uniform | How to avoid overlapping bevels when the radius is too large for the geometry. **Uniform** lowers the radius everywhere just enough, so it stays constant (CAD-like). **Per Edge** lowers it only on edges that need it, best for boolean results and busy models. **None** applies the radius as typed and may overlap. A warning on the modifier tells you when, and by how much, the radius was lowered. |
-| **Wire Corners** | On | Round the corners of loose edges (polylines without faces) with arcs of radius r, like Bevel's *Vertices* mode. Open ends stay where they are. |
+| **Wire Corners** | On | Round the corners of loose edges (polylines without faces) with arcs of radius r, like Bevel's *Vertices* mode. Open ends stay where they are; branch points (3 or more wires) aren't rounded. |
 | **Shading > Analytic Normals** | On | Exact shading normals on the rounds; original faces keep their own smooth/flat shading. Turn it off for about 30% more speed while modelling heavy scenes. |
 | **Shading > Set Bevel Material / Bevel Material** | Off | Give the new bevel faces a material of their own. |
 | **Advanced > Exact Profile** | On | Off shows Blender's native profile, for comparison. |

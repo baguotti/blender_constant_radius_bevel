@@ -87,3 +87,26 @@ Each pass took a different angle. New suites: `tests/test_fuzz.py` (random shape
 | 7 | Lifecycle: save and reopen, apply, two CR Bevels stacked, shared mesh, keyframed radius, linked node group, Edit Mode | All fine |
 
 Also: code tidy-ups (one snap target for strips and corners), and the docs now match the code.
+
+## Pass 8 — version 1.0.5 (review of 1.0.4: open meshes and polylines)
+
+Probed the two new features with awkward inputs: segment counts, radius ≤ 0, edge and point radius attributes, vertex groups, branching and closed wires, duplicate points, wires touching faces, loose points, every clamp mode, and open ends on folded sheets, two-triangle "books", concave (flipped) bars and ends slanted up to 76°.
+
+### Bugs found and fixed
+
+| # | Input | Symptom | Cause | Fix |
+| --- | --- | --- | --- | --- |
+| 1 | Any mesh with loose points (vertices without edges) | Loose points disappeared, even with Wire Corners off | Separate Geometry on the edge domain drops points no kept edge uses | The rest of the mesh is now made by deleting wire-only points, then wire edges; everything else is kept |
+| 2 | Polyline with radius < 0 | Corners rounded anyway (Fillet Curve uses the absolute value) | No guard on the wire path | Radius clamped to ≥ 0, so wires behave like edges |
+| 3 | Clamp Uniform on polylines | Only the corners next to a short piece were lowered: the same as Per Edge, not one radius | Fillet Curve's Limit Radius is per corner | Uniform now computes the limit of every wire corner (arc end r / tan(a/2) must fit in half the piece, or all of it next to an open end). One minimum is shared by the wires and the faces, so one radius really holds across the object |
+| 4 | Polyline with a branch, or touching a face's vertex | The polyline was cut there (duplicate points), so it fell apart after Apply | Mesh to Curve splits wires at those points | Curve ends and contact points are merged back (exact copies only) |
+| 5 | Test of the fix for 3 | A duplicate point (zero-length piece) gave a Uniform limit of 0 for every wire | Undefined corner angle | Zero-length pieces don't count as corners (Fillet leaves them too) |
+
+### Checked and fine
+
+- Open ends are exact (≤ 2.2e-6 r) on every shape tried, including concave edges and ends slanted 76°. Clamp Uniform/Per Edge/None on oversized radii: no flips.
+- A corner gets Segments + 1 points, like Bevel's Vertices mode; point and edge radius attributes both work; vertex groups and point attributes carry onto the arcs.
+
+### Found in passing (not from 1.0.4)
+
+At a sphere corner (CORNER) whose face corner is very acute (below about 30°, e.g. a bar with a strongly slanted end face), the snap folds 1–3 tiny faces (area ~1e-5) against the native bevel; the surface itself is still exact. It depends on Segments (4: none; 2, 6, 12: 1–3). Left for a separate fix.

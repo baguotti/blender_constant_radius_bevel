@@ -126,7 +126,7 @@
       "warnings": []
     },
     "cube with loose vertex and edge": {
-      "verts": 154,
+      "verts": 155,
       "faces": 150,
       "finite": true,
       "same_topology": true,
@@ -292,7 +292,87 @@
       "same_topology": true,
       "flips": 0,
       "warnings": [],
-      "exact_error": 1.0081966513031393e-06,
+      "exact_error": 1.1175870895385742e-06,
+      "mode_counts": {
+        "fallback": 0,
+        "terminal": 8,
+        "pipe": 0,
+        "joint": 0,
+        "corner": 0
+      }
+    },
+    "folded sheet, trapezoid flaps": {
+      "verts": 18,
+      "faces": 8,
+      "finite": true,
+      "same_topology": true,
+      "flips": 0,
+      "warnings": [],
+      "exact_error": 5.261972546577454e-07,
+      "mode_counts": {
+        "fallback": 0,
+        "terminal": 2,
+        "pipe": 0,
+        "joint": 0,
+        "corner": 0
+      }
+    },
+    "folded sheet, slanted open ends": {
+      "verts": 18,
+      "faces": 8,
+      "finite": true,
+      "same_topology": true,
+      "flips": 0,
+      "warnings": [],
+      "exact_error": 5.261972546577454e-07,
+      "mode_counts": {
+        "fallback": 0,
+        "terminal": 2,
+        "pipe": 0,
+        "joint": 0,
+        "corner": 0
+      }
+    },
+    "two triangles sharing an edge": {
+      "verts": 16,
+      "faces": 8,
+      "finite": true,
+      "same_topology": true,
+      "flips": 0,
+      "warnings": [],
+      "exact_error": 1.5832483768463135e-07,
+      "mode_counts": {
+        "fallback": 0,
+        "terminal": 2,
+        "pipe": 0,
+        "joint": 0,
+        "corner": 0
+      }
+    },
+    "open bar, normals flipped (concave)": {
+      "verts": 56,
+      "faces": 28,
+      "finite": true,
+      "same_topology": true,
+      "flips": 0,
+      "warnings": [],
+      "exact_error": 8.684870274333623e-07,
+      "mode_counts": {
+        "fallback": 0,
+        "terminal": 8,
+        "pipe": 0,
+        "joint": 0,
+        "corner": 0
+      }
+    },
+    "open bar, open ends slanted 76 deg": {
+      "verts": 56,
+      "faces": 28,
+      "finite": true,
+      "same_topology": true,
+      "flips": 0,
+      "warnings": [],
+      "exact_error": 2.2351741790771484e-06,
       "mode_counts": {
         "fallback": 0,
         "terminal": 8,
@@ -531,7 +611,7 @@
     },
     "256 segments": {
       "verts": 396296,
-      "seconds": 0.8575539099999787
+      "seconds": 1.245744596999998
     }
   },
   "checks": [
@@ -628,7 +708,7 @@
     {
       "name": "cube with loose vertex and edge: finite, same topology as native, no flips",
       "ok": true,
-      "detail": "{'verts': 154, 'faces': 150, 'finite': True, 'same_topology': True, 'flips': 0, 'warnings': []}"
+      "detail": "{'verts': 155, 'faces': 150, 'finite': True, 'same_topology': True, 'flips': 0, 'warnings': []}"
     },
     {
       "name": "cube with loose vertex and edge: exact (error 3.3e-07 r, tolerance 1e-04)",
@@ -751,12 +831,87 @@
       "detail": "{'verts': 56, 'faces': 28, 'finite': True, 'same_topology': True, 'flips': 0, 'warnings': []}"
     },
     {
-      "name": "profile bar open on both sides, slanted open end: exact (error 1.0e-06 r, tolerance 1e-04)",
+      "name": "profile bar open on both sides, slanted open end: exact (error 1.1e-06 r, tolerance 1e-04)",
       "ok": true,
       "detail": "{'fallback': 0, 'terminal': 8, 'pipe': 0, 'joint': 0, 'corner': 0}"
     },
     {
       "name": "profile bar open on both sides, slanted open end: open ends are exact (no fallback)",
+      "ok": true,
+      "detail": "{'fallback': 0, 'terminal': 8, 'pipe': 0, 'joint': 0, 'corner': 0}"
+    },
+    {
+      "name": "folded sheet, trapezoid flaps: finite, same topology as native, no flips",
+      "ok": true,
+      "detail": "{'verts': 18, 'faces': 8, 'finite': True, 'same_topology': True, 'flips': 0, 'warnings': []}"
+    },
+    {
+      "name": "folded sheet, trapezoid flaps: exact (error 5.3e-07 r, tolerance 1e-04)",
+      "ok": true,
+      "detail": "{'fallback': 0, 'terminal': 2, 'pipe': 0, 'joint': 0, 'corner': 0}"
+    },
+    {
+      "name": "folded sheet, trapezoid flaps: open ends are exact (no fallback)",
+      "ok": true,
+      "detail": "{'fallback': 0, 'terminal': 2, 'pipe': 0, 'joint': 0, 'corner': 0}"
+    },
+    {
+      "name": "folded sheet, slanted open ends: finite, same topology as native, no flips",
+      "ok": true,
+      "detail": "{'verts': 18, 'faces': 8, 'finite': True, 'same_topology': True, 'flips': 0, 'warnings': []}"
+    },
+    {
+      "name": "folded sheet, slanted open ends: exact (error 5.3e-07 r, tolerance 1e-04)",
+      "ok": true,
+      "detail": "{'fallback': 0, 'terminal': 2, 'pipe': 0, 'joint': 0, 'corner': 0}"
+    },
+    {
+      "name": "folded sheet, slanted open ends: open ends are exact (no fallback)",
+      "ok": true,
+      "detail": "{'fallback': 0, 'terminal': 2, 'pipe': 0, 'joint': 0, 'corner': 0}"
+    },
+    {
+      "name": "two triangles sharing an edge: finite, same topology as native, no flips",
+      "ok": true,
+      "detail": "{'verts': 16, 'faces': 8, 'finite': True, 'same_topology': True, 'flips': 0, 'warnings': []}"
+    },
+    {
+      "name": "two triangles sharing an edge: exact (error 1.6e-07 r, tolerance 1e-04)",
+      "ok": true,
+      "detail": "{'fallback': 0, 'terminal': 2, 'pipe': 0, 'joint': 0, 'corner': 0}"
+    },
+    {
+      "name": "two triangles sharing an edge: open ends are exact (no fallback)",
+      "ok": true,
+      "detail": "{'fallback': 0, 'terminal': 2, 'pipe': 0, 'joint': 0, 'corner': 0}"
+    },
+    {
+      "name": "open bar, normals flipped (concave): finite, same topology as native, no flips",
+      "ok": true,
+      "detail": "{'verts': 56, 'faces': 28, 'finite': True, 'same_topology': True, 'flips': 0, 'warnings': []}"
+    },
+    {
+      "name": "open bar, normals flipped (concave): exact (error 8.7e-07 r, tolerance 1e-04)",
+      "ok": true,
+      "detail": "{'fallback': 0, 'terminal': 8, 'pipe': 0, 'joint': 0, 'corner': 0}"
+    },
+    {
+      "name": "open bar, normals flipped (concave): open ends are exact (no fallback)",
+      "ok": true,
+      "detail": "{'fallback': 0, 'terminal': 8, 'pipe': 0, 'joint': 0, 'corner': 0}"
+    },
+    {
+      "name": "open bar, open ends slanted 76 deg: finite, same topology as native, no flips",
+      "ok": true,
+      "detail": "{'verts': 56, 'faces': 28, 'finite': True, 'same_topology': True, 'flips': 0, 'warnings': []}"
+    },
+    {
+      "name": "open bar, open ends slanted 76 deg: exact (error 2.2e-06 r, tolerance 3e-04)",
+      "ok": true,
+      "detail": "{'fallback': 0, 'terminal': 8, 'pipe': 0, 'joint': 0, 'corner': 0}"
+    },
+    {
+      "name": "open bar, open ends slanted 76 deg: open ends are exact (no fallback)",
       "ok": true,
       "detail": "{'fallback': 0, 'terminal': 8, 'pipe': 0, 'joint': 0, 'corner': 0}"
     },
@@ -774,6 +929,56 @@
       "name": "Wire Corners off: polyline left unchanged",
       "ok": true,
       "detail": ""
+    },
+    {
+      "name": "polyline: a corner gets Segments + 1 points",
+      "ok": true,
+      "detail": "[True, True, True]"
+    },
+    {
+      "name": "polyline: radius 0 or negative leaves it unchanged",
+      "ok": true,
+      "detail": "[True, True]"
+    },
+    {
+      "name": "polyline Clamp Uniform: one radius at every corner (0.2)",
+      "ok": true,
+      "detail": "[0.2, 0.2, 0.2]"
+    },
+    {
+      "name": "polyline Clamp Per Edge: only the short piece's corners are lowered",
+      "ok": true,
+      "detail": "[0.2, 0.2, 0.5]"
+    },
+    {
+      "name": "polyline with a duplicate point: other corners still rounded at r",
+      "ok": true,
+      "detail": "17"
+    },
+    {
+      "name": "Clamp Uniform: the cube takes the polyline's limit too (0.1)",
+      "ok": true,
+      "detail": "['12 edge(s) clamped to avoid overlaps; smallest radius used: 0.1000']"
+    },
+    {
+      "name": "branching polyline: corner rounded, branch point shared (9 points, 8 edges)",
+      "ok": true,
+      "detail": "(9, 8)"
+    },
+    {
+      "name": "polyline touching a face's vertex stays attached to it",
+      "ok": true,
+      "detail": "(14, 4)"
+    },
+    {
+      "name": "loose point kept (Wire Corners on)",
+      "ok": true,
+      "detail": "103"
+    },
+    {
+      "name": "loose point kept (Wire Corners off)",
+      "ok": true,
+      "detail": "100"
     },
     {
       "name": "skew box corners, 2 segments: finite, same topology as native, no flips",
@@ -963,7 +1168,7 @@
     {
       "name": "256 segments: evaluates in reasonable time",
       "ok": true,
-      "detail": "396296 verts, 0.9 s"
+      "detail": "396296 verts, 1.2 s"
     },
     {
       "name": "two evaluations give identical positions",

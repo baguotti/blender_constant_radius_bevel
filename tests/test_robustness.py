@@ -15,6 +15,7 @@ import sys
 import bmesh
 import bpy
 import numpy as np
+from mathutils import Vector
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path[:0] = [HERE, os.path.join(HERE, "..", "src")]
@@ -273,11 +274,16 @@ check("input smooth/flat face flags survive",
 # ---------------------------------------------------------------- open meshes (reported by the user)
 
 
+def _flipped(ob):
+    flip_all_faces(ob)
+    return ob
+
+
 def profile_bar(name, open_front=False, open_back=False, tilt=0.0):
     """The user's test shape: a profile with a 45 and a 135 degree edge, extruded
     along y. Optionally without its front/back face; `tilt` slants the front."""
     prof = [(1.0, 1.0), (3.0, -1.0), (-1.0, -1.0), (-1.0, 1.0)]       # x, z
-    front = [(x, -1.0 - tilt * x, z) for x, z in prof]
+    front = [(x, -1.0 - tilt * (x + 1.0), z) for x, z in prof]
     back = [(x, 1.0, z) for x, z in prof]
     v = front + back
     faces = [[i, (i + 1) % 4, 4 + (i + 1) % 4, 4 + i] for i in range(4)]
@@ -300,6 +306,27 @@ for label, kw in (("open on both sides", dict(open_front=True, open_back=True)),
     _, st = run_case(f"profile bar {label}", lambda: profile_bar("bar", **kw), 0.1, segments=6,
                      angle=math.radians(20), exact_r=0.1)
     check(f"profile bar {label}: open ends are exact (no fallback)",
+          st.get("mode_counts", {}).get("fallback", 1) == 0, st.get("mode_counts"))
+
+
+def fold_sheet(name, slant=0.0, triangles=False):
+    """An open sheet folded along y (2 faces). Trapezoid flaps; `slant` tilts the
+    open ends; `triangles`: two triangles sharing the fold (a "book")."""
+    if triangles:
+        return A.new_object(name, [(0, -1, 0), (0, 1, 0), (1, 0, 0.3), (-0.8, 0.2, 0.9)], [[0, 1, 2], [1, 0, 3]])
+    v = [(0, -1, 0), (0, 1, 0), (2, 1.5, 0), (2, -1 - slant, 0), (0, 1.3, 2), (0, -1.2 + slant, 2)]
+    return A.new_object(name, v, [[0, 1, 2, 3], [1, 0, 5, 4]])
+
+
+for label, make in (("folded sheet, trapezoid flaps", lambda: fold_sheet("fold")),
+                    ("folded sheet, slanted open ends", lambda: fold_sheet("fold", 0.6)),
+                    ("two triangles sharing an edge", lambda: fold_sheet("book", triangles=True)),
+                    ("open bar, normals flipped (concave)",
+                     lambda: _flipped(profile_bar("bar", open_front=True, open_back=True))),
+                    ("open bar, open ends slanted 76 deg",
+                     lambda: profile_bar("bar", open_front=True, open_back=True, tilt=4.0))):
+    _, st = run_case(label, make, 0.1, segments=6, angle=math.radians(10), exact_r=0.1)
+    check(f"{label}: open ends are exact (no fallback)",
           st.get("mode_counts", {}).get("fallback", 1) == 0, st.get("mode_counts"))
 
 # ---------------------------------------------------------------- polylines (wire edges)
@@ -336,6 +363,101 @@ ob = polyline("wire_off", [(0, 0, 0), (2, 0, 0), (2, 2, 0)])
 mod = A.add_cr_bevel(ob, ng, 0.15, 6)
 A.set_input(mod, "Wire Corners", False)
 check("Wire Corners off: polyline left unchanged", len(A.evaluate(ob).vertices) == 3)
+
+
+def fit_arc_radius(P, c, window):
+    """Radius of the circle fitted to the output points within `window` of corner c
+    (the arc reaches r / tan(a/2) from the corner: r at a right angle)."""
+    near = P[np.linalg.norm(P - np.array(c), axis=1) < window]
+    cen = near.mean(0)
+    _, _, vt = np.linalg.svd(near - cen)
+    uv = (near - cen) @ vt[:2].T
+    sol = np.linalg.lstsq(np.c_[2 * uv, np.ones(len(uv))], (uv ** 2).sum(1), rcond=None)[0]
+    return math.sqrt(sol[2] + sol[:2] @ sol[:2])
+
+
+# Segments: a corner becomes Segments + 1 points, like Bevel's Vertices mode.
+seg_ok = []
+for seg in (1, 2, 5):
+    ob = polyline(f"wire_seg{seg}", [(0, 0, 0), (2, 0, 0), (2, 2, 0)])
+    A.add_cr_bevel(ob, ng, 0.3, seg)
+    seg_ok.append(len(A.evaluate(ob).vertices) == 2 + seg + 1)
+check("polyline: a corner gets Segments + 1 points", all(seg_ok), seg_ok)
+
+# Radius <= 0 leaves wires alone (as it leaves edges alone).
+r_ok = []
+for r in (0.0, -0.2):
+    ob = polyline("wire_r", [(0, 0, 0), (2, 0, 0), (2, 2, 0)])
+    A.add_cr_bevel(ob, ng, r, 4)
+    r_ok.append(len(A.evaluate(ob).vertices) == 3)
+check("polyline: radius 0 or negative leaves it unchanged", all(r_ok), r_ok)
+
+# Clamp on a polyline with one short piece (0.4 between two right angles):
+# Uniform lowers every corner to 0.2, Per Edge only the two next to it.
+zig = [(0, 0, 0), (3, 0, 0), (3, 0.4, 0), (6, 0.4, 0), (6, 3, 0)]
+got = {}
+for cl in ("Uniform", "Per Edge"):
+    ob = polyline(f"wire_clamp_{cl}", zig)
+    A.set_input(A.add_cr_bevel(ob, ng, 0.5, 8), "Clamp", cl)
+    P = np.array([v.co[:] for v in A.evaluate(ob).vertices])
+    got[cl] = [fit_arc_radius(P, c, 1.01 * w) for c, w in zip(zig[1:-1], (0.2, 0.2, 0.2 if cl == "Uniform" else 0.5))]
+check("polyline Clamp Uniform: one radius at every corner (0.2)",
+      all(abs(x - 0.2) < 1e-4 for x in got["Uniform"]), [round(x, 4) for x in got["Uniform"]])
+check("polyline Clamp Per Edge: only the short piece's corners are lowered",
+      all(abs(x - 0.2) < 1e-4 for x in got["Per Edge"][:2]) and abs(got["Per Edge"][2] - 0.5) < 1e-4,
+      [round(x, 4) for x in got["Per Edge"]])
+
+# A duplicate point (zero-length piece) must not lower the Uniform radius to 0.
+ob = polyline("wire_dup", [(0, 0, 0), (2, 0, 0), (2, 0, 0), (2, 2, 0), (4, 2, 0)])
+A.add_cr_bevel(ob, ng, 0.3, 4)
+P = np.array([v.co[:] for v in A.evaluate(ob).vertices])
+check("polyline with a duplicate point: other corners still rounded at r",
+      abs(fit_arc_radius(P, (2, 2, 0), 0.31) - 0.3) < 1e-4, len(P))
+
+# Uniform is one radius for the whole object: a solid next to a polyline.
+bm = cube_bm()
+vs = [bm.verts.new(c) for c in ((3, 0, 0), (5, 0, 0), (5, 0.2, 0), (7, 0.2, 0))]
+for a, b in zip(vs, vs[1:]):
+    bm.edges.new((a, b))
+ob = from_bm("cube_and_wire", bm)
+mod = A.add_cr_bevel(ob, ng, 0.4, 4)
+me = A.evaluate(ob)
+check("Clamp Uniform: the cube takes the polyline's limit too (0.1)",
+      any("0.1000" in w.message for w in mod.node_warnings), [w.message for w in mod.node_warnings])
+
+# Wires stay connected: at a branch, and where a wire touches the rest of the mesh.
+ob = A.new_object("wire_T", [(0, 0, 0), (2, 0, 0), (4, 0, 0), (2, 2, 0), (2, 3, 1)], [], [(0, 1), (1, 2), (1, 3), (3, 4)])
+A.add_cr_bevel(ob, ng, 0.3, 4)
+me = A.evaluate(ob)
+check("branching polyline: corner rounded, branch point shared (9 points, 8 edges)",
+      (len(me.vertices), len(me.edges)) == (9, 8), (len(me.vertices), len(me.edges)))
+bm = cube_bm()
+bm.verts.ensure_lookup_table()
+v0 = bm.verts[0]
+a = bm.verts.new(v0.co * 2)
+b = bm.verts.new(v0.co * 2 + Vector((1, 0, 0)))
+bm.edges.new((v0, a))
+bm.edges.new((a, b))
+ob = from_bm("wire_on_cube", bm)
+A.add_cr_bevel(ob, ng, 0.3, 4, angle_limit=math.radians(100))       # cube itself not beveled
+me = A.evaluate(ob)
+deg = np.bincount(np.array([e.vertices[:] for e in me.edges]).ravel(), minlength=len(me.vertices))
+check("polyline touching a face's vertex stays attached to it",
+      len(me.vertices) == 8 + 1 + 5 and deg.max() == 4, (len(me.vertices), int(deg.max())))
+
+# Loose points are kept, with Wire Corners on and off (v1.0.4 dropped them).
+for on in (True, False):
+    bm = cube_bm()
+    bm.verts.new((5, 5, 5))
+    a, b, c = (bm.verts.new(p) for p in ((6, 0, 0), (8, 0, 0), (8, 2, 0)))
+    bm.edges.new((a, b))
+    bm.edges.new((b, c))
+    ob = from_bm("loose_point", bm)
+    A.set_input(A.add_cr_bevel(ob, ng, 0.2, 3), "Wire Corners", on)
+    P = np.array([v.co[:] for v in A.evaluate(ob).vertices])
+    loose = np.min(np.linalg.norm(P - np.array((5, 5, 5)), axis=1)) < 1e-6
+    check(f"loose point kept (Wire Corners {'on' if on else 'off'})",
+          loose and len(P) == 96 + 1 + (2 + 4 if on else 3), len(P))
 
 # ---------------------------------------------------------------- pass 2: segment parity at corners
 
