@@ -1,0 +1,54 @@
+# Builds the extension zip from source and publishes a GitHub Release.
+# Trigger: push a tag like v1.0.3 (it must match `version` in
+# extension/blender_manifest.toml), or run it manually from the Actions tab.
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+env:
+  BLENDER_URL: https://download.blender.org/release/Blender5.2/blender-5.2.4-linux-x64.tar.xz
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Blender 5.2 LTS
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq libxi6 libxkbcommon0 libxxf86vm1 libxfixes3 libxrender1 libgl1 libegl1 libsm6
+          mkdir -p "$HOME/blender"
+          curl -fsSL "$BLENDER_URL" | tar xJ -C "$HOME/blender" --strip-components=1
+          echo "$HOME/blender" >> "$GITHUB_PATH"
+
+      - name: Check the tag matches the manifest version
+        if: startsWith(github.ref, 'refs/tags/')
+        run: |
+          version=$(sed -n 's/^version = "\(.*\)"/\1/p' extension/blender_manifest.toml)
+          test "v$version" = "${GITHUB_REF_NAME}" || { echo "Tag ${GITHUB_REF_NAME} != manifest v$version"; exit 1; }
+
+      - name: Build the extension
+        run: blender -b --factory-startup --python src/make_extension.py
+
+      - name: Test the installed extension
+        run: blender -b --factory-startup --python tests/test_phase4.py
+
+      - name: Publish the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          version=$(sed -n 's/^version = "\(.*\)"/\1/p' extension/blender_manifest.toml)
+          tag="v$version"
+          notes="docs/release_notes/$tag.md"
+          [ -f "$notes" ] || notes=/dev/null
+          if gh release view "$tag" >/dev/null 2>&1; then
+            gh release upload "$tag" dist/*.zip --clobber
+          else
+            gh release create "$tag" dist/*.zip --title "CR Bevel $version" --notes-file "$notes" --target "$GITHUB_SHA"
+          fi
