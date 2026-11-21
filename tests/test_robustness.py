@@ -91,6 +91,7 @@ def run_case(name, make, radius, segments=4, clamp="Uniform", angle=math.radians
     else:
         flips = A.inverted_faces(me, A.original_bmesh(obs[0][0]))
     stats = dict(verts=len(me.vertices), faces=len(me.polygons), finite=bool(np.isfinite(P).all()),
+                 max_coord=float(np.abs(P).max()) if len(P) else 0.0,
                  same_topology=same, flips=flips, warnings=[w.message for w in obs[0][1].node_warnings])
     check(f"{name}: finite, same topology as native, no flips", stats["finite"] and same and flips == 0, stats)
     if exact_r is not None:
@@ -571,6 +572,41 @@ for mode, attr, dtype, on in (("Bevel Weight", "bevel_weight_edge", "FLOAT", 1.0
           len(me.polygons) == 6 and any("nothing is beveled" in w.message for w in mod.node_warnings),
           [w.message for w in mod.node_warnings])
 
+# Sharp marks: the bevel copies them onto every new edge. Inside a round and
+# along its tangent borders they must go; where the round ends against a face
+# (a real crease) they must stay. One top edge of an all-sharp, smooth-shaded cube.
+# (With Analytic Normals on, Blender's custom-normal encoding itself marks a
+# border sharp where the smooth original face keeps a different normal; so
+# there only the edges inside the round are checked.)
+for mode, normals in (("Sharp Edges", False), ("Angle", False), ("Sharp Edges", True)):
+    ob, _ = marked_cube("sharp_edge", "BOOLEAN", lambda z: True)
+    for p_ in ob.data.polygons:
+        p_.use_smooth = True
+    A.set_edge_selection(ob, lambda e: all(v.co.z > 0 for v in e.verts) and all(v.co.x > 0 for v in e.verts))
+    mod = A.add_cr_bevel(ob, ng, 0.2, 4, angle_limit=0.0, selection_attr="sel")
+    A.set_input(mod, "Edges", mode)
+    A.set_input(mod, "Analytic Normals", normals)
+    me = A.evaluate(ob)
+    bev = np.array([me.attributes["cr_bevel_face"].data[i].value for i in range(len(me.polygons))])
+    sharp = np.array([me.attributes["sharp_edge"].data[i].value for i in range(len(me.edges))])
+    faces_of = {}
+    key_to_edge = {e.key: e.index for e in me.edges}
+    for p_ in me.polygons:
+        for k in p_.edge_keys:
+            faces_of.setdefault(key_to_edge[k], []).append(p_.index)
+    inner, tangent, crease = [], [], []
+    for e, fs in faces_of.items():
+        if len(fs) == 2 and (bev[fs[0]] or bev[fs[1]]):
+            ang = A.angle_between(me.polygons[fs[0]].normal, me.polygons[fs[1]].normal)
+            (crease if ang > math.radians(45) else tangent).append(e)
+            if bev[fs[0]] and bev[fs[1]]:
+                inner.append(e)
+    smooth_set = inner if normals else tangent
+    check(f"sharp-marked input, Edges {mode}, Analytic Normals {'on' if normals else 'off'}: "
+          f"no sharp edge {'inside the round' if normals else 'inside or along the round'}, end creases stay sharp",
+          len(smooth_set) > 0 and len(crease) == 2 * 4 and not sharp[smooth_set].any() and sharp[crease].all(),
+          (len(smooth_set), int(sharp[smooth_set].sum()), len(crease), int(sharp[crease].sum())))
+
 # Bevel weight scales the radius: all edges at weight 0.5, radius 0.4 -> exact r = 0.2.
 _, st = run_case("Bevel Weight 0.5 everywhere, Radius 0.4 (= r 0.2)",
                  lambda: marked_cube("bevel_weight_edge", "FLOAT", lambda z: 0.5)[0], 0.4, angle=0.0,
@@ -600,6 +636,51 @@ for clamp in ("Uniform", "Per Edge", "None"):
         name = "Bevel Weight + Clamp None: each edge at exactly Radius x weight"
     check(name, ok, detail)
 
+# Random bevel weights on a boolean block (cylinder hole), every Clamp mode,
+# radius large enough to clamp: no flips against native, no overlap.
+def weighted_boolean_block():
+    bpy.ops.mesh.primitive_cube_add(size=2.0, location=(1, 1, 1))
+    ob = bpy.context.object
+    bpy.ops.mesh.primitive_cylinder_add(radius=0.5, depth=3.0, vertices=48, location=(1.2, 1.1, 1.0),
+                                        rotation=(math.radians(90), 0, math.radians(20)))
+    cutter = bpy.context.object
+    mod = ob.modifiers.new("cut", "BOOLEAN")
+    mod.object, mod.solver = cutter, "EXACT"
+    bpy.context.view_layer.objects.active = ob
+    bpy.ops.object.modifier_apply(modifier=mod.name)
+    bpy.data.objects.remove(cutter)
+    rng = np.random.default_rng(7)
+    w = rng.choice([0.0, 0.3, 0.6, 1.0], size=len(ob.data.edges))
+    ob.data.attributes.new("bevel_weight_edge", "FLOAT", "EDGE").data.foreach_set("value", w.tolist())
+    return ob
+
+
+for clamp in ("Uniform", "Per Edge"):
+    _, st = run_case(f"boolean block, random bevel weights, Clamp {clamp}", weighted_boolean_block, 0.3,
+                     clamp=clamp, angle=0.0, inputs={"Edges": "Bevel Weight"})
+    check(f"boolean block, random bevel weights, Clamp {clamp}: no vertex thrown away (stays within the block)",
+          st.get("finite") and st.get("max_coord", 0) < 2.5, st.get("max_coord"))
+    worst = worst_overlap(prepared(weighted_boolean_block(), 0.3, Edges="Bevel Weight", Clamp=clamp))
+    check(f"boolean block, random bevel weights, Clamp {clamp}: no overlap ({worst:.4f} |g|)",
+          0 < worst <= 0.95 * (1 + 1e-5))
+# Clamp None applies the radius as typed and may overlap (here on the boolean's tiny
+# slivers, where the native bevel overlaps too): finite, and never further out
+# of the block than the native bevel.
+outs = []
+for exact in (True, False):
+    ob = weighted_boolean_block()
+    mod = A.add_cr_bevel(ob, ng, 0.05, 4, angle_limit=0.0, exact=exact)
+    A.set_input(mod, "Edges", "Bevel Weight")
+    A.set_input(mod, "Clamp", "None")
+    if not exact:
+        A.set_input(mod, "Analytic Normals", False)
+    outs.append((ob, A.evaluate(ob)))
+(ob, me), (ob_n, me_n) = outs
+P, Pn = (np.array([v.co[:] for v in m.vertices]) for m in (me, me_n))
+out, out_n = float(np.abs(P).max()) - 1.0, float(np.abs(Pn).max()) - 1.0
+check("boolean block, random bevel weights, Clamp None: finite, no further out of the block than native",
+      np.isfinite(P).all() and out <= max(out_n, 0.0) + 1e-6, (round(out, 5), round(out_n, 5)))
+
 # Polylines follow the weights: a corner gets Radius x the mean weight of its two pieces.
 ob = polyline("wire_w", [(0, 0, 0), (2, 0, 0), (2, 2, 0), (4, 2, 0)])
 ob.data.attributes.new("bevel_weight_edge", "FLOAT", "EDGE").data.foreach_set("value", [1.0, 0.5, 0.0])
@@ -609,7 +690,7 @@ check("Bevel Weight on a polyline: corner radius = Radius x mean weight (0.3), w
       abs(fit_arc_radius(P, (2, 0, 0), 0.31) - 0.3) < 1e-4 and np.min(np.linalg.norm(P - (2, 2, 0), axis=1)) < 1e-6,
       len(P))
 
-# ---------------------------------------------------------------- Scene Units: scaled objects (v1.1)
+# ---------------------------------------------------------------- CR Bevel (Scene Units): scaled objects (v1.1)
 
 
 def world_points(ob, me):
@@ -630,6 +711,11 @@ def world_corner_normals(ob, me):
     return out
 
 
+ng_scene = build_cr_bevel.build(scene_units=True)
+check("default group doesn't read the object's transform (moving an object must not re-evaluate it)",
+      not any(n.bl_idname in ("GeometryNodeSelfObject", "GeometryNodeObjectInfo") for n in ng.nodes)
+      and any(n.bl_idname == "GeometryNodeSelfObject" for n in ng_scene.nodes))
+
 for scale in ((2.0, 2.0, 2.0), (1.0, 2.0, 0.5), (0.01, 0.01, 0.01)):
     r = 0.1 * scale[0]
     obs = []
@@ -641,7 +727,7 @@ for scale in ((2.0, 2.0, 2.0), (1.0, 2.0, 0.5), (0.01, 0.01, 0.01)):
             bpy.context.view_layer.update()
             ob.data.transform(Matrix.Diagonal(scale).to_4x4())
             ob.scale = (1.0, 1.0, 1.0)
-        A.add_cr_bevel(ob, ng, r, 6)
+        A.add_cr_bevel(ob, ng_scene, r, 6)
         obs.append(ob)
     bpy.context.view_layer.update()
     (ref, me_ref), (ob, me) = [(o, A.evaluate(o)) for o in obs]
@@ -650,27 +736,27 @@ for scale in ((2.0, 2.0, 2.0), (1.0, 2.0, 0.5), (0.01, 0.01, 0.01)):
     n_ref, n_ob = world_corner_normals(ref, me_ref), world_corner_normals(ob, me)
     common = set(n_ref) & set(n_ob)
     dn = max((A.angle_between(n_ref[k], n_ob[k]) for k in common), default=1.0)
-    check(f"Scene Units, object scale {scale}: same rounds in the scene as with the scale applied "
+    check(f"CR Bevel (Scene Units), object scale {scale}: same rounds in the scene as with the scale applied "
           f"(position {dp:.1e} r, normals {dn:.1e} rad)",
           P.shape == P_ref.shape and dp < 1e-4 and len(common) > 0.9 * len(me.loops) and dn < 5e-4,
           f"{len(common)} of {len(me.loops)} corners compared")
 
 ob = skew_box("units_off")
 ob.scale = (2.0, 2.0, 2.0)
-A.set_input(A.add_cr_bevel(ob, ng, 0.1, 4), "Scene Units", False)
+A.add_cr_bevel(ob, ng, 0.1, 4)
 ref = skew_box("units_ref")
 A.add_cr_bevel(ref, ng, 0.1, 4)
 bpy.context.view_layer.update()
 P, P_ref = (np.array([v.co[:] for v in A.evaluate(o).vertices]) for o in (ob, ref))
-check("Scene Units off: radius in the object's own units (same mesh as unscaled)",
+check("CR Bevel (default): radius in the object's own units (same mesh as unscaled)",
       P.shape == P_ref.shape and float(np.abs(P - P_ref).max()) < 1e-6)
 
 ob = polyline("wire_scaled", [(0, 0, 0), (1, 0, 0), (1, 1, 0)])
 ob.scale = (2.0, 2.0, 2.0)
-A.add_cr_bevel(ob, ng, 0.3, 8)
+A.add_cr_bevel(ob, ng_scene, 0.3, 8)
 bpy.context.view_layer.update()
 P = world_points(ob, A.evaluate(ob))
-check("Scene Units on a scaled polyline: arc radius 0.3 in the scene", abs(fit_arc_radius(P, (2, 0, 0), 0.31) - 0.3) < 1e-4,
+check("CR Bevel (Scene Units) on a scaled polyline: arc radius 0.3 in the scene", abs(fit_arc_radius(P, (2, 0, 0), 0.31) - 0.3) < 1e-4,
       len(P))
 
 # ---------------------------------------------------------------- pass 2: segment parity at corners

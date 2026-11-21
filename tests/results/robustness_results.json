@@ -5,6 +5,7 @@
       "verts": 152,
       "faces": 150,
       "finite": true,
+      "max_coord": 2.7994585037231445,
       "same_topology": true,
       "flips": 0,
       "warnings": [],
@@ -21,6 +22,7 @@
       "verts": 152,
       "faces": 150,
       "finite": true,
+      "max_coord": 1002.7994995117188,
       "same_topology": true,
       "flips": 0,
       "warnings": [],
@@ -37,6 +39,7 @@
       "verts": 152,
       "faces": 150,
       "finite": true,
+      "max_coord": 0.002799458336085081,
       "same_topology": true,
       "flips": 0,
       "warnings": [],
@@ -53,6 +56,7 @@
       "verts": 152,
       "faces": 150,
       "finite": true,
+      "max_coord": 2799.458251953125,
       "same_topology": true,
       "flips": 0,
       "warnings": [],
@@ -69,6 +73,7 @@
       "verts": 152,
       "faces": 150,
       "finite": true,
+      "max_coord": 2.7994585037231445,
       "same_topology": true,
       "flips": 0,
       "warnings": []
@@ -77,6 +82,7 @@
       "verts": 96,
       "faces": 86,
       "finite": true,
+      "max_coord": 2.7994585037231445,
       "same_topology": true,
       "flips": 0,
       "warnings": [
@@ -88,6 +94,7 @@
       "verts": 152,
       "faces": 150,
       "finite": true,
+      "max_coord": 2.7994585037231445,
       "same_topology": true,
       "flips": 0,
       "warnings": [],
@@ -97,6 +104,7 @@
       "verts": 152,
       "faces": 156,
       "finite": true,
+      "max_coord": 1.0,
       "same_topology": true,
       "flips": 0,
       "warnings": []
@@ -105,6 +113,7 @@
       "verts": 96,
       "faces": 85,
       "finite": true,
+      "max_coord": 1.0,
       "same_topology": true,
       "flips": 0,
       "warnings": [],
@@ -121,6 +130,7 @@
       "verts": 157,
       "faces": 154,
       "finite": true,
+      "max_coord": 1.0310659408569336,
       "same_topology": true,
       "flips": 0,
       "warnings": []
@@ -129,6 +139,7 @@
       "verts": 155,
       "faces": 150,
       "finite": true,
+      "max_coord": 7.0,
       "same_topology": true,
       "flips": 0,
       "warnings": [],
@@ -145,6 +156,7 @@
       "verts": 12386,
       "faces": 12416,
       "finite": true,
+      "max_coord": 0.9999247789382935,
       "same_topology": true,
       "flips": 0,
       "warnings": []
@@ -153,6 +165,7 @@
       "verts": 902,
       "faces": 901,
       "finite": true,
+      "max_coord": 3.999112129211426,
       "same_topology": true,
       "flips": 0,
       "warnings": []
@@ -161,6 +174,7 @@
       "verts": 902,
       "faces": 901,
       "finite": true,
+      "max_coord": 3.9986565113067627,
       "same_topology": true,
       "flips": 0,
       "warnings": []
@@ -169,6 +183,7 @@
       "verts": 1302,
       "faces": 1301,
       "finite": true,
+      "max_coord": 3.9977216720581055,
       "same_topology": true,
       "flips": 0,
       "warnings": []
@@ -177,6 +192,7 @@
       "verts": 24,
       "faces": 26,
       "finite": true,
+      "max_coord": 2.7951500415802,
       "same_topology": true,
       "flips": 0,
       "warnings": [],
@@ -193,6 +209,7 @@
       "verts": 25352,
       "faces": 25350,
       "finite": true,
+      "max_coord": 2.805415391921997,
       "same_topology": true,
       "flips": 0,
       "warnings": [],
@@ -209,6 +226,7 @@
       "verts": 96,
       "faces": 86,
       "finite": true,
+      "max_coord": 2.7994585037231445,
       "same_topology": true,
       "flips": 0,
       "warnings": [],
@@ -225,6 +243,7 @@
       "verts": 152,
       "faces": 150,
       "finite": true,
+      "max_coord": 2.7994585037231445,
       "same_topology": true,
       "flips": 0,
       "warnings": [],
@@ -241,6 +260,7 @@
       "verts": 152,
       "faces": 150,
       "finite": true,
+      "max_coord": 2.7994585037231445,
       "same_topology": true,
       "flips": 0,
       "warnings": [],
@@ -257,6 +277,7 @@
       "verts": 56,
       "faces": 28,
       "finite": true,
+      "max_coord": 2.8578853607177734,
       "same_topology": true,
       "flips": 0,
       "warnings": [],
@@ -273,6 +294,7 @@
       "verts": 176,
       "faces": 161,
       "finite": true,
+      "max_coord": 2.8578853607177734,
       "same_topology": true,
       "flips": 0,
       "warnings": [],
@@ -289,6 +311,7 @@
       "verts": 56,
       "faces": 28,
       "finite": true,
+      "max_coord": 2.8578853607177734,
       "same_topology": true,
       "flips": 0,
       "warnings": [],
@@ -305,6 +328,7 @@
       "verts": 18,
       "faces": 8,
       "finite": true,
+      "max_coord": 2.0,
       "same_topology": true,
       "flips": 0,
       "warnings": [],
@@ -321,6 +345,7 @@
       "verts": 18,
       "faces": 8,
       "finite": true,
+      "max_coord": 2.0,
       "same_topology": true,
       "flips": 0,
       "warnings": [],
@@ -337,6 +362,7 @@
       "verts": 16,
       "faces": 8,
       "finite": true,
+      "max_coord": 1.0,
       "same_topology": true,
       "flips": 0,
       "warnings": [],
@@ -353,6 +379,7 @@
       "verts": 56,
       "faces": 28,
       "finite": true,
+      "max_coord": 2.8578853607177734,
       "same_topology": true,
       "flips": 0,
       "warnings": [],
@@ -369,6 +396,7 @@
       "verts": 56,
       "faces": 28,
       "finite": true,
+      "max_coord": 16.431541442871094,
       "same_topology": true,
       "flips": 0,
       "warnings": [],
@@ -385,6 +413,7 @@
       "verts": 9256,
       "faces": 9266,
       "finite": true,
+      "max_coord": 1.328185796737671,
       "same_topology": true,
       "flips": 0,
       "warnings": [
@@ -395,6 +424,7 @@
       "verts": 152,
       "faces": 150,
       "finite": true,
+      "max_coord": 1.0,
       "same_topology": true,
       "flips": 0,
       "warnings": [],
@@ -407,10 +437,33 @@
         "corner": 8
       }
     },
+    "boolean block, random bevel weights, Clamp Uniform": {
+      "verts": 1161,
+      "faces": 1087,
+      "finite": true,
+      "max_coord": 1.0,
+      "same_topology": true,
+      "flips": 0,
+      "warnings": [
+        "123 edge(s) clamped to avoid overlaps; smallest radius used: 0.0007"
+      ]
+    },
+    "boolean block, random bevel weights, Clamp Per Edge": {
+      "verts": 1161,
+      "faces": 1087,
+      "finite": true,
+      "max_coord": 1.000389814376831,
+      "same_topology": true,
+      "flips": 0,
+      "warnings": [
+        "80 edge(s) clamped to avoid overlaps; smallest radius used: 0.0000"
+      ]
+    },
     "skew box corners, 2 segments": {
       "verts": 56,
       "faces": 54,
       "finite": true,
+      "max_coord": 2.7951500415802,
       "same_topology": true,
       "flips": 0,
       "warnings": [],
@@ -427,6 +480,7 @@
       "verts": 50,
       "faces": 42,
       "finite": true,
+      "max_coord": 3.4782285690307617,
       "same_topology": true,
       "flips": 0,
       "warnings": [],
@@ -443,6 +497,7 @@
       "verts": 96,
       "faces": 98,
       "finite": true,
+      "max_coord": 2.7951500415802,
       "same_topology": true,
       "flips": 0,
       "warnings": [],
@@ -459,6 +514,7 @@
       "verts": 80,
       "faces": 72,
       "finite": true,
+      "max_coord": 3.478853225708008,
       "same_topology": true,
       "flips": 0,
       "warnings": [],
@@ -475,6 +531,7 @@
       "verts": 216,
       "faces": 218,
       "finite": true,
+      "max_coord": 2.8035624027252197,
       "same_topology": true,
       "flips": 0,
       "warnings": [],
@@ -491,6 +548,7 @@
       "verts": 165,
       "faces": 152,
       "finite": true,
+      "max_coord": 3.481445074081421,
       "same_topology": true,
       "flips": 0,
       "warnings": [],
@@ -507,6 +565,7 @@
       "verts": 152,
       "faces": 150,
       "finite": true,
+      "max_coord": 2.8932974338531494,
       "same_topology": true,
       "flips": 0,
       "warnings": [],
@@ -523,6 +582,7 @@
       "verts": 152,
       "faces": 150,
       "finite": true,
+      "max_coord": 1002.8933715820312,
       "same_topology": true,
       "flips": 0,
       "warnings": [],
@@ -539,6 +599,7 @@
       "verts": 152,
       "faces": 150,
       "finite": true,
+      "max_coord": 1.0,
       "same_topology": true,
       "flips": 0,
       "warnings": [
@@ -549,6 +610,7 @@
       "verts": 152,
       "faces": 150,
       "finite": true,
+      "max_coord": 1.0,
       "same_topology": true,
       "flips": 0,
       "warnings": [
@@ -559,6 +621,7 @@
       "verts": 152,
       "faces": 150,
       "finite": true,
+      "max_coord": 1.2637324333190918,
       "same_topology": true,
       "flips": 0,
       "warnings": []
@@ -567,6 +630,7 @@
       "verts": 172,
       "faces": 171,
       "finite": true,
+      "max_coord": 2.0,
       "same_topology": true,
       "flips": 0,
       "warnings": []
@@ -575,6 +639,7 @@
       "verts": 192,
       "faces": 192,
       "finite": true,
+      "max_coord": 5.0,
       "same_topology": true,
       "flips": 0,
       "warnings": []
@@ -583,6 +648,7 @@
       "verts": 602,
       "faces": 600,
       "finite": true,
+      "max_coord": 0.8257972002029419,
       "same_topology": true,
       "flips": 0,
       "warnings": []
@@ -591,6 +657,7 @@
       "verts": 152,
       "faces": 150,
       "finite": true,
+      "max_coord": 2.7994585037231445,
       "same_topology": true,
       "flips": 0,
       "warnings": [],
@@ -607,6 +674,7 @@
       "verts": 32,
       "faces": 31,
       "finite": true,
+      "max_coord": 1.0,
       "same_topology": true,
       "flips": 0,
       "warnings": [],
@@ -623,6 +691,7 @@
       "verts": 252,
       "faces": 255,
       "finite": true,
+      "max_coord": 1.0,
       "same_topology": true,
       "flips": 0,
       "warnings": [],
@@ -637,14 +706,14 @@
     },
     "256 segments": {
       "verts": 396296,
-      "seconds": 1.0873315110000021
+      "seconds": 0.8639229699997486
     }
   },
   "checks": [
     {
       "name": "skew box at origin: finite, same topology as native, no flips",
       "ok": true,
-      "detail": "{'verts': 152, 'faces': 150, 'finite': True, 'same_topology': True, 'flips': 0, 'warnings': []}"
+      "detail": "{'verts': 152, 'faces': 150, 'finite': True, 'max_coord': 2.7994585037231445, 'same_topology': True, 'flips': 0, 'warnings': []}"
     },
     {
       "name": "skew box at origin: exact (error 8.9e-07 r, tolerance 1e-04)",
@@ -654,7 +723,7 @@
     {
       "name": "skew box 1000 units from origin: finite, same topology as native, no flips",
       "ok": true,
-      "detail": "{'verts': 152, 'faces': 150, 'finite': True, 'same_topology': True, 'flips': 0, 'warnings': []}"
+      "detail": "{'verts': 152, 'faces': 150, 'finite': True, 'max_coord': 1002.7994995117188, 'same_topology': True, 'flips': 0, 'warnings': []}"
     },
     {
       "name": "skew box 1000 units from origin: exact (error 5.3e-04 r, tolerance 7e-03)",
@@ -669,7 +738,7 @@
     {
       "name": "skew box scaled 0.001: finite, same topology as native, no flips",
       "ok": true,
-      "detail": "{'verts': 152, 'faces': 150, 'finite': True, 'same_topology': True, 'flips': 0, 'warnings': []}"
+      "detail": "{'verts': 152, 'faces': 150, 'finite': True, 'max_coord': 0.002799458336085081, 'same_topology': True, 'flips': 0, 'warnings': []}"
     },
     {
       "name": "skew box scaled 0.001: exact (error 1.7e-06 r, tolerance 1e-04)",
@@ -679,7 +748,7 @@
     {
       "name": "skew box scaled 1000: finite, same topology as native, no flips",
       "ok": true,
-      "detail": "{'verts': 152, 'faces': 150, 'finite': True, 'same_topology': True, 'flips': 0, 'warnings': []}"
+      "detail": "{'verts': 152, 'faces': 150, 'finite': True, 'max_coord': 2799.458251953125, 'same_topology': True, 'flips': 0, 'warnings': []}"
     },
     {
       "name": "skew box scaled 1000: exact (error 7.9e-07 r, tolerance 1e-04)",
@@ -689,12 +758,12 @@
     {
       "name": "skew box, consistent normals (reference): finite, same topology as native, no flips",
       "ok": true,
-      "detail": "{'verts': 152, 'faces': 150, 'finite': True, 'same_topology': True, 'flips': 0, 'warnings': []}"
+      "detail": "{'verts': 152, 'faces': 150, 'finite': True, 'max_coord': 2.7994585037231445, 'same_topology': True, 'flips': 0, 'warnings': []}"
     },
     {
       "name": "skew box, one face flipped: finite, same topology as native, no flips",
       "ok": true,
-      "detail": "{'verts': 96, 'faces': 86, 'finite': True, 'same_topology': True, 'flips': 0, 'warnings': ['Some faces point the wrong way: their edges are not beveled. Recalculate normals (Shift N).']}"
+      "detail": "{'verts': 96, 'faces': 86, 'finite': True, 'max_coord': 2.7994585037231445, 'same_topology': True, 'flips': 0, 'warnings': ['Some faces point the wrong way: their edges are not beveled. Recalculate normals (Shift N).']}"
     },
     {
       "name": "skew box, one face flipped: warns about flipped faces",
@@ -704,7 +773,7 @@
     {
       "name": "skew box, inside out: finite, same topology as native, no flips",
       "ok": true,
-      "detail": "{'verts': 152, 'faces': 150, 'finite': True, 'same_topology': True, 'flips': 0, 'warnings': []}"
+      "detail": "{'verts': 152, 'faces': 150, 'finite': True, 'max_coord': 2.7994585037231445, 'same_topology': True, 'flips': 0, 'warnings': []}"
     },
     {
       "name": "skew box, inside out: same shape as with consistent normals (max dev 5.2e-07)",
@@ -714,12 +783,12 @@
     {
       "name": "triangulated cube: finite, same topology as native, no flips",
       "ok": true,
-      "detail": "{'verts': 152, 'faces': 156, 'finite': True, 'same_topology': True, 'flips': 0, 'warnings': []}"
+      "detail": "{'verts': 152, 'faces': 156, 'finite': True, 'max_coord': 1.0, 'same_topology': True, 'flips': 0, 'warnings': []}"
     },
     {
       "name": "open box (boundary edges): finite, same topology as native, no flips",
       "ok": true,
-      "detail": "{'verts': 96, 'faces': 85, 'finite': True, 'same_topology': True, 'flips': 0, 'warnings': []}"
+      "detail": "{'verts': 96, 'faces': 85, 'finite': True, 'max_coord': 1.0, 'same_topology': True, 'flips': 0, 'warnings': []}"
     },
     {
       "name": "open box (boundary edges): exact (error 3.3e-07 r, tolerance 1e-04)",
@@ -729,12 +798,12 @@
     {
       "name": "cube with a zero-length edge: finite, same topology as native, no flips",
       "ok": true,
-      "detail": "{'verts': 157, 'faces': 154, 'finite': True, 'same_topology': True, 'flips': 0, 'warnings': []}"
+      "detail": "{'verts': 157, 'faces': 154, 'finite': True, 'max_coord': 1.0310659408569336, 'same_topology': True, 'flips': 0, 'warnings': []}"
     },
     {
       "name": "cube with loose vertex and edge: finite, same topology as native, no flips",
       "ok": true,
-      "detail": "{'verts': 155, 'faces': 150, 'finite': True, 'same_topology': True, 'flips': 0, 'warnings': []}"
+      "detail": "{'verts': 155, 'faces': 150, 'finite': True, 'max_coord': 7.0, 'same_topology': True, 'flips': 0, 'warnings': []}"
     },
     {
       "name": "cube with loose vertex and edge: exact (error 3.3e-07 r, tolerance 1e-04)",
@@ -744,27 +813,27 @@
     {
       "name": "UV sphere, Angle Limit 0: finite, same topology as native, no flips",
       "ok": true,
-      "detail": "{'verts': 12386, 'faces': 12416, 'finite': True, 'same_topology': True, 'flips': 0, 'warnings': []}"
+      "detail": "{'verts': 12386, 'faces': 12416, 'finite': True, 'max_coord': 0.9999247789382935, 'same_topology': True, 'flips': 0, 'warnings': []}"
     },
     {
       "name": "knife edge (2 deg between faces): finite, same topology as native, no flips",
       "ok": true,
-      "detail": "{'verts': 902, 'faces': 901, 'finite': True, 'same_topology': True, 'flips': 0, 'warnings': []}"
+      "detail": "{'verts': 902, 'faces': 901, 'finite': True, 'max_coord': 3.999112129211426, 'same_topology': True, 'flips': 0, 'warnings': []}"
     },
     {
       "name": "knife edge (3 deg between faces): finite, same topology as native, no flips",
       "ok": true,
-      "detail": "{'verts': 902, 'faces': 901, 'finite': True, 'same_topology': True, 'flips': 0, 'warnings': []}"
+      "detail": "{'verts': 902, 'faces': 901, 'finite': True, 'max_coord': 3.9986565113067627, 'same_topology': True, 'flips': 0, 'warnings': []}"
     },
     {
       "name": "knife edge (5 deg between faces): finite, same topology as native, no flips",
       "ok": true,
-      "detail": "{'verts': 1302, 'faces': 1301, 'finite': True, 'same_topology': True, 'flips': 0, 'warnings': []}"
+      "detail": "{'verts': 1302, 'faces': 1301, 'finite': True, 'max_coord': 3.9977216720581055, 'same_topology': True, 'flips': 0, 'warnings': []}"
     },
     {
       "name": "skew box, 1 segments: finite, same topology as native, no flips",
       "ok": true,
-      "detail": "{'verts': 24, 'faces': 26, 'finite': True, 'same_topology': True, 'flips': 0, 'warnings': []}"
+      "detail": "{'verts': 24, 'faces': 26, 'finite': True, 'max_coord': 2.7951500415802, 'same_topology': True, 'flips': 0, 'warnings': []}"
     },
     {
       "name": "skew box, 1 segments: exact (error 6.7e-07 r, tolerance 1e-04)",
@@ -774,7 +843,7 @@
     {
       "name": "skew box, 64 segments: finite, same topology as native, no flips",
       "ok": true,
-      "detail": "{'verts': 25352, 'faces': 25350, 'finite': True, 'same_topology': True, 'flips': 0, 'warnings': []}"
+      "detail": "{'verts': 25352, 'faces': 25350, 'finite': True, 'max_coord': 2.805415391921997, 'same_topology': True, 'flips': 0, 'warnings': []}"
     },
     {
       "name": "skew box, 64 segments: exact (error 1.2e-06 r, tolerance 1e-04)",
@@ -784,7 +853,7 @@
     {
       "name": "skew box, partial selection, Per Edge: finite, same topology as native, no flips",
       "ok": true,
-      "detail": "{'verts': 96, 'faces': 86, 'finite': True, 'same_topology': True, 'flips': 0, 'warnings': []}"
+      "detail": "{'verts': 96, 'faces': 86, 'finite': True, 'max_coord': 2.7994585037231445, 'same_topology': True, 'flips': 0, 'warnings': []}"
     },
     {
       "name": "skew box, partial selection, Per Edge: exact (error 1.7e-06 r, tolerance 1e-04)",
@@ -794,7 +863,7 @@
     {
       "name": "input already has custom normals: finite, same topology as native, no flips",
       "ok": true,
-      "detail": "{'verts': 152, 'faces': 150, 'finite': True, 'same_topology': True, 'flips': 0, 'warnings': []}"
+      "detail": "{'verts': 152, 'faces': 150, 'finite': True, 'max_coord': 2.7994585037231445, 'same_topology': True, 'flips': 0, 'warnings': []}"
     },
     {
       "name": "input already has custom normals: exact (error 8.9e-07 r, tolerance 1e-04)",
@@ -804,7 +873,7 @@
     {
       "name": "input already has a cr_bevel_face attribute: finite, same topology as native, no flips",
       "ok": true,
-      "detail": "{'verts': 152, 'faces': 150, 'finite': True, 'same_topology': True, 'flips': 0, 'warnings': []}"
+      "detail": "{'verts': 152, 'faces': 150, 'finite': True, 'max_coord': 2.7994585037231445, 'same_topology': True, 'flips': 0, 'warnings': []}"
     },
     {
       "name": "input already has a cr_bevel_face attribute: exact (error 8.9e-07 r, tolerance 1e-04)",
@@ -824,7 +893,7 @@
     {
       "name": "profile bar open on both sides: finite, same topology as native, no flips",
       "ok": true,
-      "detail": "{'verts': 56, 'faces': 28, 'finite': True, 'same_topology': True, 'flips': 0, 'warnings': []}"
+      "detail": "{'verts': 56, 'faces': 28, 'finite': True, 'max_coord': 2.8578853607177734, 'same_topology': True, 'flips': 0, 'warnings': []}"
     },
     {
       "name": "profile bar open on both sides: exact (error 8.7e-07 r, tolerance 1e-04)",
@@ -839,7 +908,7 @@
     {
       "name": "profile bar open on one side: finite, same topology as native, no flips",
       "ok": true,
-      "detail": "{'verts': 176, 'faces': 161, 'finite': True, 'same_topology': True, 'flips': 0, 'warnings': []}"
+      "detail": "{'verts': 176, 'faces': 161, 'finite': True, 'max_coord': 2.8578853607177734, 'same_topology': True, 'flips': 0, 'warnings': []}"
     },
     {
       "name": "profile bar open on one side: exact (error 1.1e-06 r, tolerance 1e-04)",
@@ -854,7 +923,7 @@
     {
       "name": "profile bar open on both sides, slanted open end: finite, same topology as native, no flips",
       "ok": true,
-      "detail": "{'verts': 56, 'faces': 28, 'finite': True, 'same_topology': True, 'flips': 0, 'warnings': []}"
+      "detail": "{'verts': 56, 'faces': 28, 'finite': True, 'max_coord': 2.8578853607177734, 'same_topology': True, 'flips': 0, 'warnings': []}"
     },
     {
       "name": "profile bar open on both sides, slanted open end: exact (error 1.1e-06 r, tolerance 1e-04)",
@@ -869,7 +938,7 @@
     {
       "name": "folded sheet, trapezoid flaps: finite, same topology as native, no flips",
       "ok": true,
-      "detail": "{'verts': 18, 'faces': 8, 'finite': True, 'same_topology': True, 'flips': 0, 'warnings': []}"
+      "detail": "{'verts': 18, 'faces': 8, 'finite': True, 'max_coord': 2.0, 'same_topology': True, 'flips': 0, 'warnings': []}"
     },
     {
       "name": "folded sheet, trapezoid flaps: exact (error 5.3e-07 r, tolerance 1e-04)",
@@ -884,7 +953,7 @@
     {
       "name": "folded sheet, slanted open ends: finite, same topology as native, no flips",
       "ok": true,
-      "detail": "{'verts': 18, 'faces': 8, 'finite': True, 'same_topology': True, 'flips': 0, 'warnings': []}"
+      "detail": "{'verts': 18, 'faces': 8, 'finite': True, 'max_coord': 2.0, 'same_topology': True, 'flips': 0, 'warnings': []}"
     },
     {
       "name": "folded sheet, slanted open ends: exact (error 5.3e-07 r, tolerance 1e-04)",
@@ -899,7 +968,7 @@
     {
       "name": "two triangles sharing an edge: finite, same topology as native, no flips",
       "ok": true,
-      "detail": "{'verts': 16, 'faces': 8, 'finite': True, 'same_topology': True, 'flips': 0, 'warnings': []}"
+      "detail": "{'verts': 16, 'faces': 8, 'finite': True, 'max_coord': 1.0, 'same_topology': True, 'flips': 0, 'warnings': []}"
     },
     {
       "name": "two triangles sharing an edge: exact (error 1.6e-07 r, tolerance 1e-04)",
@@ -914,7 +983,7 @@
     {
       "name": "open bar, normals flipped (concave): finite, same topology as native, no flips",
       "ok": true,
-      "detail": "{'verts': 56, 'faces': 28, 'finite': True, 'same_topology': True, 'flips': 0, 'warnings': []}"
+      "detail": "{'verts': 56, 'faces': 28, 'finite': True, 'max_coord': 2.8578853607177734, 'same_topology': True, 'flips': 0, 'warnings': []}"
     },
     {
       "name": "open bar, normals flipped (concave): exact (error 8.7e-07 r, tolerance 1e-04)",
@@ -929,7 +998,7 @@
     {
       "name": "open bar, open ends slanted 76 deg: finite, same topology as native, no flips",
       "ok": true,
-      "detail": "{'verts': 56, 'faces': 28, 'finite': True, 'same_topology': True, 'flips': 0, 'warnings': []}"
+      "detail": "{'verts': 56, 'faces': 28, 'finite': True, 'max_coord': 16.431541442871094, 'same_topology': True, 'flips': 0, 'warnings': []}"
     },
     {
       "name": "open bar, open ends slanted 76 deg: exact (error 2.2e-06 r, tolerance 3e-04)",
@@ -1009,7 +1078,7 @@
     {
       "name": "subdivided Suzanne, Per Edge: finite, same topology as native, no flips",
       "ok": true,
-      "detail": "{'verts': 9256, 'faces': 9266, 'finite': True, 'same_topology': True, 'flips': 0, 'warnings': ['216 edge(s) clamped to avoid overlaps; smallest radius used: 0.0029']}"
+      "detail": "{'verts': 9256, 'faces': 9266, 'finite': True, 'max_coord': 1.328185796737671, 'same_topology': True, 'flips': 0, 'warnings': ['216 edge(s) clamped to avoid overlaps; smallest radius used: 0.0029']}"
     },
     {
       "name": "subdivided Suzanne, Per Edge: every corner within its overlap limit (t0 + t1 <= 0.95 |g|)",
@@ -1047,9 +1116,24 @@
       "detail": "['Edges is set to Seams, but no edge has Mark Seam: nothing is beveled.']"
     },
     {
+      "name": "sharp-marked input, Edges Sharp Edges, Analytic Normals off: no sharp edge inside or along the round, end creases stay sharp",
+      "ok": true,
+      "detail": "(5, 0, 8, 8)"
+    },
+    {
+      "name": "sharp-marked input, Edges Angle, Analytic Normals off: no sharp edge inside or along the round, end creases stay sharp",
+      "ok": true,
+      "detail": "(5, 0, 8, 8)"
+    },
+    {
+      "name": "sharp-marked input, Edges Sharp Edges, Analytic Normals on: no sharp edge inside the round, end creases stay sharp",
+      "ok": true,
+      "detail": "(3, 0, 8, 8)"
+    },
+    {
       "name": "Bevel Weight 0.5 everywhere, Radius 0.4 (= r 0.2): finite, same topology as native, no flips",
       "ok": true,
-      "detail": "{'verts': 152, 'faces': 150, 'finite': True, 'same_topology': True, 'flips': 0, 'warnings': []}"
+      "detail": "{'verts': 152, 'faces': 150, 'finite': True, 'max_coord': 1.0, 'same_topology': True, 'flips': 0, 'warnings': []}"
     },
     {
       "name": "Bevel Weight 0.5 everywhere, Radius 0.4 (= r 0.2): exact (error 1.4e-07 r, tolerance 1e-04)",
@@ -1072,39 +1156,79 @@
       "detail": "radius/weight 3.0000..3.0000"
     },
     {
+      "name": "boolean block, random bevel weights, Clamp Uniform: finite, same topology as native, no flips",
+      "ok": true,
+      "detail": "{'verts': 1161, 'faces': 1087, 'finite': True, 'max_coord': 1.0, 'same_topology': True, 'flips': 0, 'warnings': ['123 edge(s) clamped to avoid overlaps; smallest radius used: 0.0007']}"
+    },
+    {
+      "name": "boolean block, random bevel weights, Clamp Uniform: no vertex thrown away (stays within the block)",
+      "ok": true,
+      "detail": "1.0"
+    },
+    {
+      "name": "boolean block, random bevel weights, Clamp Uniform: no overlap (0.9500 |g|)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "boolean block, random bevel weights, Clamp Per Edge: finite, same topology as native, no flips",
+      "ok": true,
+      "detail": "{'verts': 1161, 'faces': 1087, 'finite': True, 'max_coord': 1.000389814376831, 'same_topology': True, 'flips': 0, 'warnings': ['80 edge(s) clamped to avoid overlaps; smallest radius used: 0.0000']}"
+    },
+    {
+      "name": "boolean block, random bevel weights, Clamp Per Edge: no vertex thrown away (stays within the block)",
+      "ok": true,
+      "detail": "1.000389814376831"
+    },
+    {
+      "name": "boolean block, random bevel weights, Clamp Per Edge: no overlap (0.9500 |g|)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "boolean block, random bevel weights, Clamp None: finite, no further out of the block than native",
+      "ok": true,
+      "detail": "(0.11232, 0.11232)"
+    },
+    {
       "name": "Bevel Weight on a polyline: corner radius = Radius x mean weight (0.3), weight-0 piece kept",
       "ok": true,
       "detail": "12"
     },
     {
-      "name": "Scene Units, object scale (2.0, 2.0, 2.0): same rounds in the scene as with the scale applied (position 4.8e-06 r, normals 8.2e-05 rad)",
-      "ok": true,
-      "detail": "1168 of 1176 corners compared"
-    },
-    {
-      "name": "Scene Units, object scale (1.0, 2.0, 0.5): same rounds in the scene as with the scale applied (position 9.5e-06 r, normals 1.3e-04 rad)",
-      "ok": true,
-      "detail": "1164 of 1176 corners compared"
-    },
-    {
-      "name": "Scene Units, object scale (0.01, 0.01, 0.01): same rounds in the scene as with the scale applied (position 5.6e-06 r, normals 7.4e-05 rad)",
-      "ok": true,
-      "detail": "1176 of 1176 corners compared"
-    },
-    {
-      "name": "Scene Units off: radius in the object's own units (same mesh as unscaled)",
+      "name": "default group doesn't read the object's transform (moving an object must not re-evaluate it)",
       "ok": true,
       "detail": ""
     },
     {
-      "name": "Scene Units on a scaled polyline: arc radius 0.3 in the scene",
+      "name": "CR Bevel (Scene Units), object scale (2.0, 2.0, 2.0): same rounds in the scene as with the scale applied (position 4.8e-06 r, normals 8.2e-05 rad)",
+      "ok": true,
+      "detail": "1168 of 1176 corners compared"
+    },
+    {
+      "name": "CR Bevel (Scene Units), object scale (1.0, 2.0, 0.5): same rounds in the scene as with the scale applied (position 9.5e-06 r, normals 1.3e-04 rad)",
+      "ok": true,
+      "detail": "1164 of 1176 corners compared"
+    },
+    {
+      "name": "CR Bevel (Scene Units), object scale (0.01, 0.01, 0.01): same rounds in the scene as with the scale applied (position 5.6e-06 r, normals 7.4e-05 rad)",
+      "ok": true,
+      "detail": "1176 of 1176 corners compared"
+    },
+    {
+      "name": "CR Bevel (default): radius in the object's own units (same mesh as unscaled)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "CR Bevel (Scene Units) on a scaled polyline: arc radius 0.3 in the scene",
       "ok": true,
       "detail": "11"
     },
     {
       "name": "skew box corners, 2 segments: finite, same topology as native, no flips",
       "ok": true,
-      "detail": "{'verts': 56, 'faces': 54, 'finite': True, 'same_topology': True, 'flips': 0, 'warnings': []}"
+      "detail": "{'verts': 56, 'faces': 54, 'finite': True, 'max_coord': 2.7951500415802, 'same_topology': True, 'flips': 0, 'warnings': []}"
     },
     {
       "name": "skew box corners, 2 segments: exact (error 6.7e-07 r, tolerance 1e-04)",
@@ -1114,7 +1238,7 @@
     {
       "name": "tapered prism joints+terminals, 2 segments: finite, same topology as native, no flips",
       "ok": true,
-      "detail": "{'verts': 50, 'faces': 42, 'finite': True, 'same_topology': True, 'flips': 0, 'warnings': []}"
+      "detail": "{'verts': 50, 'faces': 42, 'finite': True, 'max_coord': 3.4782285690307617, 'same_topology': True, 'flips': 0, 'warnings': []}"
     },
     {
       "name": "tapered prism joints+terminals, 2 segments: exact (error 2.3e-06 r, tolerance 1e-04)",
@@ -1124,7 +1248,7 @@
     {
       "name": "skew box corners, 3 segments: finite, same topology as native, no flips",
       "ok": true,
-      "detail": "{'verts': 96, 'faces': 98, 'finite': True, 'same_topology': True, 'flips': 0, 'warnings': []}"
+      "detail": "{'verts': 96, 'faces': 98, 'finite': True, 'max_coord': 2.7951500415802, 'same_topology': True, 'flips': 0, 'warnings': []}"
     },
     {
       "name": "skew box corners, 3 segments: exact (error 8.0e-07 r, tolerance 1e-04)",
@@ -1134,7 +1258,7 @@
     {
       "name": "tapered prism joints+terminals, 3 segments: finite, same topology as native, no flips",
       "ok": true,
-      "detail": "{'verts': 80, 'faces': 72, 'finite': True, 'same_topology': True, 'flips': 0, 'warnings': []}"
+      "detail": "{'verts': 80, 'faces': 72, 'finite': True, 'max_coord': 3.478853225708008, 'same_topology': True, 'flips': 0, 'warnings': []}"
     },
     {
       "name": "tapered prism joints+terminals, 3 segments: exact (error 1.9e-06 r, tolerance 1e-04)",
@@ -1144,7 +1268,7 @@
     {
       "name": "skew box corners, 5 segments: finite, same topology as native, no flips",
       "ok": true,
-      "detail": "{'verts': 216, 'faces': 218, 'finite': True, 'same_topology': True, 'flips': 0, 'warnings': []}"
+      "detail": "{'verts': 216, 'faces': 218, 'finite': True, 'max_coord': 2.8035624027252197, 'same_topology': True, 'flips': 0, 'warnings': []}"
     },
     {
       "name": "skew box corners, 5 segments: exact (error 8.8e-07 r, tolerance 1e-04)",
@@ -1154,7 +1278,7 @@
     {
       "name": "tapered prism joints+terminals, 5 segments: finite, same topology as native, no flips",
       "ok": true,
-      "detail": "{'verts': 165, 'faces': 152, 'finite': True, 'same_topology': True, 'flips': 0, 'warnings': []}"
+      "detail": "{'verts': 165, 'faces': 152, 'finite': True, 'max_coord': 3.481445074081421, 'same_topology': True, 'flips': 0, 'warnings': []}"
     },
     {
       "name": "tapered prism joints+terminals, 5 segments: exact (error 2.2e-06 r, tolerance 1e-04)",
@@ -1169,7 +1293,7 @@
     {
       "name": "skew box at origin, r=0.01: finite, same topology as native, no flips",
       "ok": true,
-      "detail": "{'verts': 152, 'faces': 150, 'finite': True, 'same_topology': True, 'flips': 0, 'warnings': []}"
+      "detail": "{'verts': 152, 'faces': 150, 'finite': True, 'max_coord': 2.8932974338531494, 'same_topology': True, 'flips': 0, 'warnings': []}"
     },
     {
       "name": "skew box at origin, r=0.01: exact (error 1.1e-05 r, tolerance 4e-04)",
@@ -1179,7 +1303,7 @@
     {
       "name": "skew box 1000 units away, r=0.01: finite, same topology as native, no flips",
       "ok": true,
-      "detail": "{'verts': 152, 'faces': 150, 'finite': True, 'same_topology': True, 'flips': 0, 'warnings': []}"
+      "detail": "{'verts': 152, 'faces': 150, 'finite': True, 'max_coord': 1002.8933715820312, 'same_topology': True, 'flips': 0, 'warnings': []}"
     },
     {
       "name": "skew box 1000 units away, r=0.01: exact (error 3.8e-03 r, tolerance 1e-01)",
@@ -1194,7 +1318,7 @@
     {
       "name": "thin plate (0.08 thick), r=0.2, Uniform: finite, same topology as native, no flips",
       "ok": true,
-      "detail": "{'verts': 152, 'faces': 150, 'finite': True, 'same_topology': True, 'flips': 0, 'warnings': ['12 edge(s) clamped to avoid overlaps; smallest radius used: 0.0380']}"
+      "detail": "{'verts': 152, 'faces': 150, 'finite': True, 'max_coord': 1.0, 'same_topology': True, 'flips': 0, 'warnings': ['12 edge(s) clamped to avoid overlaps; smallest radius used: 0.0380']}"
     },
     {
       "name": "thin plate: stays within its thickness",
@@ -1204,27 +1328,27 @@
     {
       "name": "thin plate, r=0.2, Per Edge: finite, same topology as native, no flips",
       "ok": true,
-      "detail": "{'verts': 152, 'faces': 150, 'finite': True, 'same_topology': True, 'flips': 0, 'warnings': ['12 edge(s) clamped to avoid overlaps; smallest radius used: 0.0380']}"
+      "detail": "{'verts': 152, 'faces': 150, 'finite': True, 'max_coord': 1.0, 'same_topology': True, 'flips': 0, 'warnings': ['12 edge(s) clamped to avoid overlaps; smallest radius used: 0.0380']}"
     },
     {
       "name": "box with a non-planar (twisted) face: finite, same topology as native, no flips",
       "ok": true,
-      "detail": "{'verts': 152, 'faces': 150, 'finite': True, 'same_topology': True, 'flips': 0, 'warnings': []}"
+      "detail": "{'verts': 152, 'faces': 150, 'finite': True, 'max_coord': 1.2637324333190918, 'same_topology': True, 'flips': 0, 'warnings': []}"
     },
     {
       "name": "after a mirror modifier: finite, same topology as native, no flips",
       "ok": true,
-      "detail": "{'verts': 172, 'faces': 171, 'finite': True, 'same_topology': True, 'flips': 0, 'warnings': []}"
+      "detail": "{'verts': 172, 'faces': 171, 'finite': True, 'max_coord': 2.0, 'same_topology': True, 'flips': 0, 'warnings': []}"
     },
     {
       "name": "after a array modifier: finite, same topology as native, no flips",
       "ok": true,
-      "detail": "{'verts': 192, 'faces': 192, 'finite': True, 'same_topology': True, 'flips': 0, 'warnings': []}"
+      "detail": "{'verts': 192, 'faces': 192, 'finite': True, 'max_coord': 5.0, 'same_topology': True, 'flips': 0, 'warnings': []}"
     },
     {
       "name": "after a subsurf modifier: finite, same topology as native, no flips",
       "ok": true,
-      "detail": "{'verts': 602, 'faces': 600, 'finite': True, 'same_topology': True, 'flips': 0, 'warnings': []}"
+      "detail": "{'verts': 602, 'faces': 600, 'finite': True, 'max_coord': 0.8257972002029419, 'same_topology': True, 'flips': 0, 'warnings': []}"
     },
     {
       "name": "instances + curve + mesh input: evaluates, mesh part beveled",
@@ -1234,7 +1358,7 @@
     {
       "name": "input with two materials: finite, same topology as native, no flips",
       "ok": true,
-      "detail": "{'verts': 152, 'faces': 150, 'finite': True, 'same_topology': True, 'flips': 0, 'warnings': []}"
+      "detail": "{'verts': 152, 'faces': 150, 'finite': True, 'max_coord': 2.7994585037231445, 'same_topology': True, 'flips': 0, 'warnings': []}"
     },
     {
       "name": "input with two materials: exact (error 8.9e-07 r, tolerance 1e-04)",
@@ -1254,7 +1378,7 @@
     {
       "name": "cup: concave cavity floor loop (concave joints): finite, same topology as native, no flips",
       "ok": true,
-      "detail": "{'verts': 32, 'faces': 31, 'finite': True, 'same_topology': True, 'flips': 0, 'warnings': []}"
+      "detail": "{'verts': 32, 'faces': 31, 'finite': True, 'max_coord': 1.0, 'same_topology': True, 'flips': 0, 'warnings': []}"
     },
     {
       "name": "cup: concave cavity floor loop (concave joints): exact (error 3.7e-07 r, tolerance 1e-04)",
@@ -1264,7 +1388,7 @@
     {
       "name": "cup: all sharp edges (convex rims, concave corners): finite, same topology as native, no flips",
       "ok": true,
-      "detail": "{'verts': 252, 'faces': 255, 'finite': True, 'same_topology': True, 'flips': 0, 'warnings': []}"
+      "detail": "{'verts': 252, 'faces': 255, 'finite': True, 'max_coord': 1.0, 'same_topology': True, 'flips': 0, 'warnings': []}"
     },
     {
       "name": "cup: all sharp edges (convex rims, concave corners): exact (error 3.6e-07 r, tolerance 1e-04)",
@@ -1289,7 +1413,7 @@
     {
       "name": "256 segments: evaluates in reasonable time",
       "ok": true,
-      "detail": "396296 verts, 1.1 s"
+      "detail": "396296 verts, 0.9 s"
     },
     {
       "name": "two evaluations give identical positions",

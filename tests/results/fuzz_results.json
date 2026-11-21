@@ -1091,6 +1091,150 @@
       "outside": 0.000953,
       "outside_native": 0.000953,
       "min_radius": 0.0002
+    },
+    "weights boolean 0": {
+      "r": 0.187,
+      "seg": 2,
+      "clamp": "Uniform",
+      "flips": 0,
+      "native_inverted": 0,
+      "outside": 0.0,
+      "outside_native": 0.0
+    },
+    "weights boolean 1": {
+      "r": 0.558,
+      "seg": 6,
+      "clamp": "Per Edge",
+      "flips": 0,
+      "native_inverted": 3,
+      "outside": 0.0,
+      "outside_native": 0.0
+    },
+    "weights boolean 2": {
+      "r": 0.033,
+      "seg": 1,
+      "clamp": "None",
+      "flips": 0,
+      "native_inverted": 0,
+      "outside": 0.0,
+      "outside_native": 0.0
+    },
+    "weights boolean 3": {
+      "r": 0.56,
+      "seg": 3,
+      "clamp": "Uniform",
+      "flips": 0,
+      "native_inverted": 0,
+      "outside": 0.0,
+      "outside_native": 0.0
+    },
+    "weights boolean 4": {
+      "r": 0.352,
+      "seg": 3,
+      "clamp": "Per Edge",
+      "flips": 0,
+      "native_inverted": 2,
+      "outside": 0.0,
+      "outside_native": 0.0
+    },
+    "weights boolean 5": {
+      "r": 0.016,
+      "seg": 4,
+      "clamp": "None",
+      "flips": 0,
+      "native_inverted": 0,
+      "outside": 0.04689,
+      "outside_native": 0.04689
+    },
+    "weights boolean 6": {
+      "r": 0.123,
+      "seg": 4,
+      "clamp": "Uniform",
+      "flips": 0,
+      "native_inverted": 0,
+      "outside": 0.0,
+      "outside_native": 0.0
+    },
+    "weights boolean 7": {
+      "r": 0.282,
+      "seg": 5,
+      "clamp": "Per Edge",
+      "flips": 2,
+      "native_inverted": 3,
+      "outside": 0.005509,
+      "outside_native": 0.005509
+    },
+    "weights star 0": {
+      "r": 0.187,
+      "seg": 2,
+      "clamp": "Uniform",
+      "flips": 0,
+      "native_inverted": 0,
+      "outside": 0.0,
+      "outside_native": 0.0
+    },
+    "weights star 1": {
+      "r": 0.558,
+      "seg": 6,
+      "clamp": "Per Edge",
+      "flips": 0,
+      "native_inverted": 0,
+      "outside": 0.0,
+      "outside_native": 0.0
+    },
+    "weights star 2": {
+      "r": 0.033,
+      "seg": 1,
+      "clamp": "None",
+      "flips": 0,
+      "native_inverted": 0,
+      "outside": 0.0,
+      "outside_native": 0.0
+    },
+    "weights star 3": {
+      "r": 0.56,
+      "seg": 3,
+      "clamp": "Uniform",
+      "flips": 0,
+      "native_inverted": 0,
+      "outside": 0.0,
+      "outside_native": 0.0
+    },
+    "weights star 4": {
+      "r": 0.352,
+      "seg": 3,
+      "clamp": "Per Edge",
+      "flips": 0,
+      "native_inverted": 0,
+      "outside": 0.0,
+      "outside_native": 0.0
+    },
+    "weights star 5": {
+      "r": 0.016,
+      "seg": 4,
+      "clamp": "None",
+      "flips": 0,
+      "native_inverted": 0,
+      "outside": 0.0,
+      "outside_native": 0.0
+    },
+    "weights star 6": {
+      "r": 0.123,
+      "seg": 4,
+      "clamp": "Uniform",
+      "flips": 0,
+      "native_inverted": 0,
+      "outside": 0.0,
+      "outside_native": 0.0
+    },
+    "weights star 7": {
+      "r": 0.282,
+      "seg": 5,
+      "clamp": "Per Edge",
+      "flips": 0,
+      "native_inverted": 0,
+      "outside": 0.0,
+      "outside_native": 0.0
     }
   },
   "checks": [
@@ -1908,6 +2052,86 @@
       "name": "clamp fuzz boolean #5: Per Edge smallest radius >= Uniform radius",
       "ok": true,
       "detail": "{'Uniform': 0.0002, 'Per Edge': 0.0002}"
+    },
+    {
+      "name": "random bevel weights, boolean #0 (Uniform, 2 seg): finite, no flips beyond native's own, no worse than native",
+      "ok": true,
+      "detail": "{'r': 0.187, 'seg': 2, 'clamp': 'Uniform', 'flips': 0, 'native_inverted': 0, 'outside': 0.0, 'outside_native': 0.0}"
+    },
+    {
+      "name": "random bevel weights, boolean #1 (Per Edge, 6 seg): finite, no flips beyond native's own, no worse than native",
+      "ok": true,
+      "detail": "{'r': 0.558, 'seg': 6, 'clamp': 'Per Edge', 'flips': 0, 'native_inverted': 3, 'outside': 0.0, 'outside_native': 0.0}"
+    },
+    {
+      "name": "random bevel weights, boolean #2 (None, 1 seg): finite, no flips beyond native's own, no worse than native",
+      "ok": true,
+      "detail": "{'r': 0.033, 'seg': 1, 'clamp': 'None', 'flips': 0, 'native_inverted': 0, 'outside': 0.0, 'outside_native': 0.0}"
+    },
+    {
+      "name": "random bevel weights, boolean #3 (Uniform, 3 seg): finite, no flips beyond native's own, no worse than native",
+      "ok": true,
+      "detail": "{'r': 0.56, 'seg': 3, 'clamp': 'Uniform', 'flips': 0, 'native_inverted': 0, 'outside': 0.0, 'outside_native': 0.0}"
+    },
+    {
+      "name": "random bevel weights, boolean #4 (Per Edge, 3 seg): finite, no flips beyond native's own, no worse than native",
+      "ok": true,
+      "detail": "{'r': 0.352, 'seg': 3, 'clamp': 'Per Edge', 'flips': 0, 'native_inverted': 2, 'outside': 0.0, 'outside_native': 0.0}"
+    },
+    {
+      "name": "random bevel weights, boolean #5 (None, 4 seg): finite, no flips beyond native's own, no worse than native",
+      "ok": true,
+      "detail": "{'r': 0.016, 'seg': 4, 'clamp': 'None', 'flips': 0, 'native_inverted': 0, 'outside': 0.04689, 'outside_native': 0.04689}"
+    },
+    {
+      "name": "random bevel weights, boolean #6 (Uniform, 4 seg): finite, no flips beyond native's own, no worse than native",
+      "ok": true,
+      "detail": "{'r': 0.123, 'seg': 4, 'clamp': 'Uniform', 'flips': 0, 'native_inverted': 0, 'outside': 0.0, 'outside_native': 0.0}"
+    },
+    {
+      "name": "random bevel weights, boolean #7 (Per Edge, 5 seg): finite, no flips beyond native's own, no worse than native",
+      "ok": true,
+      "detail": "{'r': 0.282, 'seg': 5, 'clamp': 'Per Edge', 'flips': 2, 'native_inverted': 3, 'outside': 0.005509, 'outside_native': 0.005509}"
+    },
+    {
+      "name": "random bevel weights, star #0 (Uniform, 2 seg): finite, no flips beyond native's own, no worse than native",
+      "ok": true,
+      "detail": "{'r': 0.187, 'seg': 2, 'clamp': 'Uniform', 'flips': 0, 'native_inverted': 0, 'outside': 0.0, 'outside_native': 0.0}"
+    },
+    {
+      "name": "random bevel weights, star #1 (Per Edge, 6 seg): finite, no flips beyond native's own, no worse than native",
+      "ok": true,
+      "detail": "{'r': 0.558, 'seg': 6, 'clamp': 'Per Edge', 'flips': 0, 'native_inverted': 0, 'outside': 0.0, 'outside_native': 0.0}"
+    },
+    {
+      "name": "random bevel weights, star #2 (None, 1 seg): finite, no flips beyond native's own, no worse than native",
+      "ok": true,
+      "detail": "{'r': 0.033, 'seg': 1, 'clamp': 'None', 'flips': 0, 'native_inverted': 0, 'outside': 0.0, 'outside_native': 0.0}"
+    },
+    {
+      "name": "random bevel weights, star #3 (Uniform, 3 seg): finite, no flips beyond native's own, no worse than native",
+      "ok": true,
+      "detail": "{'r': 0.56, 'seg': 3, 'clamp': 'Uniform', 'flips': 0, 'native_inverted': 0, 'outside': 0.0, 'outside_native': 0.0}"
+    },
+    {
+      "name": "random bevel weights, star #4 (Per Edge, 3 seg): finite, no flips beyond native's own, no worse than native",
+      "ok": true,
+      "detail": "{'r': 0.352, 'seg': 3, 'clamp': 'Per Edge', 'flips': 0, 'native_inverted': 0, 'outside': 0.0, 'outside_native': 0.0}"
+    },
+    {
+      "name": "random bevel weights, star #5 (None, 4 seg): finite, no flips beyond native's own, no worse than native",
+      "ok": true,
+      "detail": "{'r': 0.016, 'seg': 4, 'clamp': 'None', 'flips': 0, 'native_inverted': 0, 'outside': 0.0, 'outside_native': 0.0}"
+    },
+    {
+      "name": "random bevel weights, star #6 (Uniform, 4 seg): finite, no flips beyond native's own, no worse than native",
+      "ok": true,
+      "detail": "{'r': 0.123, 'seg': 4, 'clamp': 'Uniform', 'flips': 0, 'native_inverted': 0, 'outside': 0.0, 'outside_native': 0.0}"
+    },
+    {
+      "name": "random bevel weights, star #7 (Per Edge, 5 seg): finite, no flips beyond native's own, no worse than native",
+      "ok": true,
+      "detail": "{'r': 0.282, 'seg': 5, 'clamp': 'Per Edge', 'flips': 0, 'native_inverted': 0, 'outside': 0.0, 'outside_native': 0.0}"
     }
   ],
   "thin_wall_overlaps": [

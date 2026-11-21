@@ -190,6 +190,9 @@ def _seam_end_ok(v, es, frames, r, limit=1.0):
     return abs(t[0] - t[1]) <= limit * r
 
 
+END_FACE_SIN = math.sin(math.radians(4.0))   # same rule as the node group's END_FACE_SIN
+
+
 def classify_vertices(bm, frames, r, gap_tol=1e-3, coord_tol=1e-6):
     """Independent re-implementation of the node group's vertex modes.
 
@@ -212,13 +215,14 @@ def classify_vertices(bm, frames, r, gap_tol=1e-3, coord_tol=1e-6):
         border = [e for e in v.link_edges if e.index not in frames]
         if len(es) == 1 and nf == 3:
             u = lines[0][1]
-            info["end_n"] = max((f.normal for f in v.link_faces), key=lambda n: abs(n.dot(u))).copy()
-            info["mode"] = TERMINAL
+            n = max((f.normal for f in v.link_faces), key=lambda n: abs(n.dot(u))).copy()
+            if abs(n.dot(u)) > END_FACE_SIN:      # an end face (almost) parallel to the edge: no exact end
+                info.update(mode=TERMINAL, end_n=n)
         elif len(es) == 1 and nf == 2 and len(v.link_edges) == 3:
             # open border: the two border edges span the end plane
             b0, b1 = [(e.other_vert(v).co - v.co).normalized() for e in border]
             n = b0.cross(b1)
-            if n.length > 1e-3:
+            if n.length > 1e-3 and abs(n.normalized().dot(lines[0][1])) > END_FACE_SIN:
                 info.update(mode=TERMINAL, end_n=n.normalized())
         elif len(es) in (2, 3):
             (a0, u0, s0), (a1, u1, s1) = lines[:2]

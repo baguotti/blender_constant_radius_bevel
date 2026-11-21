@@ -289,6 +289,49 @@ for kind, make in makers:
             check(f"clamp fuzz {kind} #{seed}: Per Edge smallest radius >= Uniform radius",
                   radii["Per Edge"] >= radii["Uniform"] - 1e-4, radii)
 
+# ---------------------------------------------------------------- 5. random bevel weights (v1.1)
+# Edges: Bevel Weight makes partial selections (rounds that stop mid-curve) and
+# different radii common. A round that ended against the next facet of a curved
+# rim once threw its end vertices thousands of units away.
+
+
+def weighted(make, seed):
+    ob = make(seed)
+    rng = np.random.default_rng(5000 + seed)
+    w = rng.choice([0.0, 0.0, 0.25, 0.5, 0.75, 1.0], size=len(ob.data.edges))
+    ob.data.attributes.new("bevel_weight_edge", "FLOAT", "EDGE").data.foreach_set("value", w.tolist())
+    return ob
+
+
+for kind, make in (("boolean", random_boolean_block), ("star", random_star_prism)):
+    for seed in range(8):
+        rng = random.Random(6000 + seed)
+        clamp = ["Uniform", "Per Edge", "None"][seed % 3]
+        r, seg = (rng.uniform(0.01, 0.04) if clamp == "None" else rng.uniform(0.1, 0.6)), rng.randint(1, 6)
+        results = []
+        for exact in (True, False):
+            ob = weighted(make, seed)
+            mod = A.add_cr_bevel(ob, ng, r, seg, angle_limit=0.0, exact=exact)
+            A.set_input(mod, "Edges", "Bevel Weight")
+            A.set_input(mod, "Clamp", clamp)
+            if not exact:
+                A.set_input(mod, "Analytic Normals", False)
+            results.append((ob, A.evaluate(ob)))
+        (ob, me), (_, me_n) = results
+        pts = np.array([v.co[:] for v in ob.data.vertices])
+        P, Pn = np.array([v.co[:] for v in me.vertices]), np.array([v.co[:] for v in me_n.vertices])
+        out = float(np.maximum(P - pts.max(0), pts.min(0) - P).max())
+        out_n = max(0.0, float(np.maximum(Pn - pts.max(0), pts.min(0) - Pn).max()))
+        flips = sum(A.count_flips(me, me_n)) if len(P) == len(Pn) else -1
+        # Known limit on boolean shapes (shared with Blender's Bevel): rounds can collide
+        # across a thin wall, so the native bevel itself has inverted faces there.
+        inverted_n = A.inverted_faces(me_n, A.original_bmesh(results[1][0])) if kind == "boolean" else 0
+        detail = dict(r=round(r, 3), seg=seg, clamp=clamp, flips=flips, native_inverted=inverted_n,
+                      outside=round(out, 6), outside_native=round(out_n, 6))
+        report["cases"][f"weights {kind} {seed}"] = detail
+        check(f"random bevel weights, {kind} #{seed} ({clamp}, {seg} seg): finite, no flips beyond native's own, "
+              "no worse than native", np.isfinite(P).all() and 0 <= flips <= inverted_n and out <= out_n + 1e-6, detail)
+
 with open(os.path.join(OUT, "fuzz_results.json"), "w") as fh:
     json.dump(report, fh, indent=2, default=str)
 print("FAILURES:", failures)

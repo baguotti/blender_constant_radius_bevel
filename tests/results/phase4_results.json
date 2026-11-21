@@ -40,6 +40,11 @@
       "name": "second use reuses the node group (no duplicates)",
       "ok": true,
       "detail": "1"
+    },
+    {
+      "name": "Scene Units entry: its own group, works on a non-uniformly scaled cube",
+      "ok": true,
+      "detail": "(['CR Bevel', 'CR Bevel (Scene Units)'], {'modifier': 'CR Bevel (Scene Units)', 'bevel_faces': 144, 'verts': 152})"
     }
   ],
   "result": {
@@ -49,6 +54,13 @@
       "FINISHED"
     ],
     "groups_named_cr_bevel": 1,
+    "scene_operator": [
+      "FINISHED"
+    ],
+    "groups": [
+      "CR Bevel",
+      "CR Bevel (Scene Units)"
+    ],
     "cube": {
       "modifier": "CR Bevel",
       "bevel_faces": 144,
@@ -58,6 +70,11 @@
       "modifier": "CR Bevel",
       "bevel_faces": 256,
       "verts": 320
+    },
+    "scaled_cube": {
+      "modifier": "CR Bevel (Scene Units)",
+      "bevel_faces": 144,
+      "verts": 152
     }
   },
   "failures": []

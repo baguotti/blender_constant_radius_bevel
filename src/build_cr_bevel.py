@@ -31,6 +31,10 @@ import math
 import bpy
 
 GROUP_NAME = "CR Bevel"
+# The same bevel, measured at the object's size in the scene. A separate group:
+# reading the object's own scale makes Blender re-evaluate the modifier whenever
+# the object moves, so the default group must not contain it at all.
+SCENE_GROUP_NAME = "CR Bevel (Scene Units)"
 MAX_EDGE_ANGLE = math.radians(176.0)  # sharper edges (< 4 deg between faces) are skipped: the exact arc
                                       # becomes a sliver below float precision (breaks at 178 deg)
 FALLBACK, TERMINAL, PIPE, JOINT, CORNER = range(5)
@@ -44,6 +48,8 @@ NO_LIMIT = 1e30
 PER_EDGE_PASSES = 32    # Per Edge: passes of the shrink-until-valid loop
 JOINT_SPREAD = 1.0      # JOINT: the two cylinders must touch the unbeveled edge within this * r
 INLINE_SIN = math.sin(math.radians(2.0))   # BMesh bevel's in-line threshold (BEVEL_EPSILON_ANG)
+END_FACE_SIN = math.sin(math.radians(4.0))  # TERMINAL: the end face must meet the edge at > 4 deg, else the
+                                            # slide into it (1 / (u . n)) runs off to infinity: fallback
 CLAMP_MODES = ("Uniform", "Per Edge", "None")
 EDGE_MODES = ("Angle", "Bevel Weight", "Sharp Edges", "Seams")   # which edges to bevel
 EDGE_ATTRS = (None, "bevel_weight_edge", "sharp_edge", "uv_seam")
@@ -282,7 +288,7 @@ def _interface(ng):
                     "weight, each at Radius x its weight. Sharp Edges / Seams: edges marked sharp / as seams")
     add("Selection", "NodeSocketBool", default=True, description="Only these edges (combined with Edges)")
     add("Radius", "NodeSocketFloat", default=0.05, min_value=0.0, subtype="DISTANCE",
-        description="Fillet radius (in scene units unless Advanced > Scene Units is off). "
+        description="Fillet radius, in the object's units (CR Bevel (Scene Units): in scene units). "
                     "With Edges: Bevel Weight, each edge uses Radius x its weight")
     add("Segments", "NodeSocketInt", default=4, min_value=1, max_value=256)
     add("Angle Limit", "NodeSocketFloat", default=math.radians(30.0), min_value=0.0, max_value=math.pi,
@@ -302,29 +308,32 @@ def _interface(ng):
     advanced = it.new_panel("Advanced", default_closed=True)
     add("Exact Profile", "NodeSocketBool", advanced, default=True,
         description="Snap the bevel onto true circular arcs (off = native profile)")
-    add("Scene Units", "NodeSocketBool", advanced, default=True,
-        description="Measure the radius in scene units and keep the rounds circular on scaled objects, also "
-                    "with non-uniform scale. Off: the radius is in the object's own units (like Blender's Bevel)")
 
 
-def build(name=GROUP_NAME, debug_output=None):
+def build(name=None, debug_output=None, scene_units=False):
     """Create (or replace) the node group and return it.
 
+    scene_units=True builds "CR Bevel (Scene Units)": the radius is in scene
+    units and rounds stay circular on scaled objects (also non-uniform), at the
+    price of re-evaluating whenever the object moves.
     debug_output="skeleton" outputs the helper skeleton instead of the mesh
     (used by tests only).
     """
+    name = name or (SCENE_GROUP_NAME if scene_units else GROUP_NAME)
     old = bpy.data.node_groups.get(name)
     if old:
         bpy.data.node_groups.remove(old)
     ng = bpy.data.node_groups.new(name, "GeometryNodeTree")
     ng.is_modifier = True
-    ng.description = "Constant-radius (rolling-ball) bevel built on the Mesh Bevel node"
+    ng.description = ("Constant-radius (rolling-ball) bevel; radius in scene units, circular on scaled objects "
+                      "(re-evaluates when the object moves)" if scene_units else
+                      "Constant-radius (rolling-ball) bevel built on the Mesh Bevel node")
     _interface(ng)
     B = Builder(ng)
     gi = B.node("NodeGroupInput")
     gi.location = (-400, 0)
 
-    geo_in, back_to_object, normal_to_object = _scene_scale(B, gi)
+    geo_in, back_to_object, normal_to_object = _scene_scale(B, gi, scene_units)
     rule = _edge_rule(B, gi, geo_in)
     solid, wire_curves, wire_limit = _wires(B, gi, geo_in, rule)
     prepared, warnings, uniform_limit = _edge_data(B, gi, solid, wire_limit, rule)
@@ -373,11 +382,16 @@ def set_menu_defaults(ng):
             item.default_value = MENU_DEFAULTS[item.name]
 
 
-def _scene_scale(B, gi):
+def _scene_scale(B, gi, enabled=False):
     """Work on the object at its size in the scene, so the radius is in scene
     units and the rounds stay circular on scaled objects (also non-uniform).
-    Returns the scaled input and a function that scales a result back.
-    Mirroring (negative scale) doesn't change the shape: only |scale| is used."""
+    Returns the scaled input, a function that scales a result back, and one
+    that maps exact normals to the object-size mesh.
+    Mirroring (negative scale) doesn't change the shape: only |scale| is used.
+    Disabled: no nodes at all (the Self Object node alone would make the
+    modifier depend on the object's transform)."""
+    if not enabled:
+        return gi.outputs["Geometry"], (lambda geo: geo), (lambda n: n)
     B.stage("Scene units: scale to the object's size in the scene")
     info = B.node("GeometryNodeObjectInfo", transform_space="ORIGINAL")
     B.link(B.node("GeometryNodeSelfObject").outputs["Self Object"], info.inputs["Object"])
@@ -386,8 +400,7 @@ def _scene_scale(B, gi):
     B.link(scale, xyz.inputs["Vector"])
     smallest = B.math("MINIMUM", xyz.outputs["X"], B.math("MINIMUM", xyz.outputs["Y"], xyz.outputs["Z"]))
     off_one = B.vmath("LENGTH", B.sub(scale, (1.0, 1.0, 1.0)))
-    use = B.bool_and(gi.outputs["Scene Units"], B.compare("GREATER_THAN", smallest, 1e-8),
-                     B.compare("GREATER_THAN", off_one, 1e-7))
+    use = B.bool_and(B.compare("GREATER_THAN", smallest, 1e-8), B.compare("GREATER_THAN", off_one, 1e-7))
     to_scene = B.node("GeometryNodeTransform")
     B.link(gi.outputs["Geometry"], to_scene.inputs["Geometry"])
     B.link(scale, to_scene.inputs["Scale"])
@@ -891,9 +904,6 @@ def _vertex_modes(B, geo):
     joint = B.bool_and(is2, three_faces, crossing, gap_ok, same01, seam_ok)
     corner = B.bool_and(is3, three_faces, crossing, gap_ok, same01, same12,
                         B.compare("LESS_THAN", B.dist_to_line(meet, a2, u2), tol_geo))
-    mode = B.math("ADD",
-                  B.math("ADD", B.math("MULTIPLY", terminal, TERMINAL), B.math("MULTIPLY", pipe, PIPE)),
-                  B.math("ADD", B.math("MULTIPLY", joint, JOINT), B.math("MULTIPLY", corner, CORNER)))
 
     # End face of a terminal vertex: of its 3 faces, the one most aligned with the edge.
     best_n, best_a = None, None
@@ -913,6 +923,13 @@ def _vertex_modes(B, geo):
             best_a = B.math("MAXIMUM", a, best_a)
 
     best_n = B.switch("VECTOR", open_end, best_n, B.vmath("NORMALIZE", border_cross))
+    # A round can only end exactly against a face that meets it at an angle. An
+    # end face (almost) parallel to the edge, e.g. the next facet of a curved
+    # rim when only one rim edge is beveled, has no sensible exact end.
+    terminal = B.bool_and(terminal, B.compare("GREATER_THAN", B.math("ABSOLUTE", B.dot(best_n, u0)), END_FACE_SIN))
+    mode = B.math("ADD",
+                  B.math("ADD", B.math("MULTIPLY", terminal, TERMINAL), B.math("MULTIPLY", pipe, PIPE)),
+                  B.math("ADD", B.math("MULTIPLY", joint, JOINT), B.math("MULTIPLY", corner, CORNER)))
 
     B.stage("5. Store per-vertex data")
     # Only vertices on a beveled edge produce bevel geometry; the others keep 0
@@ -974,9 +991,23 @@ def _bevel(B, gi, prepared):
     bev.inputs["Shape"].default_value = 0.5
     # Stored as 0/1 floats so that reading them per vertex means "touches any such face".
     ef, vf = bev.outputs["Edge Face"], bev.outputs["Vertex Face"]
-    return B.store_many(bev.outputs["Mesh"], "FACE", [("_cr_ef", ef, "FLOAT"), ("_cr_vf", vf, "FLOAT"),
-                                                      ("_cr_of", B.bool_not(B.bool_or(ef, vf)), "FLOAT"),
-                                                      ("cr_bevel_face", B.bool_or(ef, vf), "BOOLEAN")])
+    g = B.store(bev.outputs["Mesh"], "_cr_oe", bev.outputs["Outer Edge"], "BOOLEAN", "EDGE")
+    g = B.store_many(g, "FACE", [("_cr_ef", ef, "FLOAT"), ("_cr_vf", vf, "FLOAT"),
+                                                   ("_cr_of", B.bool_not(B.bool_or(ef, vf)), "FLOAT"),
+                                                   ("cr_bevel_face", B.bool_or(ef, vf), "BOOLEAN")])
+    # The bevel copies a beveled edge's sharp flag onto all its new edges, so a
+    # round made from a sharp-marked edge (Edges: Sharp Edges, or Angle on a mesh
+    # with sharp marks) would shade faceted and split on export. Faces meet
+    # tangentially inside a round and along its borders (Outer Edge): never sharp
+    # there. Where a round ends against a face there is a real crease: kept.
+    all_bevel = B.node("GeometryNodeFieldOnDomain", domain="EDGE", data_type="FLOAT")
+    B.link(B.math("ADD", B.named("_cr_ef", "FLOAT"), B.named("_cr_vf", "FLOAT")), all_bevel.inputs["Value"])
+    smooth = B.node("GeometryNodeSetShadeSmooth", domain="EDGE")
+    B.link(g, smooth.inputs["Geometry"])
+    B.link(B.bool_or(B.compare("GREATER_THAN", all_bevel.outputs["Value"], 0.999), B.named("_cr_oe", "BOOLEAN")),
+           smooth.inputs["Selection"])
+    smooth.inputs["Shade Smooth"].default_value = True
+    return smooth.outputs["Geometry"]
 
 
 def _snap(B, gi, geo, skeleton):

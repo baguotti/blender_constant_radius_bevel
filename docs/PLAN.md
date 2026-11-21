@@ -8,7 +8,7 @@ Build a reusable Geometry Nodes group, "CR Bevel", that bevels selected mesh edg
 
 - **Target:** Blender 5.2 LTS minimum, because the Mesh Bevel node first shipped there. Build in 5.2 so the file also opens in 5.3.
 - **Deliverable:** a .blend asset library with the group flagged as a modifier. A thin extension (add-on) is optional.
-- **Status:** v1.1.0: Edges menu (Angle / Bevel Weight / Sharp / Seams), radius × bevel weight, scene units on scaled objects. v1.0.6: optimization pass ([PERFORMANCE.md](PERFORMANCE.md)). v1.0.5: polyline and open-mesh fixes (bug pass 8). v1.0.4: open meshes and polylines. v1.0.3 after seven bug passes ([REVIEW_FINDINGS.md](REVIEW_FINDINGS.md)). Phase 4 done: installable extension. Phase 3: production-ready. Exact geometry and normals, overlap clamp, input shading kept. See [PHASE0](PHASE0_FINDINGS.md), [PHASE1](PHASE1_FINDINGS.md), [PHASE2](PHASE2_FINDINGS.md) [PHASE3](PHASE3_FINDINGS.md) and [PHASE4](PHASE4_FINDINGS.md) findings.
+- **Status:** v1.1.0: Edges menu (Angle / Bevel Weight / Sharp / Seams), radius × bevel weight, and a CR Bevel (Scene Units) variant for scaled objects. v1.0.6: optimization pass ([PERFORMANCE.md](PERFORMANCE.md)). v1.0.5: polyline and open-mesh fixes (bug pass 8). v1.0.4: open meshes and polylines. v1.0.3 after seven bug passes ([REVIEW_FINDINGS.md](REVIEW_FINDINGS.md)). Phase 4 done: installable extension. Phase 3: production-ready. Exact geometry and normals, overlap clamp, input shading kept. See [PHASE0](PHASE0_FINDINGS.md), [PHASE1](PHASE1_FINDINGS.md), [PHASE2](PHASE2_FINDINGS.md) [PHASE3](PHASE3_FINDINGS.md) and [PHASE4](PHASE4_FINDINGS.md) findings.
 
 ## Background: why the 2019 attempt failed
 
@@ -54,10 +54,12 @@ Notation: n1, n2 = the edge's face normals; φ = angle between them = |Signed An
 - Geometry
 - Edges (Angle / Bevel Weight / Sharp Edges / Seams): which edges; Bevel Weight scales the radius per edge
 - Selection (bool edge field)
-- Radius (base radius, in scene units when Scene Units is on)
+- Radius (base radius; object units, scene units in the CR Bevel (Scene Units) variant)
 - Segments
 - Clamp (None / Per-edge / Uniform)
-- Exact Profile, Analytic Normals, Scene Units (work at the object's size in the scene; normals written after scaling back)
+- Exact Profile, Analytic Normals
+
+**Variant "CR Bevel (Scene Units)"** (same builder, `scene_units=True`): works at the object's size in the scene (Self Object > Object Info scale), scales back before the normals are written. A separate group because reading the object's transform makes Blender re-evaluate the modifier on every move; the default group must not contain those nodes at all.
 - Bevel Material
 
 **Stages:**

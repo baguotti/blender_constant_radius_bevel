@@ -73,10 +73,10 @@ It builds on Blender's own Mesh Bevel node (new in Blender 5.2), so the topology
 
 1. Select one or more mesh objects.
 2. **Properties > Modifiers > Add Modifier > Generate > CR Bevel.**
-3. Set **Radius** (in scene units) and **Segments** (how smooth the rounds are).
+3. Set **Radius** (in the object's units) and **Segments** (how smooth the rounds are).
 4. Done: every edge sharper than **Angle Limit** (30° by default) is rounded. To round only edges you marked, switch **Edges** to Bevel Weight, Sharp Edges or Seams.
 
-Scaled objects are fine, also with non-uniform scale: the rounds stay circular and the radius is what you typed, in the scene (see **Advanced > Scene Units**).
+**Scaled objects:** like Blender's Bevel modifier, **CR Bevel** measures the radius in the object's own units, and a non-uniform scale stretches the rounds into ellipses. Either apply the scale (**Ctrl+A > Scale**), or add **CR Bevel (Scene Units)** instead (same menu): the radius is in scene units and the rounds stay circular at any scale, also non-uniform or from a scaled parent. Its one cost: because it follows the object's scale, Blender re-evaluates it whenever the object moves, which you'll notice when dragging very heavy objects.
 
 ## Settings
 
@@ -84,7 +84,7 @@ Scaled objects are fine, also with non-uniform scale: the rounds stay circular a
 | --- | --- | --- |
 | **Edges** | Angle | Which edges to round: **Angle** (sharper than Angle Limit), **Bevel Weight** (edges with a bevel weight, each at Radius × its weight), **Sharp Edges** (Mark Sharp) or **Seams** (Mark Seam). See [below](#choosing-which-edges-are-rounded). |
 | **Selection** | All | An extra mask on top of Edges. Click the icon next to it to drive it from an attribute. |
-| **Radius** | 0.05 m | The fillet radius, in scene units. With Edges: Bevel Weight, each edge uses Radius × its weight. |
+| **Radius** | 0.05 m | The fillet radius, in the object's units (in scene units with **CR Bevel (Scene Units)**). With Edges: Bevel Weight, each edge uses Radius × its weight. |
 | **Segments** | 4 | Number of faces across each round (1–256). |
 | **Angle Limit** | 30° | Edges: Angle only. Only edges whose faces meet at more than this angle are rounded; flat or gently curved areas are left alone. Set it to 0° to allow every selected edge. |
 | **Clamp** | Uniform | How to avoid overlapping bevels when the radius is too large for the geometry. **Uniform** lowers the radius everywhere just enough, so it stays constant (CAD-like). **Per Edge** lowers it only on edges that need it, best for boolean results and busy models. **None** applies the radius as typed and may overlap. A warning on the modifier tells you when, and by how much, the radius was lowered. |
@@ -92,7 +92,6 @@ Scaled objects are fine, also with non-uniform scale: the rounds stay circular a
 | **Shading > Analytic Normals** | On | Exact shading normals on the rounds; original faces keep their own smooth/flat shading. Turn it off for about 35% more speed while modelling heavy scenes. |
 | **Shading > Set Bevel Material / Bevel Material** | Off | Give the new bevel faces a material of their own. |
 | **Advanced > Exact Profile** | On | Off shows Blender's native profile, for comparison. |
-| **Advanced > Scene Units** | On | The radius is in scene units, and rounds stay circular on scaled objects, also with non-uniform scale (the shape is built at the object's size in the scene). Off: the radius is in the object's own units, like Blender's Bevel modifier, and non-uniform scale stretches the rounds into ellipses. |
 
 **Output attribute:** `cr_bevel_face` (face, boolean) is true on the new bevel and corner faces. Use it in shaders (Attribute node) or later Geometry Nodes.
 
@@ -133,6 +132,7 @@ CR Bevel is exact wherever the exact rolling-ball answer fits Blender's bevel to
 | 4 or more rounded edges at one vertex, mixed convex/concave corners, different radii meeting (Per Edge, or different bevel weights) | Native bevel kept at that corner |
 | Corners, joints or ends at vertices with more than 3 faces (e.g. triangulated) | Native bevel kept |
 | Edges sharper than 4° between faces (knife edges) | Not rounded: the exact arc would be thinner than floating-point precision |
+| Rounded edge ending against a face within 4° of parallel to it (e.g. one weighted edge on a curved rim) | Native shape kept at that end: the exact end would lie far away |
 
 Accuracy, where exact: positions to about a millionth of the radius. Normals to about 0.003°, the precision Blender stores custom normals at.
 

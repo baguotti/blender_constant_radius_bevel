@@ -38,8 +38,13 @@ bpy.ops.mesh.primitive_cylinder_add(location=(4, 0, 0))
 b = bpy.context.object
 bpy.ops.object.cr_bevel_add()
 res["groups_named_cr_bevel"] = len([g for g in bpy.data.node_groups if g.name.startswith("CR Bevel")])
+bpy.ops.mesh.primitive_cube_add(location=(8, 0, 0))
+c = bpy.context.object
+c.scale = (1.0, 2.0, 0.5)
+res["scene_operator"] = list(bpy.ops.object.cr_bevel_add(scene_units=True))
+res["groups"] = sorted(g.name for g in bpy.data.node_groups if g.name.startswith("CR Bevel"))
 dg = bpy.context.evaluated_depsgraph_get()
-for key, ob in (("cube", a), ("cylinder", b)):
+for key, ob in (("cube", a), ("cylinder", b), ("scaled_cube", c)):
     me = ob.evaluated_get(dg).to_mesh()
     flags = [d.value for d in me.attributes["cr_bevel_face"].data] if "cr_bevel_face" in me.attributes else []
     res[key] = dict(modifier=ob.modifiers[-1].node_group.name if ob.modifiers else None,
@@ -81,6 +86,11 @@ if zips:
               str(res.get("cylinder")))
         check("second use reuses the node group (no duplicates)", res.get("groups_named_cr_bevel") == 1,
               str(res.get("groups_named_cr_bevel")))
+        check("Scene Units entry: its own group, works on a non-uniformly scaled cube",
+              res.get("scene_operator") == ["FINISHED"]
+              and res.get("groups") == ["CR Bevel", "CR Bevel (Scene Units)"]
+              and (res.get("scaled_cube") or {}).get("modifier") == "CR Bevel (Scene Units)"
+              and (res.get("scaled_cube") or {}).get("bevel_faces", 0) > 0, str((res.get("groups"), res.get("scaled_cube"))))
         if not line:
             print(run.stdout[-2000:], run.stderr[-2000:])
 

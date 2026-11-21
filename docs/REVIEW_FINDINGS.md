@@ -110,3 +110,20 @@ Probed the two new features with awkward inputs: segment counts, radius ≤ 0, e
 ### Found in passing (not from 1.0.4)
 
 At a sphere corner (CORNER) whose face corner is very acute (below about 30°, e.g. a bar with a strongly slanted end face), the snap folds 1–3 tiny faces (area ~1e-5) against the native bevel; the surface itself is still exact. It depends on Segments (4: none; 2, 6, 12: 1–3). Left for a separate fix.
+
+## Pass 9 — version 1.1.0 (review of the Edges menu, bevel weights and scene units)
+
+### Bugs found and fixed
+
+| # | Input | Symptom | Cause | Fix |
+| --- | --- | --- | --- | --- |
+| 1 | Any object with CR Bevel, moved or rotated in the viewport | The whole modifier re-evaluated on every move: 1.5–1.8 s per move on a 41 k-face test, against 0.0002 s in 1.0.6. Also with Scene Units off | Reading the object's own scale (Self Object > Object Info) makes Blender re-evaluate the modifier on any transform change; the dependency is built from the node tree, whatever the switch says. A driver has the same cost | Two groups from the same builder. **CR Bevel** has no transform dependency at all (radius in object units, like Blender's Bevel). **CR Bevel (Scene Units)** is a separate Add Modifier entry for circular rounds on scaled objects, documented as re-evaluating on moves. Test: the default group contains no Self Object / Object Info node |
+| 2 | A round made from a sharp-marked edge (Edges: Sharp Edges, or Angle on a mesh with sharp marks) | Every new edge inside the round was marked sharp: faceted shading with Analytic Normals off, vertex splits on export after Apply | The native bevel copies the edge's sharp flag onto all new edges | Clear sharp inside rounds (both faces bevel faces) and along their tangent borders (the bevel's Outer Edge); keep it where a round ends against a face (a real crease) |
+| 3 | A round that stops at a face nearly parallel to the edge: e.g. one weighted edge on a cylinder hole's rim, with the next rim facet 7.5° away | End vertices thrown thousands of units away (3 of 4 random weight sets on a boolean block) | TERMINAL slides the end into the end face's plane by 1 / (u · n); here u · n = 0.0003 | TERMINAL needs the end face at more than 4° to the edge (`END_FACE_SIN`); otherwise that end keeps the native shape. Same rule in the Python reference. The steepest slant tested exact before (84°, u · n = 0.10) stays exact |
+
+### Checked and fine
+
+- Edges modes: exactly the marked edges, exact; warning when nothing is marked (counted with Attribute Statistic: Named Attribute's Exists output is a field at runtime and failed in a Switch, found while building).
+- Bevel weights with every Clamp mode, an independent overlap check (t0 + t1 ≤ 0.95 |g|) and random weights on boolean blocks and star prisms (new fuzz section 5). Flips only where the native bevel itself overlaps across a thin wall (known limit).
+- Scene Units variant: uniform, non-uniform and tiny scale and a scaled parent all match the scale-applied reference (positions 1e-5 r, normals 1.3e-4 rad). Normals are written after scaling back: tangent-space normals don't survive a later non-uniform scale (0.75 rad off before that fix, found while building).
+- With Analytic Normals on, Blender's custom-normal encoding marks a round's border sharp where a smooth original face keeps a different normal: expected, and the same on unmarked meshes.
