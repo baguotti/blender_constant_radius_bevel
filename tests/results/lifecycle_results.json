@@ -1,0 +1,60 @@
+{
+  "blender": "5.2.4 LTS",
+  "checks": [
+    {
+      "name": "save and reopen: identical result",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "apply: same geometry as the live modifier",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "apply: no internal _cr_ attributes left",
+      "ok": true,
+      "detail": "[]"
+    },
+    {
+      "name": "apply: custom normals kept",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "apply: cr_bevel_face kept for later use",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "two CR Bevels stacked: evaluates, finite",
+      "ok": true,
+      "detail": "188"
+    },
+    {
+      "name": "two objects sharing one mesh: same result",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "keyframed radius: result changes with the frame",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "keyframed radius: going back gives the same result",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "node group linked (not appended) from the library: works",
+      "ok": true,
+      "detail": "152"
+    },
+    {
+      "name": "evaluates in Edit Mode, same as Object Mode",
+      "ok": true,
+      "detail": ""
+    }
+  ]
+}

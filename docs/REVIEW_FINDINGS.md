@@ -73,3 +73,17 @@ The modifier panel now shows Selection, Radius, Segments, Angle Limit and Clamp.
 ### Checked and fine
 
 Everything listed above passes: no NaN, no flips, exact where expected. Instances pass through unbevelled; only the mesh part is beveled.
+
+## Passes 3–7 — version 1.0.3
+
+Each pass took a different angle. New suites: `tests/test_fuzz.py` (random shapes with fixed seeds) and `tests/test_lifecycle.py`. `tests/test_oracle.py` gained a concave case.
+
+| Pass | Angle | Result |
+| --- | --- | --- |
+| 3 | Concave oracle: an enclosed skewed cavity (rounding its concave edges = rounding the void's convex edges) | Exact to 1.7e-6 r. Found two bugs in my own tests: a check that measured 0 vertices and still passed (every oracle check now requires a non-zero count), and an identity comparison across mesh copies. Also found a limit: a bevel end at a vertex with more than 3 faces (for example an inset ring's corner) keeps its native shape |
+| 4 | Fuzzing 25 random convex polyhedra against the oracle, including the Uniform clamp vs an independently computed limit | **Bug:** corner patches were pushed out from the ball centre; at corners with very unequal offsets (a shallow edge beside sharp ones) that put vertices up to 0.87 r inside the material. Fixed: patches use the strip rule (nearest point on the cut skeleton, then out to r), which is the exact definition. All 50 cases are now within 7e-5 r (float precision at tiny radii) |
+| 5 | Fuzzing 20 tilted prisms with random selections and clamp modes | **Bug:** at a joint whose two edges meet the unbeveled edge at very different angles, the seam end can't be exact; snapping the seam's interior folded a face. Fixed: a joint is only exact when both cylinders touch the unbeveled edge within r of each other (t_k = d_k / \|g × u_k\|); measured folds started near 2.5 r, good joints are below 0.16 r. Otherwise it falls back. A first attempt ("does the edge cross both cylinders?") was wrong: the edge lies in a face tangent to the cylinder, so it always just touches it |
+| 6 | Fuzzing the clamp: oversized radii on random convex, star and boolean shapes, Uniform and Per Edge | **Bug:** radii at a vertex counted as equal within 1e-3 r, so with Per Edge a corner snapped with one radius next to a cylinder of another, leaving a step (2.4e-5) off a face. Fixed: equal within 1e-6 r. **Limit:** on boolean shapes, bevels can still collide across a thin wall between a hole and an outer edge. Blender's own Bevel clamp has the same gap; fixing it needs a global (straight-skeleton) offset. CR Bevel is never worse than native there |
+| 7 | Lifecycle: save and reopen, apply, two CR Bevels stacked, shared mesh, keyframed radius, linked node group, Edit Mode | All fine |
+
+Also: code tidy-ups (one snap target for strips and corners), and the docs now match the code.

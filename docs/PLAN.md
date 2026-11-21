@@ -8,7 +8,7 @@ Build a reusable Geometry Nodes group, "CR Bevel", that bevels selected mesh edg
 
 - **Target:** Blender 5.2 LTS minimum, because the Mesh Bevel node first shipped there. Build in 5.2 so the file also opens in 5.3.
 - **Deliverable:** a .blend asset library with the group flagged as a modifier. A thin extension (add-on) is optional.
-- **Status:** v1.0.1 after a deep bug pass ([REVIEW_FINDINGS.md](REVIEW_FINDINGS.md)). Phase 4 done: installable extension. Phase 3: production-ready. Exact geometry and normals, overlap clamp, input shading kept. See [PHASE0](PHASE0_FINDINGS.md), [PHASE1](PHASE1_FINDINGS.md), [PHASE2](PHASE2_FINDINGS.md) [PHASE3](PHASE3_FINDINGS.md) and [PHASE4](PHASE4_FINDINGS.md) findings.
+- **Status:** v1.0.3 after seven bug passes ([REVIEW_FINDINGS.md](REVIEW_FINDINGS.md)). Phase 4 done: installable extension. Phase 3: production-ready. Exact geometry and normals, overlap clamp, input shading kept. See [PHASE0](PHASE0_FINDINGS.md), [PHASE1](PHASE1_FINDINGS.md), [PHASE2](PHASE2_FINDINGS.md) [PHASE3](PHASE3_FINDINGS.md) and [PHASE4](PHASE4_FINDINGS.md) findings.
 
 ## Background: why the 2019 attempt failed
 
@@ -43,8 +43,8 @@ Notation: n1, n2 = the edge's face normals; φ = angle between them = |Signed An
 1. **Offset into each face** (all four node inputs): `d = r·tan(φ/2)`.
 2. **Cylinder axis:** `A = E − s · r/cos(φ/2) · normalize(n1+n2)`.
 3. **Strip snap:** Q = closest point on the axis to P; `P' = Q + r·normalize(P − Q)`.
-4. **Corner ball** (3 beveled edges, same sign, same r): solve `n_i·C = n_i·V − s·r` for the three faces (V = original vertex), then `P' = C + r·normalize(P − C)`. Exact, because the node puts corner boundary vertices where the offset lines cross; Phase 0 confirmed this.
-5. **Chain joint** (2 beveled edges at a vertex): the axes cross in one offset plane. Seam vertices go onto the cylinder–cylinder intersection.
+4. **Corner ball** (3 beveled edges, same sign, same r, 3 faces): C solves `n_i·C = n_i·V − s·r` (it's where the axes meet). Corner-patch vertices use the same rule as strips: Q = nearest point on the axes cut at C, `P' = Q + r·normalize(P − Q)`. Q is C in the ball's region and a point on an axis next to a cylinder. That's exactly "shrink by r, grow by r", and it is robust when the native patch is skewed (very unequal offsets).
+5. **Chain joint** (2 beveled edges at a 3-face vertex): the axes cross in one offset plane. Seam vertices go onto the cylinder–cylinder intersection. Only when both cylinders touch the third (unbeveled) edge within r of each other (t_k = d_k / |g × u_k|), otherwise the seam can't end well: fallback.
 6. **Terminal end:** snap in the cross-section, then slide along the axis back into the end face's plane.
 7. **Normals:** (P' − Q)/r on strips, (P' − C)/r on corners.
 
@@ -93,7 +93,7 @@ Notation: n1, n2 = the edge's face normals; φ = angle between them = |Signed An
 | 2. Corners | Spheres, chain joints, end caps, fallback | **Done:** 11 cases exact to ~1e-6 r; fallback untouched |
 | 3. Production | Clamp, normals, material, UVs, warnings | **Done:** clean zebra renders; no overlaps on Suzanne or a boolean block |
 | 4. Packaging | Asset library, optional extension | **Done:** extension installs, enables and works in a clean 5.2 LTS |
-| 5. Optional | Corners/joints at vertices with >3 faces (count planes), joint seam end, non-planar faces, volume Round All | Each case exact or measurably better |
+| 5. Optional | Corners, joints and bevel ends at vertices with >3 faces (count planes); joint seam end; thin-wall overlaps (global offset); non-planar faces; volume Round All | Each case exact or measurably better |
 
 ## Open decisions
 

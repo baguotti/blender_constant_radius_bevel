@@ -18,8 +18,10 @@ Vertex modes (attribute _cr_mode, per original vertex):
     0 FALLBACK  no exact answer: the native geometry is kept
     1 TERMINAL  one beveled edge ending at a 3-face vertex
     2 PIPE      two collinear beveled edges on the same cylinder
-    3 JOINT     two beveled edges whose axes cross, 3 faces (chain joint)
+    3 JOINT     two beveled edges whose axes cross, 3 faces, and both cylinders
+                touch the third (unbeveled) edge at nearly the same point
     4 CORNER    three beveled edges whose axes meet in one point, 3 faces (ball)
+    (JOINT and CORNER also need equal radius and convexity on their edges.)
 
 Internal attributes use the prefix "_cr_" and are removed before output.
 """
@@ -711,7 +713,7 @@ def _snap(B, gi, geo, skeleton):
                            prox.outputs["Is Valid"], B.compare("GREATER_THAN", prox.outputs["Distance"], 1e-9))
 
     move = B.bool_and(gi.outputs["Exact Profile"], B.bool_or(strip_sel, patch_sel))
-    target = B.switch("VECTOR", patch_sel, strip_target, on_cyl)
+    target = strip_target           # in CORNER mode this is the nearest-skeleton rule for patches too
 
     # Exact surface normal at the final position (outward: flipped for concave).
     sign = B.named("_cr_sv", "FLOAT")
