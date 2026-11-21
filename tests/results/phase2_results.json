@@ -88,7 +88,7 @@
           "n": 35
         },
         "corner": {
-          "max": 2.2291698379787546e-06,
+          "max": 2.192951817914235e-06,
           "n": 185
         },
         "terminal_plane": {
@@ -170,7 +170,7 @@
           "n": 63
         },
         "corner": {
-          "max": 5.527918511827323e-07,
+          "max": 5.52791535509319e-07,
           "n": 370
         }
       },
@@ -270,7 +270,7 @@
       },
       "errors": {
         "corner": {
-          "max": 7.743432804222887e-07,
+          "max": 8.053873906677111e-07,
           "n": 185
         }
       },
@@ -418,7 +418,7 @@
     },
     {
       "name": "tapered_prism_top_and_sides: exact error",
-      "value": 2.2291698379787546e-06,
+      "value": 2.192951817914235e-06,
       "limit": 1e-05,
       "ok": true
     },
@@ -544,7 +544,7 @@
     },
     {
       "name": "notch_cube_concave_corner: exact error",
-      "value": 5.527918511827323e-07,
+      "value": 5.52791535509319e-07,
       "limit": 1e-05,
       "ok": true
     },
@@ -724,7 +724,7 @@
     },
     {
       "name": "pyramid5_apex: exact error",
-      "value": 7.743432804222887e-07,
+      "value": 8.053873906677111e-07,
       "limit": 1e-05,
       "ok": true
     },
@@ -797,6 +797,6 @@
       "flipped_faces": 0
     }
   },
-  "worst_exact_error": 2.2291698379787546e-06,
+  "worst_exact_error": 2.192951817914235e-06,
   "failures": []
 }

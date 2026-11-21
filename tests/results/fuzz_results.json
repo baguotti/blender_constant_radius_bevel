@@ -1,0 +1,1199 @@
+{
+  "blender": "5.2.4 LTS",
+  "cases": {
+    "convex 0 safe radius": {
+      "faces": 11,
+      "segments": 5,
+      "r": 0.032468833372556086,
+      "err": 3.675700529646884e-06,
+      "three_valent": true
+    },
+    "convex 0 oversized, Uniform": {
+      "faces": 11,
+      "segments": 5,
+      "r": 0.07711347925982069,
+      "err": 1.2693440445356534e-06,
+      "three_valent": true
+    },
+    "convex 1 safe radius": {
+      "faces": 10,
+      "segments": 2,
+      "r": 0.10537441405782327,
+      "err": 1.1313039314414929e-06,
+      "three_valent": true
+    },
+    "convex 1 oversized, Uniform": {
+      "faces": 10,
+      "segments": 2,
+      "r": 0.2502642333873302,
+      "err": 9.526706531236342e-07,
+      "three_valent": true
+    },
+    "convex 2 safe radius": {
+      "faces": 10,
+      "segments": 6,
+      "r": 0.009899477968458671,
+      "err": 1.3252616315840578e-05,
+      "three_valent": true
+    },
+    "convex 2 oversized, Uniform": {
+      "faces": 10,
+      "segments": 6,
+      "r": 0.023511260175089338,
+      "err": 6.767159035049917e-06,
+      "three_valent": true
+    },
+    "convex 3 safe radius": {
+      "faces": 9,
+      "segments": 5,
+      "r": 0.11192980858700104,
+      "err": 1.0484907158595732e-06,
+      "three_valent": true
+    },
+    "convex 3 oversized, Uniform": {
+      "faces": 9,
+      "segments": 5,
+      "r": 0.2658332953941274,
+      "err": 4.65801035643103e-07,
+      "three_valent": true
+    },
+    "convex 4 safe radius": {
+      "faces": 11,
+      "segments": 5,
+      "r": 0.012003739071923827,
+      "err": 1.2048654043097676e-05,
+      "three_valent": true
+    },
+    "convex 4 oversized, Uniform": {
+      "faces": 11,
+      "segments": 5,
+      "r": 0.028508880295819085,
+      "err": 6.315712961413585e-06,
+      "three_valent": true
+    },
+    "convex 5 safe radius": {
+      "faces": 9,
+      "segments": 5,
+      "r": 0.15479549182801172,
+      "err": 8.983070402297746e-07,
+      "three_valent": true
+    },
+    "convex 5 oversized, Uniform": {
+      "faces": 9,
+      "segments": 5,
+      "r": 0.3676392930915278,
+      "err": 2.2381300969895963e-06,
+      "three_valent": true
+    },
+    "convex 6 safe radius": {
+      "faces": 12,
+      "segments": 4,
+      "r": 0.04132717005915725,
+      "err": 4.6500211128431034e-06,
+      "three_valent": true
+    },
+    "convex 6 oversized, Uniform": {
+      "faces": 12,
+      "segments": 4,
+      "r": 0.09815202889049846,
+      "err": 1.9266184923278476e-06,
+      "three_valent": true
+    },
+    "convex 7 safe radius": {
+      "faces": 11,
+      "segments": 2,
+      "r": 0.03320497251700987,
+      "err": 4.077043239231373e-06,
+      "three_valent": true
+    },
+    "convex 7 oversized, Uniform": {
+      "faces": 11,
+      "segments": 2,
+      "r": 0.07886180972789843,
+      "err": 1.839796969656021e-06,
+      "three_valent": true
+    },
+    "convex 8 safe radius": {
+      "faces": 11,
+      "segments": 6,
+      "r": 0.0027768563455844875,
+      "err": 5.908400989179679e-05,
+      "three_valent": true
+    },
+    "convex 8 oversized, Uniform": {
+      "faces": 11,
+      "segments": 6,
+      "r": 0.006595033820763156,
+      "err": 2.2827094067764547e-05,
+      "three_valent": true
+    },
+    "convex 9 safe radius": {
+      "faces": 11,
+      "segments": 3,
+      "r": 0.040108691146136216,
+      "err": 3.823740597648159e-06,
+      "three_valent": true
+    },
+    "convex 9 oversized, Uniform": {
+      "faces": 11,
+      "segments": 3,
+      "r": 0.0952581414720735,
+      "err": 2.0140981812442813e-06,
+      "three_valent": true
+    },
+    "convex 10 safe radius": {
+      "faces": 11,
+      "segments": 6,
+      "r": 0.13724546712186964,
+      "err": 8.200059197874822e-07,
+      "three_valent": true
+    },
+    "convex 10 oversized, Uniform": {
+      "faces": 11,
+      "segments": 6,
+      "r": 0.32595798441444035,
+      "err": 5.957452683787466e-07,
+      "three_valent": true
+    },
+    "convex 11 safe radius": {
+      "faces": 10,
+      "segments": 4,
+      "r": 0.028641214597299753,
+      "err": 6.652737360189977e-06,
+      "three_valent": true
+    },
+    "convex 11 oversized, Uniform": {
+      "faces": 10,
+      "segments": 4,
+      "r": 0.06802288466858691,
+      "err": 3.1446874719905323e-06,
+      "three_valent": true
+    },
+    "convex 12 safe radius": {
+      "faces": 10,
+      "segments": 4,
+      "r": 0.09603463755147096,
+      "err": 1.0331094006420394e-06,
+      "three_valent": true
+    },
+    "convex 12 oversized, Uniform": {
+      "faces": 10,
+      "segments": 4,
+      "r": 0.22808226418474348,
+      "err": 5.063769313385226e-07,
+      "three_valent": true
+    },
+    "convex 13 safe radius": {
+      "faces": 9,
+      "segments": 5,
+      "r": 0.05527716549134757,
+      "err": 2.2455164780206983e-06,
+      "three_valent": true
+    },
+    "convex 13 oversized, Uniform": {
+      "faces": 9,
+      "segments": 5,
+      "r": 0.13128326804195048,
+      "err": 9.844123860832874e-07,
+      "three_valent": true
+    },
+    "convex 14 safe radius": {
+      "faces": 10,
+      "segments": 6,
+      "r": 0.011401998289534785,
+      "err": 1.4458851473087878e-05,
+      "three_valent": true
+    },
+    "convex 14 oversized, Uniform": {
+      "faces": 10,
+      "segments": 6,
+      "r": 0.027079745937645113,
+      "err": 5.013302235077822e-06,
+      "three_valent": true
+    },
+    "convex 15 safe radius": {
+      "faces": 10,
+      "segments": 2,
+      "r": 0.10285880144927265,
+      "err": 1.8241636175032992e-06,
+      "three_valent": true
+    },
+    "convex 15 oversized, Uniform": {
+      "faces": 10,
+      "segments": 2,
+      "r": 0.2442896534420225,
+      "err": 7.59172632868344e-07,
+      "three_valent": true
+    },
+    "convex 16 safe radius": {
+      "faces": 11,
+      "segments": 4,
+      "r": 0.05992098129146285,
+      "err": 3.2436884728844977e-06,
+      "three_valent": true
+    },
+    "convex 16 oversized, Uniform": {
+      "faces": 11,
+      "segments": 4,
+      "r": 0.14231233056722425,
+      "err": 1.4878346722169262e-06,
+      "three_valent": true
+    },
+    "convex 17 safe radius": {
+      "faces": 10,
+      "segments": 5,
+      "r": 0.02941864699944335,
+      "err": 6.517326945061859e-06,
+      "three_valent": true
+    },
+    "convex 17 oversized, Uniform": {
+      "faces": 10,
+      "segments": 5,
+      "r": 0.06986928662367795,
+      "err": 8.245176022806424e-06,
+      "three_valent": true
+    },
+    "convex 18 safe radius": {
+      "faces": 11,
+      "segments": 5,
+      "r": 0.13619665251411753,
+      "err": 7.660317224600087e-07,
+      "three_valent": true
+    },
+    "convex 18 oversized, Uniform": {
+      "faces": 11,
+      "segments": 5,
+      "r": 0.3234670497210291,
+      "err": 4.28140715141255e-07,
+      "three_valent": true
+    },
+    "convex 19 safe radius": {
+      "faces": 11,
+      "segments": 2,
+      "r": 0.046828909491788834,
+      "err": 3.39974832819098e-06,
+      "three_valent": true
+    },
+    "convex 19 oversized, Uniform": {
+      "faces": 11,
+      "segments": 2,
+      "r": 0.11121866004299848,
+      "err": 2.0003717700205247e-06,
+      "three_valent": true
+    },
+    "convex 20 safe radius": {
+      "faces": 11,
+      "segments": 2,
+      "r": 0.13316371845200634,
+      "err": 5.504399239442081e-07,
+      "three_valent": true
+    },
+    "convex 20 oversized, Uniform": {
+      "faces": 11,
+      "segments": 2,
+      "r": 0.316263831323515,
+      "err": 4.7672603739410636e-07,
+      "three_valent": true
+    },
+    "convex 21 safe radius": {
+      "faces": 11,
+      "segments": 6,
+      "r": 0.0022682595450596163,
+      "err": 6.962041568844568e-05,
+      "three_valent": true
+    },
+    "convex 21 oversized, Uniform": {
+      "faces": 11,
+      "segments": 6,
+      "r": 0.005387116419516588,
+      "err": 2.7495184052550578e-05,
+      "three_valent": true
+    },
+    "convex 22 safe radius": {
+      "faces": 10,
+      "segments": 3,
+      "r": 0.2723001072990953,
+      "err": 3.6513433281973274e-07,
+      "three_valent": true
+    },
+    "convex 22 oversized, Uniform": {
+      "faces": 10,
+      "segments": 3,
+      "r": 0.6467127548353514,
+      "err": 2.4255324965107817e-07,
+      "three_valent": true
+    },
+    "convex 23 safe radius": {
+      "faces": 10,
+      "segments": 5,
+      "r": 0.052662588340702136,
+      "err": 2.711933713664458e-06,
+      "three_valent": true
+    },
+    "convex 23 oversized, Uniform": {
+      "faces": 10,
+      "segments": 5,
+      "r": 0.12507364730916756,
+      "err": 1.1319443872558125e-06,
+      "three_valent": true
+    },
+    "convex 24 safe radius": {
+      "faces": 10,
+      "segments": 2,
+      "r": 0.12261686181647927,
+      "err": 1.0003086817289407e-06,
+      "three_valent": true
+    },
+    "convex 24 oversized, Uniform": {
+      "faces": 10,
+      "segments": 2,
+      "r": 0.29121504681413823,
+      "err": 4.0935143066858327e-07,
+      "three_valent": true
+    },
+    "star 0": {
+      "segments": 4,
+      "r": 0.0345,
+      "flips": 0,
+      "clamped": false,
+      "exact_error": 2.8440387417603684e-06
+    },
+    "star 1": {
+      "segments": 5,
+      "r": 0.032,
+      "flips": 0,
+      "clamped": false,
+      "exact_error": 2.7961913944693765e-06
+    },
+    "star 2": {
+      "segments": 6,
+      "r": 0.03,
+      "flips": 0,
+      "clamped": false,
+      "exact_error": 2.567865011880301e-06
+    },
+    "star 3": {
+      "segments": 1,
+      "r": 0.0942,
+      "flips": 0,
+      "clamped": false,
+      "exact_error": 9.147969145199124e-07
+    },
+    "star 4": {
+      "segments": 5,
+      "r": 0.0305,
+      "flips": 0,
+      "clamped": false,
+      "exact_error": 4.0491737591180115e-06
+    },
+    "star 5": {
+      "segments": 4,
+      "r": 0.0312,
+      "flips": 0,
+      "clamped": false,
+      "exact_error": 3.281456900048458e-06
+    },
+    "star 6": {
+      "segments": 5,
+      "r": 0.0654,
+      "flips": 0,
+      "clamped": false,
+      "exact_error": 1.7386171151969291e-06
+    },
+    "star 7": {
+      "segments": 2,
+      "r": 0.0999,
+      "flips": 0,
+      "clamped": false,
+      "exact_error": 1.0980738728615704e-06
+    },
+    "star 8": {
+      "segments": 2,
+      "r": 0.079,
+      "flips": 0,
+      "clamped": false,
+      "exact_error": 1.0255192842595402e-06
+    },
+    "star 9": {
+      "segments": 3,
+      "r": 0.0867,
+      "flips": 0,
+      "clamped": false,
+      "exact_error": 1.9066264981227123e-06
+    },
+    "star 10": {
+      "segments": 2,
+      "r": 0.1103,
+      "flips": 0,
+      "clamped": false,
+      "exact_error": 8.563652681872246e-07
+    },
+    "star 11": {
+      "segments": 5,
+      "r": 0.0788,
+      "flips": 0,
+      "clamped": false,
+      "exact_error": 1.2800405058970508e-06
+    },
+    "star 12": {
+      "segments": 1,
+      "r": 0.0726,
+      "flips": 0,
+      "clamped": false,
+      "exact_error": 4.375883553554195e-07
+    },
+    "star 13": {
+      "segments": 4,
+      "r": 0.1045,
+      "flips": 0,
+      "clamped": false,
+      "exact_error": 1.0739370713119916e-06
+    },
+    "star 14": {
+      "segments": 3,
+      "r": 0.0826,
+      "flips": 0,
+      "clamped": false,
+      "exact_error": 1.658507341718868e-06
+    },
+    "tilted 0": {
+      "segments": 6,
+      "r": 0.0389,
+      "clamp": "Uniform",
+      "flips": 0,
+      "outside": 0.0,
+      "clamped": false,
+      "exact_error": 4.192382251451936e-06,
+      "modes": {
+        "fallback": 0,
+        "terminal": 6,
+        "pipe": 0,
+        "joint": 4,
+        "corner": 4
+      }
+    },
+    "tilted 1": {
+      "segments": 3,
+      "r": 0.0789,
+      "clamp": "Uniform",
+      "flips": 0,
+      "outside": 0.0,
+      "clamped": false,
+      "exact_error": 1.5995856666074143e-06,
+      "modes": {
+        "fallback": 1,
+        "terminal": 3,
+        "pipe": 0,
+        "joint": 2,
+        "corner": 1
+      }
+    },
+    "tilted 2": {
+      "segments": 2,
+      "r": 0.082,
+      "clamp": "Per Edge",
+      "flips": 0,
+      "outside": 0.0,
+      "clamped": false,
+      "exact_error": 1.4390834079010749e-06,
+      "modes": {
+        "fallback": 0,
+        "terminal": 0,
+        "pipe": 0,
+        "joint": 5,
+        "corner": 2
+      }
+    },
+    "tilted 3": {
+      "segments": 5,
+      "r": 0.0626,
+      "clamp": "Uniform",
+      "flips": 0,
+      "outside": 0.0,
+      "clamped": false,
+      "exact_error": 1.7507876273457459e-06,
+      "modes": {
+        "fallback": 0,
+        "terminal": 2,
+        "pipe": 0,
+        "joint": 6,
+        "corner": 0
+      }
+    },
+    "tilted 4": {
+      "segments": 4,
+      "r": 0.0638,
+      "clamp": "None",
+      "flips": 0,
+      "outside": 0.0,
+      "clamped": false,
+      "exact_error": 2.62866394517711e-06,
+      "modes": {
+        "fallback": 0,
+        "terminal": 3,
+        "pipe": 0,
+        "joint": 3,
+        "corner": 3
+      }
+    },
+    "tilted 5": {
+      "segments": 6,
+      "r": 0.0343,
+      "clamp": "Per Edge",
+      "flips": 0,
+      "outside": 0.0,
+      "clamped": false,
+      "exact_error": 2.6592499893667626e-06,
+      "modes": {
+        "fallback": 1,
+        "terminal": 4,
+        "pipe": 0,
+        "joint": 6,
+        "corner": 4
+      }
+    },
+    "tilted 6": {
+      "segments": 6,
+      "r": 0.0796,
+      "clamp": "None",
+      "flips": 0,
+      "outside": 0.0,
+      "clamped": false,
+      "exact_error": 3.868821803863158e-06,
+      "modes": {
+        "fallback": 2,
+        "terminal": 10,
+        "pipe": 0,
+        "joint": 3,
+        "corner": 0
+      }
+    },
+    "tilted 7": {
+      "segments": 6,
+      "r": 0.0541,
+      "clamp": "None",
+      "flips": 0,
+      "outside": 6e-06,
+      "clamped": false,
+      "exact_error": 2.9235378142262385e-06,
+      "modes": {
+        "fallback": 1,
+        "terminal": 5,
+        "pipe": 0,
+        "joint": 3,
+        "corner": 3
+      }
+    },
+    "tilted 8": {
+      "segments": 3,
+      "r": 0.0641,
+      "clamp": "Uniform",
+      "flips": 0,
+      "outside": 0.0,
+      "clamped": false,
+      "exact_error": 3.7898367620893284e-06,
+      "modes": {
+        "fallback": 0,
+        "terminal": 6,
+        "pipe": 0,
+        "joint": 2,
+        "corner": 0
+      }
+    },
+    "tilted 9": {
+      "segments": 4,
+      "r": 0.0704,
+      "clamp": "None",
+      "flips": 0,
+      "outside": 0.0,
+      "clamped": false,
+      "exact_error": 3.3979990600917064e-06,
+      "modes": {
+        "fallback": 1,
+        "terminal": 8,
+        "pipe": 0,
+        "joint": 2,
+        "corner": 0
+      }
+    },
+    "tilted 10": {
+      "segments": 6,
+      "r": 0.0995,
+      "clamp": "Per Edge",
+      "flips": 0,
+      "outside": 0.0,
+      "clamped": false,
+      "exact_error": 1.6008714898372046e-06,
+      "modes": {
+        "fallback": 3,
+        "terminal": 3,
+        "pipe": 0,
+        "joint": 6,
+        "corner": 3
+      }
+    },
+    "tilted 11": {
+      "segments": 2,
+      "r": 0.0718,
+      "clamp": "None",
+      "flips": 0,
+      "outside": 0.0,
+      "clamped": false,
+      "exact_error": 2.2941315324419058e-06,
+      "modes": {
+        "fallback": 1,
+        "terminal": 6,
+        "pipe": 0,
+        "joint": 3,
+        "corner": 2
+      }
+    },
+    "tilted 12": {
+      "segments": 3,
+      "r": 0.044,
+      "clamp": "Per Edge",
+      "flips": 0,
+      "outside": 0.0,
+      "clamped": false,
+      "exact_error": 2.18376098887147e-06,
+      "modes": {
+        "fallback": 1,
+        "terminal": 5,
+        "pipe": 0,
+        "joint": 4,
+        "corner": 3
+      }
+    },
+    "tilted 13": {
+      "segments": 6,
+      "r": 0.0902,
+      "clamp": "Per Edge",
+      "flips": 0,
+      "outside": 0.0,
+      "clamped": true
+    },
+    "tilted 14": {
+      "segments": 1,
+      "r": 0.0777,
+      "clamp": "Uniform",
+      "flips": 0,
+      "outside": 0.0,
+      "clamped": false,
+      "exact_error": 1.0540239771156154e-06,
+      "modes": {
+        "fallback": 0,
+        "terminal": 2,
+        "pipe": 0,
+        "joint": 4,
+        "corner": 2
+      }
+    },
+    "tilted 15": {
+      "segments": 6,
+      "r": 0.0918,
+      "clamp": "None",
+      "flips": 0,
+      "outside": 0.0,
+      "clamped": false,
+      "exact_error": 1.2416604900799757e-06,
+      "modes": {
+        "fallback": 0,
+        "terminal": 0,
+        "pipe": 0,
+        "joint": 4,
+        "corner": 6
+      }
+    },
+    "tilted 16": {
+      "segments": 6,
+      "r": 0.0886,
+      "clamp": "Uniform",
+      "flips": 0,
+      "outside": 0.0,
+      "clamped": false,
+      "exact_error": 1.610838572919937e-06,
+      "modes": {
+        "fallback": 3,
+        "terminal": 1,
+        "pipe": 0,
+        "joint": 5,
+        "corner": 3
+      }
+    },
+    "tilted 17": {
+      "segments": 6,
+      "r": 0.0602,
+      "clamp": "None",
+      "flips": 0,
+      "outside": 6.9e-05,
+      "clamped": false,
+      "exact_error": 4.404432456000895e-06,
+      "modes": {
+        "fallback": 2,
+        "terminal": 4,
+        "pipe": 0,
+        "joint": 7,
+        "corner": 2
+      }
+    },
+    "tilted 18": {
+      "segments": 4,
+      "r": 0.0427,
+      "clamp": "None",
+      "flips": 0,
+      "outside": 0.0,
+      "clamped": false,
+      "exact_error": 5.566379888044584e-06,
+      "modes": {
+        "fallback": 1,
+        "terminal": 4,
+        "pipe": 0,
+        "joint": 3,
+        "corner": 2
+      }
+    },
+    "tilted 19": {
+      "segments": 3,
+      "r": 0.057,
+      "clamp": "Uniform",
+      "flips": 0,
+      "outside": 0.0,
+      "clamped": false,
+      "exact_error": 2.0279786577818977e-06,
+      "modes": {
+        "fallback": 0,
+        "terminal": 6,
+        "pipe": 0,
+        "joint": 0,
+        "corner": 0
+      }
+    }
+  },
+  "checks": [
+    {
+      "name": "random convex #0 (11 faces, 5 seg), safe radius: oracle error 3.7e-06 r",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "random convex #0 (11 faces, 5 seg), oversized, Uniform: oracle error 1.3e-06 r",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "random convex #1 (10 faces, 2 seg), safe radius: oracle error 1.1e-06 r",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "random convex #1 (10 faces, 2 seg), oversized, Uniform: oracle error 9.5e-07 r",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "random convex #2 (10 faces, 6 seg), safe radius: oracle error 1.3e-05 r",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "random convex #2 (10 faces, 6 seg), oversized, Uniform: oracle error 6.8e-06 r",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "random convex #3 (9 faces, 5 seg), safe radius: oracle error 1.0e-06 r",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "random convex #3 (9 faces, 5 seg), oversized, Uniform: oracle error 4.7e-07 r",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "random convex #4 (11 faces, 5 seg), safe radius: oracle error 1.2e-05 r",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "random convex #4 (11 faces, 5 seg), oversized, Uniform: oracle error 6.3e-06 r",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "random convex #5 (9 faces, 5 seg), safe radius: oracle error 9.0e-07 r",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "random convex #5 (9 faces, 5 seg), oversized, Uniform: oracle error 2.2e-06 r",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "random convex #6 (12 faces, 4 seg), safe radius: oracle error 4.7e-06 r",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "random convex #6 (12 faces, 4 seg), oversized, Uniform: oracle error 1.9e-06 r",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "random convex #7 (11 faces, 2 seg), safe radius: oracle error 4.1e-06 r",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "random convex #7 (11 faces, 2 seg), oversized, Uniform: oracle error 1.8e-06 r",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "random convex #8 (11 faces, 6 seg), safe radius: oracle error 5.9e-05 r",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "random convex #8 (11 faces, 6 seg), oversized, Uniform: oracle error 2.3e-05 r",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "random convex #9 (11 faces, 3 seg), safe radius: oracle error 3.8e-06 r",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "random convex #9 (11 faces, 3 seg), oversized, Uniform: oracle error 2.0e-06 r",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "random convex #10 (11 faces, 6 seg), safe radius: oracle error 8.2e-07 r",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "random convex #10 (11 faces, 6 seg), oversized, Uniform: oracle error 6.0e-07 r",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "random convex #11 (10 faces, 4 seg), safe radius: oracle error 6.7e-06 r",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "random convex #11 (10 faces, 4 seg), oversized, Uniform: oracle error 3.1e-06 r",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "random convex #12 (10 faces, 4 seg), safe radius: oracle error 1.0e-06 r",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "random convex #12 (10 faces, 4 seg), oversized, Uniform: oracle error 5.1e-07 r",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "random convex #13 (9 faces, 5 seg), safe radius: oracle error 2.2e-06 r",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "random convex #13 (9 faces, 5 seg), oversized, Uniform: oracle error 9.8e-07 r",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "random convex #14 (10 faces, 6 seg), safe radius: oracle error 1.4e-05 r",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "random convex #14 (10 faces, 6 seg), oversized, Uniform: oracle error 5.0e-06 r",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "random convex #15 (10 faces, 2 seg), safe radius: oracle error 1.8e-06 r",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "random convex #15 (10 faces, 2 seg), oversized, Uniform: oracle error 7.6e-07 r",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "random convex #16 (11 faces, 4 seg), safe radius: oracle error 3.2e-06 r",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "random convex #16 (11 faces, 4 seg), oversized, Uniform: oracle error 1.5e-06 r",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "random convex #17 (10 faces, 5 seg), safe radius: oracle error 6.5e-06 r",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "random convex #17 (10 faces, 5 seg), oversized, Uniform: oracle error 8.2e-06 r",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "random convex #18 (11 faces, 5 seg), safe radius: oracle error 7.7e-07 r",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "random convex #18 (11 faces, 5 seg), oversized, Uniform: oracle error 4.3e-07 r",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "random convex #19 (11 faces, 2 seg), safe radius: oracle error 3.4e-06 r",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "random convex #19 (11 faces, 2 seg), oversized, Uniform: oracle error 2.0e-06 r",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "random convex #20 (11 faces, 2 seg), safe radius: oracle error 5.5e-07 r",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "random convex #20 (11 faces, 2 seg), oversized, Uniform: oracle error 4.8e-07 r",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "random convex #21 (11 faces, 6 seg), safe radius: oracle error 7.0e-05 r",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "random convex #21 (11 faces, 6 seg), oversized, Uniform: oracle error 2.7e-05 r",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "random convex #22 (10 faces, 3 seg), safe radius: oracle error 3.7e-07 r",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "random convex #22 (10 faces, 3 seg), oversized, Uniform: oracle error 2.4e-07 r",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "random convex #23 (10 faces, 5 seg), safe radius: oracle error 2.7e-06 r",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "random convex #23 (10 faces, 5 seg), oversized, Uniform: oracle error 1.1e-06 r",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "random convex #24 (10 faces, 2 seg), safe radius: oracle error 1.0e-06 r",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "random convex #24 (10 faces, 2 seg), oversized, Uniform: oracle error 4.1e-07 r",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "random star prism #0: finite, no flips, exact where defined",
+      "ok": true,
+      "detail": "{'segments': 4, 'r': 0.0345, 'flips': 0, 'clamped': False, 'exact_error': 2.8440387417603684e-06}"
+    },
+    {
+      "name": "random star prism #1: finite, no flips, exact where defined",
+      "ok": true,
+      "detail": "{'segments': 5, 'r': 0.032, 'flips': 0, 'clamped': False, 'exact_error': 2.7961913944693765e-06}"
+    },
+    {
+      "name": "random star prism #2: finite, no flips, exact where defined",
+      "ok": true,
+      "detail": "{'segments': 6, 'r': 0.03, 'flips': 0, 'clamped': False, 'exact_error': 2.567865011880301e-06}"
+    },
+    {
+      "name": "random star prism #3: finite, no flips, exact where defined",
+      "ok": true,
+      "detail": "{'segments': 1, 'r': 0.0942, 'flips': 0, 'clamped': False, 'exact_error': 9.147969145199124e-07}"
+    },
+    {
+      "name": "random star prism #4: finite, no flips, exact where defined",
+      "ok": true,
+      "detail": "{'segments': 5, 'r': 0.0305, 'flips': 0, 'clamped': False, 'exact_error': 4.0491737591180115e-06}"
+    },
+    {
+      "name": "random star prism #5: finite, no flips, exact where defined",
+      "ok": true,
+      "detail": "{'segments': 4, 'r': 0.0312, 'flips': 0, 'clamped': False, 'exact_error': 3.281456900048458e-06}"
+    },
+    {
+      "name": "random star prism #6: finite, no flips, exact where defined",
+      "ok": true,
+      "detail": "{'segments': 5, 'r': 0.0654, 'flips': 0, 'clamped': False, 'exact_error': 1.7386171151969291e-06}"
+    },
+    {
+      "name": "random star prism #7: finite, no flips, exact where defined",
+      "ok": true,
+      "detail": "{'segments': 2, 'r': 0.0999, 'flips': 0, 'clamped': False, 'exact_error': 1.0980738728615704e-06}"
+    },
+    {
+      "name": "random star prism #8: finite, no flips, exact where defined",
+      "ok": true,
+      "detail": "{'segments': 2, 'r': 0.079, 'flips': 0, 'clamped': False, 'exact_error': 1.0255192842595402e-06}"
+    },
+    {
+      "name": "random star prism #9: finite, no flips, exact where defined",
+      "ok": true,
+      "detail": "{'segments': 3, 'r': 0.0867, 'flips': 0, 'clamped': False, 'exact_error': 1.9066264981227123e-06}"
+    },
+    {
+      "name": "random star prism #10: finite, no flips, exact where defined",
+      "ok": true,
+      "detail": "{'segments': 2, 'r': 0.1103, 'flips': 0, 'clamped': False, 'exact_error': 8.563652681872246e-07}"
+    },
+    {
+      "name": "random star prism #11: finite, no flips, exact where defined",
+      "ok": true,
+      "detail": "{'segments': 5, 'r': 0.0788, 'flips': 0, 'clamped': False, 'exact_error': 1.2800405058970508e-06}"
+    },
+    {
+      "name": "random star prism #12: finite, no flips, exact where defined",
+      "ok": true,
+      "detail": "{'segments': 1, 'r': 0.0726, 'flips': 0, 'clamped': False, 'exact_error': 4.375883553554195e-07}"
+    },
+    {
+      "name": "random star prism #13: finite, no flips, exact where defined",
+      "ok": true,
+      "detail": "{'segments': 4, 'r': 0.1045, 'flips': 0, 'clamped': False, 'exact_error': 1.0739370713119916e-06}"
+    },
+    {
+      "name": "random star prism #14: finite, no flips, exact where defined",
+      "ok": true,
+      "detail": "{'segments': 3, 'r': 0.0826, 'flips': 0, 'clamped': False, 'exact_error': 1.658507341718868e-06}"
+    },
+    {
+      "name": "random tilted prism #0 (Uniform, 6 seg): finite, no flips, inside bbox, exact where defined",
+      "ok": true,
+      "detail": "{'segments': 6, 'r': 0.0389, 'clamp': 'Uniform', 'flips': 0, 'outside': 0.0, 'clamped': False, 'exact_error': 4.192382251451936e-06, 'modes': {'fallback': 0, 'terminal': 6, 'pipe': 0, 'joint': 4, 'corner': 4}}"
+    },
+    {
+      "name": "random tilted prism #1 (Uniform, 3 seg): finite, no flips, inside bbox, exact where defined",
+      "ok": true,
+      "detail": "{'segments': 3, 'r': 0.0789, 'clamp': 'Uniform', 'flips': 0, 'outside': 0.0, 'clamped': False, 'exact_error': 1.5995856666074143e-06, 'modes': {'fallback': 1, 'terminal': 3, 'pipe': 0, 'joint': 2, 'corner': 1}}"
+    },
+    {
+      "name": "random tilted prism #2 (Per Edge, 2 seg): finite, no flips, inside bbox, exact where defined",
+      "ok": true,
+      "detail": "{'segments': 2, 'r': 0.082, 'clamp': 'Per Edge', 'flips': 0, 'outside': 0.0, 'clamped': False, 'exact_error': 1.4390834079010749e-06, 'modes': {'fallback': 0, 'terminal': 0, 'pipe': 0, 'joint': 5, 'corner': 2}}"
+    },
+    {
+      "name": "random tilted prism #3 (Uniform, 5 seg): finite, no flips, inside bbox, exact where defined",
+      "ok": true,
+      "detail": "{'segments': 5, 'r': 0.0626, 'clamp': 'Uniform', 'flips': 0, 'outside': 0.0, 'clamped': False, 'exact_error': 1.7507876273457459e-06, 'modes': {'fallback': 0, 'terminal': 2, 'pipe': 0, 'joint': 6, 'corner': 0}}"
+    },
+    {
+      "name": "random tilted prism #4 (None, 4 seg): finite, no flips, inside bbox, exact where defined",
+      "ok": true,
+      "detail": "{'segments': 4, 'r': 0.0638, 'clamp': 'None', 'flips': 0, 'outside': 0.0, 'clamped': False, 'exact_error': 2.62866394517711e-06, 'modes': {'fallback': 0, 'terminal': 3, 'pipe': 0, 'joint': 3, 'corner': 3}}"
+    },
+    {
+      "name": "random tilted prism #5 (Per Edge, 6 seg): finite, no flips, inside bbox, exact where defined",
+      "ok": true,
+      "detail": "{'segments': 6, 'r': 0.0343, 'clamp': 'Per Edge', 'flips': 0, 'outside': 0.0, 'clamped': False, 'exact_error': 2.6592499893667626e-06, 'modes': {'fallback': 1, 'terminal': 4, 'pipe': 0, 'joint': 6, 'corner': 4}}"
+    },
+    {
+      "name": "random tilted prism #6 (None, 6 seg): finite, no flips, inside bbox, exact where defined",
+      "ok": true,
+      "detail": "{'segments': 6, 'r': 0.0796, 'clamp': 'None', 'flips': 0, 'outside': 0.0, 'clamped': False, 'exact_error': 3.868821803863158e-06, 'modes': {'fallback': 2, 'terminal': 10, 'pipe': 0, 'joint': 3, 'corner': 0}}"
+    },
+    {
+      "name": "random tilted prism #7 (None, 6 seg): finite, no flips, inside bbox, exact where defined",
+      "ok": true,
+      "detail": "{'segments': 6, 'r': 0.0541, 'clamp': 'None', 'flips': 0, 'outside': 6e-06, 'clamped': False, 'exact_error': 2.9235378142262385e-06, 'modes': {'fallback': 1, 'terminal': 5, 'pipe': 0, 'joint': 3, 'corner': 3}}"
+    },
+    {
+      "name": "random tilted prism #8 (Uniform, 3 seg): finite, no flips, inside bbox, exact where defined",
+      "ok": true,
+      "detail": "{'segments': 3, 'r': 0.0641, 'clamp': 'Uniform', 'flips': 0, 'outside': 0.0, 'clamped': False, 'exact_error': 3.7898367620893284e-06, 'modes': {'fallback': 0, 'terminal': 6, 'pipe': 0, 'joint': 2, 'corner': 0}}"
+    },
+    {
+      "name": "random tilted prism #9 (None, 4 seg): finite, no flips, inside bbox, exact where defined",
+      "ok": true,
+      "detail": "{'segments': 4, 'r': 0.0704, 'clamp': 'None', 'flips': 0, 'outside': 0.0, 'clamped': False, 'exact_error': 3.3979990600917064e-06, 'modes': {'fallback': 1, 'terminal': 8, 'pipe': 0, 'joint': 2, 'corner': 0}}"
+    },
+    {
+      "name": "random tilted prism #10 (Per Edge, 6 seg): finite, no flips, inside bbox, exact where defined",
+      "ok": true,
+      "detail": "{'segments': 6, 'r': 0.0995, 'clamp': 'Per Edge', 'flips': 0, 'outside': 0.0, 'clamped': False, 'exact_error': 1.6008714898372046e-06, 'modes': {'fallback': 3, 'terminal': 3, 'pipe': 0, 'joint': 6, 'corner': 3}}"
+    },
+    {
+      "name": "random tilted prism #11 (None, 2 seg): finite, no flips, inside bbox, exact where defined",
+      "ok": true,
+      "detail": "{'segments': 2, 'r': 0.0718, 'clamp': 'None', 'flips': 0, 'outside': 0.0, 'clamped': False, 'exact_error': 2.2941315324419058e-06, 'modes': {'fallback': 1, 'terminal': 6, 'pipe': 0, 'joint': 3, 'corner': 2}}"
+    },
+    {
+      "name": "random tilted prism #12 (Per Edge, 3 seg): finite, no flips, inside bbox, exact where defined",
+      "ok": true,
+      "detail": "{'segments': 3, 'r': 0.044, 'clamp': 'Per Edge', 'flips': 0, 'outside': 0.0, 'clamped': False, 'exact_error': 2.18376098887147e-06, 'modes': {'fallback': 1, 'terminal': 5, 'pipe': 0, 'joint': 4, 'corner': 3}}"
+    },
+    {
+      "name": "random tilted prism #13 (Per Edge, 6 seg): finite, no flips, inside bbox, exact where defined",
+      "ok": true,
+      "detail": "{'segments': 6, 'r': 0.0902, 'clamp': 'Per Edge', 'flips': 0, 'outside': 0.0, 'clamped': True}"
+    },
+    {
+      "name": "random tilted prism #14 (Uniform, 1 seg): finite, no flips, inside bbox, exact where defined",
+      "ok": true,
+      "detail": "{'segments': 1, 'r': 0.0777, 'clamp': 'Uniform', 'flips': 0, 'outside': 0.0, 'clamped': False, 'exact_error': 1.0540239771156154e-06, 'modes': {'fallback': 0, 'terminal': 2, 'pipe': 0, 'joint': 4, 'corner': 2}}"
+    },
+    {
+      "name": "random tilted prism #15 (None, 6 seg): finite, no flips, inside bbox, exact where defined",
+      "ok": true,
+      "detail": "{'segments': 6, 'r': 0.0918, 'clamp': 'None', 'flips': 0, 'outside': 0.0, 'clamped': False, 'exact_error': 1.2416604900799757e-06, 'modes': {'fallback': 0, 'terminal': 0, 'pipe': 0, 'joint': 4, 'corner': 6}}"
+    },
+    {
+      "name": "random tilted prism #16 (Uniform, 6 seg): finite, no flips, inside bbox, exact where defined",
+      "ok": true,
+      "detail": "{'segments': 6, 'r': 0.0886, 'clamp': 'Uniform', 'flips': 0, 'outside': 0.0, 'clamped': False, 'exact_error': 1.610838572919937e-06, 'modes': {'fallback': 3, 'terminal': 1, 'pipe': 0, 'joint': 5, 'corner': 3}}"
+    },
+    {
+      "name": "random tilted prism #17 (None, 6 seg): finite, no flips, inside bbox, exact where defined",
+      "ok": true,
+      "detail": "{'segments': 6, 'r': 0.0602, 'clamp': 'None', 'flips': 0, 'outside': 6.9e-05, 'clamped': False, 'exact_error': 4.404432456000895e-06, 'modes': {'fallback': 2, 'terminal': 4, 'pipe': 0, 'joint': 7, 'corner': 2}}"
+    },
+    {
+      "name": "random tilted prism #18 (None, 4 seg): finite, no flips, inside bbox, exact where defined",
+      "ok": true,
+      "detail": "{'segments': 4, 'r': 0.0427, 'clamp': 'None', 'flips': 0, 'outside': 0.0, 'clamped': False, 'exact_error': 5.566379888044584e-06, 'modes': {'fallback': 1, 'terminal': 4, 'pipe': 0, 'joint': 3, 'corner': 2}}"
+    },
+    {
+      "name": "random tilted prism #19 (Uniform, 3 seg): finite, no flips, inside bbox, exact where defined",
+      "ok": true,
+      "detail": "{'segments': 3, 'r': 0.057, 'clamp': 'Uniform', 'flips': 0, 'outside': 0.0, 'clamped': False, 'exact_error': 2.0279786577818977e-06, 'modes': {'fallback': 0, 'terminal': 6, 'pipe': 0, 'joint': 0, 'corner': 0}}"
+    }
+  ]
+}

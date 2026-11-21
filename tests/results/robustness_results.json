@@ -172,7 +172,7 @@
       "same_topology": true,
       "flips": 0,
       "warnings": [],
-      "exact_error": 6.614850123209948e-07,
+      "exact_error": 6.692460389571646e-07,
       "mode_counts": {
         "fallback": 0,
         "terminal": 0,
@@ -252,7 +252,7 @@
       "same_topology": true,
       "flips": 0,
       "warnings": [],
-      "exact_error": 6.682759107201619e-07,
+      "exact_error": 6.692460389571646e-07,
       "mode_counts": {
         "fallback": 0,
         "terminal": 0,
@@ -300,7 +300,7 @@
       "same_topology": true,
       "flips": 0,
       "warnings": [],
-      "exact_error": 1.8720442049544965e-06,
+      "exact_error": 1.8841708237608372e-06,
       "mode_counts": {
         "fallback": 0,
         "terminal": 5,
@@ -316,7 +316,7 @@
       "same_topology": true,
       "flips": 0,
       "warnings": [],
-      "exact_error": 9.175592755964839e-07,
+      "exact_error": 8.761671984232796e-07,
       "mode_counts": {
         "fallback": 0,
         "terminal": 0,
@@ -475,7 +475,7 @@
     },
     "256 segments": {
       "verts": 396296,
-      "seconds": 0.935302141999955
+      "seconds": 0.9003234060000977
     }
   },
   "checks": [
@@ -600,7 +600,7 @@
       "detail": "{'verts': 24, 'faces': 26, 'finite': True, 'same_topology': True, 'flips': 0, 'warnings': []}"
     },
     {
-      "name": "skew box, 1 segments: exact (error 6.6e-07 r, tolerance 1e-04)",
+      "name": "skew box, 1 segments: exact (error 6.7e-07 r, tolerance 1e-04)",
       "ok": true,
       "detail": "{'fallback': 0, 'terminal': 0, 'pipe': 0, 'joint': 0, 'corner': 8}"
     },
@@ -700,7 +700,7 @@
       "detail": "{'verts': 216, 'faces': 218, 'finite': True, 'same_topology': True, 'flips': 0, 'warnings': []}"
     },
     {
-      "name": "skew box corners, 5 segments: exact (error 9.2e-07 r, tolerance 1e-04)",
+      "name": "skew box corners, 5 segments: exact (error 8.8e-07 r, tolerance 1e-04)",
       "ok": true,
       "detail": "{'fallback': 0, 'terminal': 0, 'pipe': 0, 'joint': 0, 'corner': 8}"
     },

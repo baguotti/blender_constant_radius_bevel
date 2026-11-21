@@ -176,6 +176,20 @@ def _line_dist(p, a, u):
     return (w - u * w.dot(u)).length
 
 
+def _seam_end_ok(v, es, frames, r, limit=1.0):
+    """JOINT: do both cylinders touch the unbeveled edge g at (nearly) the same point?
+    Cylinder k touches g at t_k = d_k / |g x u_k|; same limit as the node group (JOINT_SPREAD)."""
+    other = [e for e in v.link_edges if e.index not in frames]
+    if not other:
+        return False
+    g = (other[0].other_vert(v).co - v.co).normalized()
+    t = []
+    for ei in es[:2]:
+        u = frames[ei]["u"]
+        t.append(frames[ei]["d"] / max(g.cross(u).length, 1e-12))
+    return abs(t[0] - t[1]) <= limit * r
+
+
 def classify_vertices(bm, frames, r, gap_tol=1e-3, coord_tol=1e-6):
     """Independent re-implementation of the node group's vertex modes.
 
@@ -213,7 +227,7 @@ def classify_vertices(bm, frames, r, gap_tol=1e-3, coord_tol=1e-6):
                 p0, p1 = a0 + u0 * t0, a1 + u1 * t1
                 meet = (p0 + p1) / 2
                 ok = (p0 - p1).length < tol and s0 == s1 and nf == 3
-                if len(es) == 2 and ok:
+                if len(es) == 2 and ok and _seam_end_ok(v, es, frames, r):
                     info.update(mode=JOINT, centre=meet)
                 elif len(es) == 3 and ok and lines[2][2] == s0 and _line_dist(meet, lines[2][0], lines[2][1]) < tol:
                     info.update(mode=CORNER, centre=meet)
@@ -252,7 +266,17 @@ def exact_error(me, bm, frames, modes, r):
             fallback_out.append(int(i))
             continue
         if m == CORNER:
-            err = abs((p - info["centre"]).length - r)
+            # Exact surface near a ball corner = points at distance r from the ball
+            # centre C or from the axis rays leaving C (towards each edge's far end).
+            C = info["centre"]
+            d = (p - C).length
+            for ei in info["edges"]:
+                e = bm.edges[ei]
+                away = (e.other_vert(bm.verts[vi]).co - bm.verts[vi].co).normalized()
+                t = (p - C).dot(away)
+                if t > 0:
+                    d = min(d, (p - C - away * t).length)
+            err = abs(d - r)
         elif m == JOINT:
             err = max(abs(_line_dist(p, frames[ei]["a0"], frames[ei]["u"]) - r) for ei in info["edges"])
             if touches_original[i]:
@@ -362,3 +386,23 @@ def count_flips(me_a, me_b):
         elif p.normal.dot(n) < 0:
             flipped += 1
     return flipped, unmatched
+
+
+# ---------------------------------------------------------------- oracle
+
+
+def project_dykstra(p, normals, offsets, iters=4000):
+    """Euclidean projection of p onto {x : normals @ x <= offsets} (Dykstra)."""
+    x = p.copy()
+    incr = np.zeros((len(normals), 3))
+    for _ in range(iters):
+        x_prev = x.copy()
+        for i, (n, d) in enumerate(zip(normals, offsets)):
+            y = x + incr[i]
+            excess = n @ y - d
+            x_new = y - max(excess, 0.0) * n
+            incr[i] = y - x_new
+            x = x_new
+        if np.abs(x - x_prev).max() < 1e-13:
+            break
+    return x

@@ -9,9 +9,10 @@ How it works (math in docs/PLAN.md):
 2. A "skeleton" of cylinder axes is built, one segment per beveled edge.
    Each original vertex is classified, and axes are cut at the exact point
    where they meet (ball centre or chain crossing).
-3. After the bevel, strip vertices are pushed onto their cylinder, corner
-   patch vertices onto their sphere, and bevel ends that stop at an
-   unbeveled face are kept in that face.
+3. After the bevel, every exact vertex goes to Q + r * normalize(p - Q), with
+   Q the nearest point on the cut skeleton: cylinders along edges, the ball at
+   corners. Joint seams go onto the cylinder-cylinder intersection, and bevel
+   ends that stop at an unbeveled face are kept in that face.
 
 Vertex modes (attribute _cr_mode, per original vertex):
     0 FALLBACK  no exact answer: the native geometry is kept
@@ -37,6 +38,7 @@ EXTEND = 10.0           # uncut axis ends are extended by EXTEND * (r + d)
 CLAMP_SHARE = 0.95      # stay this far below the exact overlap limit (avoids zero-length edges)
 NO_LIMIT = 1e30
 PER_EDGE_PASSES = 32    # Per Edge: passes of the shrink-until-valid loop
+JOINT_SPREAD = 1.0      # JOINT: the two cylinders must touch the unbeveled edge within this * r
 INLINE_SIN = math.sin(math.radians(2.0))   # BMesh bevel's in-line threshold (BEVEL_EPSILON_ANG)
 CLAMP_MODES = ("Uniform", "Per Edge", "None")
 
@@ -514,13 +516,14 @@ def _vertex_modes(B, geo):
         u = B.at_index("EDGE", "FLOAT_VECTOR", B.named("_cr_u", "FLOAT_VECTOR"), e)
         s = B.at_index("EDGE", "FLOAT", B.named("_cr_s", "FLOAT"), e)
         rk = B.at_index("EDGE", "FLOAT", B.named("_cr_r", "FLOAT"), e)
+        dk = B.at_index("EDGE", "FLOAT", B.named("_cr_d", "FLOAT"), e)
         # Edge direction pointing away from this vertex: other end = p1 + p2 - here.
         ends = B.node("GeometryNodeInputMeshEdgeVertices")
         p12 = B.add(B.at_index("EDGE", "FLOAT_VECTOR", ends.outputs["Position 1"], e),
                     B.at_index("EDGE", "FLOAT_VECTOR", ends.outputs["Position 2"], e))
         away = B.vmath("NORMALIZE", B.sub(p12, B.scale(pos, 2.0)))
-        lines.append((B.add(pos, off), u, s, away, rk))
-    (a0, u0, s0, away0, r0), (a1, u1, s1, away1, r1), (a2, u2, s2, _, r2) = lines
+        lines.append((B.add(pos, off), u, s, away, rk, dk))
+    (a0, u0, s0, away0, r0, d0), (a1, u1, s1, away1, r1, d1), (a2, u2, s2, away2, r2, _) = lines
     # Radii are exact numbers: compare them relative to r. Axis positions carry
     # float32 error that grows with the distance from the origin (face normals),
     # so the geometric tolerance also scales with |position|.
@@ -552,7 +555,15 @@ def _vertex_modes(B, geo):
     pipe = B.bool_and(is2, B.bool_not(crossing), same01, B.compare("LESS_THAN", B.dist_to_line(a1, a0, u0), tol_geo))
     # JOINT and CORNER need the standard layout: exactly 3 faces at the vertex
     # (otherwise e.g. folded faces or extra unbeveled edges break the formulas).
-    joint = B.bool_and(is2, three_faces, crossing, gap_ok, same01)
+    # A JOINT's seam ends on the third (unbeveled) edge g. Each cylinder touches g
+    # where its tangent line meets g, at t_k = d_k / |g x u_k| from the vertex. The
+    # seam end can only be exact if t_0 = t_1; when they are far apart the native
+    # end is far off the curve and snapping the seam's interior would fold a face.
+    def touch(u, d):
+        return B.math("DIVIDE", d, B.vmath("LENGTH", B.vmath("CROSS_PRODUCT", away2, u)))
+    spread = B.math("ABSOLUTE", B.math("SUBTRACT", touch(u0, d0), touch(u1, d1)))
+    seam_ok = B.compare("LESS_EQUAL", spread, B.math("MULTIPLY", r0, JOINT_SPREAD))
+    joint = B.bool_and(is2, three_faces, crossing, gap_ok, same01, seam_ok)
     corner = B.bool_and(is3, three_faces, crossing, gap_ok, same01, same12,
                         B.compare("LESS_THAN", B.dist_to_line(meet, a2, u2), tol_geo))
     mode = B.math("ADD",
@@ -665,8 +676,11 @@ def _snap(B, gi, geo, skeleton):
     is_terminal = B.compare("EQUAL", mode, TERMINAL, data_type="INT")
     strip_target = B.switch("VECTOR", is_terminal, on_cyl, in_end_face)
 
-    # CORNER: patch vertices onto the ball.
-    on_ball = B.add(centre, B.scale(B.vmath("NORMALIZE", B.sub(pos, centre)), radius))
+    # CORNER: patch vertices use the same rule as strips: nearest point Q on the
+    # cut skeleton, then out to distance r. Q is the ball centre in the ball's
+    # region and a point on an axis next to a cylinder, which is exactly the
+    # rolling-ball surface. (Pushing every patch vertex out from the centre went
+    # wrong where the native patch is skewed, e.g. a corner with a shallow edge.)
 
     # JOINT: seam vertices go onto the intersection of the two cylinders. It lies
     # in the seam plane, where it is the set |w|^2 - (w.u0)^2 = r^2 (w = p - X), so
@@ -690,22 +704,21 @@ def _snap(B, gi, geo, skeleton):
     exact_mode = B.compare("GREATER_THAN", mode, FALLBACK, data_type="INT")
     strip_sel = B.bool_and(on_strip, exact_mode, B.bool_not(joint_end), prox.outputs["Is Valid"],
                            B.compare("GREATER_THAN", prox.outputs["Distance"], 1e-9))
-    patch_sel = B.bool_and(on_patch, B.bool_not(on_strip), B.compare("EQUAL", mode, CORNER, data_type="INT"))
+    patch_sel = B.bool_and(on_patch, B.bool_not(on_strip), B.compare("EQUAL", mode, CORNER, data_type="INT"),
+                           prox.outputs["Is Valid"], B.compare("GREATER_THAN", prox.outputs["Distance"], 1e-9))
 
     move = B.bool_and(gi.outputs["Exact Profile"], B.bool_or(strip_sel, patch_sel))
-    target = B.switch("VECTOR", patch_sel, strip_target, on_ball)
+    target = B.switch("VECTOR", patch_sel, strip_target, on_cyl)
 
     # Exact surface normal at the final position (outward: flipped for concave).
     sign = B.named("_cr_sv", "FLOAT")
     n_strip = B.vmath("NORMALIZE", B.sub(pos, q))           # radial direction is kept by the snap
-    n_ball = B.vmath("NORMALIZE", B.sub(pos, centre))
     final = B.switch("VECTOR", move, pos, target)
     u1 = B.named("_cr_u1", "FLOAT_VECTOR")
     rad0 = B.sub(B.sub(final, centre), B.scale(u, B.dot(B.sub(final, centre), u)))
     rad1 = B.sub(B.sub(final, centre), B.scale(u1, B.dot(B.sub(final, centre), u1)))
     n_seam = B.vmath("NORMALIZE", B.add(B.vmath("NORMALIZE", rad0), B.vmath("NORMALIZE", rad1)))
-    n = B.switch("VECTOR", patch_sel, n_strip, n_ball)
-    n = B.switch("VECTOR", is_joint, n, n_seam)
+    n = B.switch("VECTOR", is_joint, n_strip, n_seam)
     has_n = B.bool_and(gi.outputs["Exact Profile"], B.bool_or(move, joint_end))
     geo = B.store(geo, "_cr_n", B.scale(n, sign), "FLOAT_VECTOR", "POINT")
     geo = B.store(geo, "_cr_hasn", has_n, "BOOLEAN", "POINT")
